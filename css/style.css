@@ -19,7 +19,6 @@ body h1 {
 	width: 25px;
 	height: 25px;
 	background-color: #bea9de;
-	
 }
 
 .selected-cell {
@@ -29,4 +28,10 @@ body h1 {
 .cell:hover {
 	box-sizing: border-box;
 	border: 1px solid #ffffff;
+}
+
+#reset {
+	width: 100px;
+	height: 25px;
+	border: 2px solid #FF0000;
 }

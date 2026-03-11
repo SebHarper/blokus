@@ -56,6 +56,17 @@ function handleCellClick(row, col) {
 };
 
 
+function clearBoard() {
+		
+	for (let r = 0; r < rows; r++) {
+		for (let c = 0; c < cols; c++) {
+			boardState[r][c] = { selected: false, value: 0 };
+		}
+	}
+	renderBoard();
+};
+
+
 $(document).ready(function() {
 	boardState = initialiseBoard(rows, cols);
 	console.log(boardState);
@@ -71,6 +82,10 @@ $(document).ready(function() {
 		let col = selector.data("col");
 		
 		handleCellClick(row, col);
+	});
+	
+	$("#reset").click(function() {
+		clearBoard();
 	});
 
 });
