@@ -1,0 +1,32 @@
+body { background-color: #131862; }
+body h1 { 
+	color: #ffffff;
+	font-family: Arial, monospace;
+	text-align: center;
+}
+
+#game {
+	width: 500px;
+	height: 500px;
+	background-color: #ffffff;
+	border: 25px solid #2e4482;
+	display: grid;
+	grid-template-columns: repeat(20, 25px);
+	margin: auto;
+}
+
+.cell {
+	width: 25px;
+	height: 25px;
+	background-color: #bea9de;
+	
+}
+
+.selected-cell {
+	background-color: #cfbaef
+}
+
+.cell:hover {
+	box-sizing: border-box;
+	border: 1px solid #ffffff;
+}
