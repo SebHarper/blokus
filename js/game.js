@@ -83,9 +83,29 @@ $(document).ready(function() {
 		
 		handleCellClick(row, col);
 	});
-	
-	$("#reset").click(function() {
+
+	$("#reset-button").click(function() {
 		clearBoard();
+	});
+
+	// using buttons to switch screen view
+	
+	$("#game-view").click(function() {
+		$(".gameContainer").show();
+		$(".settingsContainer").hide();
+		$(".tilesetOptionsContainer").hide();
+	});
+	
+	$("#settings-view").click(function() {
+		$(".gameContainer").hide();
+		$(".settingsContainer").show();
+		$(".tilesetOptionsContainer").hide();
+	});
+	
+	$("#tileset-view").click(function() {
+		$(".gameContainer").hide();
+		$(".settingsContainer").hide();
+		$(".tilesetOptionsContainer").show();
 	});
 
 });
