@@ -66,6 +66,10 @@ function clearBoard() {
 	renderBoard();
 };
 
+function showView(view) {
+	$(".gameContainer, .settingsContainer, .tilesetOptionsContainer").hide();
+	$(view).show();
+}
 
 $(document).ready(function() {
 	boardState = initialiseBoard(rows, cols);
@@ -89,23 +93,8 @@ $(document).ready(function() {
 	});
 
 	// using buttons to switch screen view
-	
-	$("#game-view").click(function() {
-		$(".gameContainer").show();
-		$(".settingsContainer").hide();
-		$(".tilesetOptionsContainer").hide();
-	});
-	
-	$("#settings-view").click(function() {
-		$(".gameContainer").hide();
-		$(".settingsContainer").show();
-		$(".tilesetOptionsContainer").hide();
-	});
-	
-	$("#tileset-view").click(function() {
-		$(".gameContainer").hide();
-		$(".settingsContainer").hide();
-		$(".tilesetOptionsContainer").show();
-	});
+	$("#game-view").click(() => showView(".gameContainer"));
+	$("#settings-view").click(() => showView(".settingsContainer"));
+	$("#tileset-view").click(() => showView(".tilesetOptionsContainer"));
 
 });
