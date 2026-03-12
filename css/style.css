@@ -15,7 +15,20 @@ body h1 {
 }
 
 .boardContainer {
-	width: 440px;
+	display:flex;
+}
+
+#reset-button {
+	margin-left: 20px;
+}
+
+.settingsContainer {
+	width: 600px;
+	height: 440px;
+}
+
+.tilesetOptionsContainer {
+	width: 600px;
 	height: 440px;
 }
 
@@ -43,22 +56,25 @@ body h1 {
 	border: 1px solid #ffffff;
 }
 
-#reset {
-	width: 120px;
-	height: 40px;
-	color: #ffffff;
-	font-weight: bold;
-
+.buttonContainer {
 	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	background-color: #2e4482;
-	margin-left: auto;
-	margin-right: auto;
+	gap: 20px;
+	margin: 20px;
 }
 
-#reset:hover {
-	background-color: #3f5593;
+.blokus-button {
+	height: 40px;
+	width: 120px;
+	color: #ffffff;
+	font-weight: bold;
+	background-color: #2e4482;
 	cursor: pointer;
+	
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.blokus-button:hover {
+	background-color: #3f5593;
 }
