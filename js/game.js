@@ -97,9 +97,17 @@ function initialiseBoard() {
 	}
 };
 
+function populateTray() {
+	const tray = $("#pieceContainer");
+	
+	for (const item in pieces) {
+		
+	}
+}
+
 function createCellElements() {
 
-	var boardElement = $('#game');
+	var boardElement = $("#game");
 	boardElement.empty();
 
 	for (let r=0; r < rows; r++) {
@@ -182,24 +190,38 @@ $(document).ready(function() {
 
 	let heldPiece = null;
 
-	$(".piece").click(function() {
+	$(".piece").click(function(e) {
 
 		heldPiece = $(this).clone();
 		$(this).hide();
-
-		$("#cursor-piece")
+		
+		let cursor = $("#cursor-piece");
+		
+		cursor
 			.empty()
 			.append(heldPiece)
 			.show();
+		
+		let x_off = cursor.width() / 2;
+		let y_off = cursor.height() / 2;
+
+		cursor.css({
+			left: e.clientX - x_off,
+			top: e.clientY - y_off
+		});
 	});
 
 });
 
 $(document).mousemove(function(e) {
-
-	$("#cursor-piece").css({
-		left: e.clientX - 40,
-		top: e.clientY - 40
+	
+	let p = $("#cursor-piece");
+	let x_off = p.width() / 2;
+	let y_off = p.height() / 2;
+	
+	p.css({
+		left: e.clientX - x_off,
+		top: e.clientY - y_off
 	});
 
 });
