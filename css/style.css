@@ -1,5 +1,13 @@
+:root {
+	--primary-bg-color: #131862;
+	--button-color: #2e4482;
+	--hovered-button-color: #3f5593;
+	--cell-color: #bea9de;
+	--selected-cell-color: #cfbaef;
+}
+
 body { 
-	background-color: #131862;
+	background-color: var(--primary-bg-color);
 	font-family: Andale Mono, monospace;
 	color: #ffffff;
 }
@@ -11,6 +19,7 @@ body h1 {
 /*temp {
 	outline: 1px solid red;
 }*/
+
 
 #headerContainer {
 	margin-bottom: 20px;
@@ -67,7 +76,7 @@ body h1 {
 #game {
 	background-color: #ffffff;
 	box-sizing: border-box;
-	border: 20px solid #2e4482;
+	border: 20px solid var(--button-color);
 	display: grid;
 	grid-template-columns: repeat(20, 20px);
 	grid-template-rows: repeat(20, 20px);
@@ -76,12 +85,11 @@ body h1 {
 .cell {
 	width: 20px;
 	height: 20px;
-	background-color: #bea9de;
-
+	background-color: var(--cell-color);
 }
 
 .selected-cell {
-	background-color: #cfbaef
+	background-color: var(--selected-cell-color);
 }
 
 .cell.empty {
@@ -91,6 +99,10 @@ body h1 {
 #game .cell:hover {
 	border: 1px solid #ffffff;
 	box-sizing: border-box;
+}
+
+.piece .cell {
+	background-color: #904fba;
 }
 
 #buttonContainer {
@@ -107,7 +119,7 @@ body h1 {
 	width: 120px;
 	color: #ffffff;
 	font-weight: bold;
-	background-color: #2e4482;
+	background-color: var(--button-color);
 	cursor: pointer;
 	
 	display: flex;
@@ -116,7 +128,7 @@ body h1 {
 }
 
 .blokus-button:hover {
-	background-color: #3f5593;
+	background-color: var(--hovered-button-color);
 }
 
 #cursor-piece {
