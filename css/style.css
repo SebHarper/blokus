@@ -66,17 +66,18 @@ body h1 {
 
 #game {
 	background-color: #ffffff;
+	box-sizing: border-box;
 	border: 20px solid #2e4482;
 	display: grid;
 	grid-template-columns: repeat(20, 20px);
+	grid-template-rows: repeat(20, 20px);
 }
 
 .cell {
 	width: 20px;
 	height: 20px;
 	background-color: #bea9de;
-	box-sizing: border-box;
-	border: 1px solid #dfcbff;
+
 }
 
 .selected-cell {
@@ -85,18 +86,20 @@ body h1 {
 
 .cell.empty {
 	background: transparent;
-	border: none;
 }
 
 #game .cell:hover {
-	box-sizing: border-box;
 	border: 1px solid #ffffff;
+	box-sizing: border-box;
 }
 
 #buttonContainer {
+	grid-column: 1 / span 2;
+	grid-row: 2;
+
 	display: flex;
 	gap: 20px;
-	margin: 20px;
+	margin-top: 20px
 }
 
 .blokus-button {
