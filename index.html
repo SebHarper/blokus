@@ -12,29 +12,60 @@
 	</head>
 
 	<body>
-		<div class="headerContainer">
+		<div id="headerContainer">
 			<h1>Welcome to BLOKUS, a turn based board game</h1>
 		</div>
-		<div class="gameContainer">
-			<div class="boardContainer">
+		<div id="gameContainer">
+			<div id="boardContainer">
 				<div id="game"></div>
+			</div>
+			
+			<div id="sidePanel">
+				
+				<div id="pieceContainer">
+					<div class="piece" data-piece="p1">
+						<div class="cell empty"></div><div class="cell empty"></div>
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+					</div>
+					<div class="piece" data-piece="p2">
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+					</div>
+					<div class="piece" data-piece="p3">
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+					</div>
+					<div class="piece" data-piece="p4">
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+						<div class="cell"></div><div class="cell"></div>
+					</div>
+					
+				</div>
+
 				<div id="reset-button" class="blokus-button">Reset Board</div>
+
 			</div>
 		</div>
 		
-		<div class="settingsContainer" style="display:none">
+		<div id="settingsContainer" style="display:none">
 			
 		</div>
 		
-		<div class="tilesetOptionsContainer" style="display:none">
+		<div id="tilesetOptionsContainer" style="display:none">
 			
 		</div>
 		
-		<div class="buttonContainer">
+		<div id="buttonContainer">
 			<div class="blokus-button" id="game-view">Game</div>
 			<div class="blokus-button" id="settings-view">Settings</div>
 			<div class="blokus-button" id="tileset-view">Tileset</div>
 		</div>
+		
+		<div id="cursor-piece" class="piece"></div>
 	
 	</body>
 
