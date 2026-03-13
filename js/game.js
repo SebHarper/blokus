@@ -7,17 +7,18 @@ const selectedColor = "#cfbaef";
 let boardState;
 
 function initialiseBoard() {
+	
 	boardState = [];
 	for (let r=0; r < rows; r++) {
+	
 		boardState[r] = [];
 		for (let c=0; c < cols; c++) {
 			boardState[r][c] = {selected: false, value: 0}
 		}
 	}
-	return boardState;
 };
 
-function createCellElements(board) {
+function createCellElements() {
 	
 	var boardElement = $('#game');
 	boardElement.empty();
@@ -60,19 +61,20 @@ function clearBoard() {
 		
 	for (let r = 0; r < rows; r++) {
 		for (let c = 0; c < cols; c++) {
-			boardState[r][c] = { selected: false, value: 0 };
+			boardState[r][c].selected = false;
+			boardState[r][c].selected = 0; 
 		}
 	}
 	renderBoard();
 };
 
 function showView(view) {
-	$(".gameContainer, .settingsContainer, .tilesetOptionsContainer").hide();
+	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
 	$(view).show();
 }
 
 $(document).ready(function() {
-	boardState = initialiseBoard(rows, cols);
+	initialiseBoard(rows, cols);
 	console.log(boardState);
 	
 	createCellElements();
