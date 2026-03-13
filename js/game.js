@@ -67,10 +67,10 @@ function populatePieces() {
 			y_max = Math.max(cell[1], y_max);
 		}
 
-		// pass two: normalise cells
+		// pass two: normalise cells (1-indexed)
 		for (const cell of pieces[item].cells) {
-			cell[0] -= x_min;
-			cell[1] -= y_min;
+			cell[0] = cell[0] - x_min + 1;
+			cell[1] = cell[1] - y_min + 1;
 		}
 
 		// set bounding box
@@ -82,7 +82,7 @@ function populatePieces() {
 			pieces[item].start[1] + y_min
 		];
 	}
-
+	//console.log(pieces);
 }
 
 function initialiseBoard() {
