@@ -119,3 +119,10 @@ body h1 {
 .blokus-button:hover {
 	background-color: #3f5593;
 }
+
+#cursor-piece {
+	position: fixed;
+	pointer-events: none;
+	z-index: 10;
+	display:none;
+}

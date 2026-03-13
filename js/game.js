@@ -95,8 +95,30 @@ $(document).ready(function() {
 	});
 
 	// using buttons to switch screen view
-	$("#game-view").click(() => showView(".gameContainer"));
-	$("#settings-view").click(() => showView(".settingsContainer"));
-	$("#tileset-view").click(() => showView(".tilesetOptionsContainer"));
+	$("#game-view").click(() => showView("#gameContainer"));
+	$("#settings-view").click(() => showView("#settingsContainer"));
+	$("#tileset-view").click(() => showView("#tilesetOptionsContainer"));
+
+	let heldPiece = null;
+
+	$(".piece").click(function() {
+
+		heldPiece = $(this).clone();
+		$(this).hide();
+
+		$("#cursor-piece")
+			.empty()
+			.append(heldPiece)
+			.show();
+	});
+
+});
+
+$(document).mousemove(function(e) {
+
+	$("#cursor-piece").css({
+		left: e.clientX - 40,
+		top: e.clientY - 40
+	});
 
 });
