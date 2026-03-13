@@ -51,7 +51,7 @@ function renderBoard() {
 };
 
 function handleCellClick(row, col) {
-	boardState[row][col].selected = !boardState[row][col].selected;	
+	boardState[row][col].selected = !boardState[row][col].selected;
 	
 	renderCell(row, col);
 };
@@ -62,7 +62,7 @@ function clearBoard() {
 	for (let r = 0; r < rows; r++) {
 		for (let c = 0; c < cols; c++) {
 			boardState[r][c].selected = false;
-			boardState[r][c].selected = 0; 
+			boardState[r][c].selected = 0;
 		}
 	}
 	renderBoard();
@@ -83,7 +83,7 @@ $(document).ready(function() {
 	$(".cell").click(function() {
 
 		var selector = $(this);
-				
+
 		let row = selector.data("row");
 		let col = selector.data("col");
 		
