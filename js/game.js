@@ -169,7 +169,7 @@ $(document).ready(function() {
 	createCellElements();
 	renderBoard();
 
-	$(".cell").click(function() {
+	$("#game .cell").click(function() {
 
 		var selector = $(this);
 
