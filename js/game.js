@@ -263,6 +263,20 @@ $(document).ready(function() {
 		});
 	});
 
+	$("#game .cell").click(function() {
+		if (!heldPiece) return;
+
+		const row = $(this).data("row");
+		const col = $(this).data("col");
+
+		boardState[row][col].selected = true;
+		renderCell(row, col);
+
+		$("#cursor-piece").empty().hide();
+		heldPiece = null;
+		originalPiece = null;
+
+	});
 });
 
 $(document).mousemove(function(e) {
