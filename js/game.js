@@ -78,7 +78,7 @@ function populatePieces() {
 
 		// set correct origin
 		pieces[item].start = [
-			pieces[item].start[0] + x_min + 1, 
+			pieces[item].start[0] + x_min + 1,
 			pieces[item].start[1] + y_min + 1
 		];
 	}
@@ -87,20 +87,20 @@ function populatePieces() {
 
 function populateTray() {
 	let tray = $("#pieceContainer");
-	
+
 	for (let item in pieces) {
 		console.log("creating piece", item);
 		let piece = pieces[item];
 		let piece_start = piece.start;
 		let piece_cells = piece.cells;
 		// let piece_dim = piece.dim;
-		
+
 		console.log(`grid-area: ${piece_start[0]} / ${piece_start[1]}`);
 		let piece_div = $("<div>", {
 			class: "piece",
 			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`
 		});
-		
+
 		for (const cell of piece_cells) {
 			let cell_div = $("<div>", {
 				class: "cell",
@@ -208,20 +208,52 @@ $(document).ready(function() {
 	$("#settings-view").click(() => showView("#settingsContainer"));
 	$("#tileset-view").click(() => showView("#tilesetOptionsContainer"));
 
+	let originalPiece = null;
 	let heldPiece = null;
 
 	$(".piece").click(function(e) {
 
-		heldPiece = $(this).clone();
-		$(this).hide();
-		
+		let clickedPiece = $(this);
+
+		// options:
+		// 1) held piece && clicked piece used
+		// 2) held piece && clicked piece not used
+		// 3) no held piece && clicked piece used
+		// 4) no held piece && clicked piece not used
+
+		// case 1: drop piece
+		if (heldPiece !== null && clickedPiece.hasClass("used")) {
+			console.log("dropping piece!")
+			heldPiece = null;
+			originalPiece.removeClass("used");
+			originalPiece = null;
+			$("#cursor-piece").empty().hide();
+			return;
+		}
+
+		// case 2: replace held piece, continue to pick up clicked piece
+		if (heldPiece !== null && !clickedPiece.hasClass("used")) {
+			originalPiece.removeClass("used");
+		}
+
+		// case 3: do nothing
+		if (heldPiece === null && clickedPiece.hasClass("used")) {
+			return;
+		}
+
+		// case 4: continue to pick up piece
+		originalPiece = clickedPiece;
+		heldPiece = clickedPiece.clone(false);
+		//$(this).hide();
+		clickedPiece.addClass("used");
+
 		let cursor = $("#cursor-piece");
-		
+
 		cursor
 			.empty()
 			.append(heldPiece)
 			.show();
-		
+
 		let x_off = cursor.width() / 2;
 		let y_off = cursor.height() / 2;
 
