@@ -137,3 +137,11 @@ body h1 {
 	z-index: 10;
 	display:none;
 }
+
+#cursor-piece .piece {
+	pointer-events: none;
+}
+
+.used {
+	opacity: 0.3;
+}
