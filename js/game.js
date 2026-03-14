@@ -98,7 +98,10 @@ function populateTray() {
 		console.log(`grid-area: ${piece_start[0]} / ${piece_start[1]}`);
 		let piece_div = $("<div>", {
 			class: "piece",
-			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`
+			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`,
+			"data-id": item,
+			"data-width": piece.dim[0],
+			"data-height": piece.dim[1]
 		});
 
 		for (const cell of piece_cells) {
