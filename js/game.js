@@ -35,7 +35,7 @@ function populatePieces() {
 	// - cell positions normalised relative to upper left of piece bounding box
 
 	for (let i = 0; i < pieceTray.length; i++) {
-		var row = pieceTray[i];
+		let row = pieceTray[i];
 
 		for (let j = 0; j < row.length; j++) {
 			if (row[j] != " ") {
@@ -45,14 +45,14 @@ function populatePieces() {
 					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: []};
 
 				} else {
-					var x_off = i - pieces[row[j]].start[0];
-					var y_off = j - pieces[row[j]].start[1];
+					let x_off = i - pieces[row[j]].start[0];
+					let y_off = j - pieces[row[j]].start[1];
 					pieces[row[j]].cells.push([x_off, y_off])
 				}
 			}
 		}
 	}
-	for (var item in pieces) {
+	for (let item in pieces) {
 
 		let x_min = 100;
 		let x_max = -100;
@@ -97,17 +97,9 @@ function initialiseBoard() {
 	}
 };
 
-function populateTray() {
-	const tray = $("#pieceContainer");
-	
-	for (const item in pieces) {
-		
-	}
-}
-
 function createCellElements() {
 
-	var boardElement = $("#game");
+	let boardElement = $("#game");
 	boardElement.empty();
 
 	for (let r=0; r < rows; r++) {
@@ -149,7 +141,7 @@ function clearBoard() {
 	for (let r = 0; r < rows; r++) {
 		for (let c = 0; c < cols; c++) {
 			boardState[r][c].selected = false;
-			boardState[r][c].selected = 0;
+			boardState[r][c].value = 0;
 		}
 	}
 	renderBoard();
@@ -171,7 +163,7 @@ $(document).ready(function() {
 
 	$("#game .cell").click(function() {
 
-		var selector = $(this);
+		let selector = $(this);
 
 		let row = selector.data("row");
 		let col = selector.data("col");
