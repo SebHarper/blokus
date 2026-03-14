@@ -78,11 +78,38 @@ function populatePieces() {
 
 		// set correct origin
 		pieces[item].start = [
-			pieces[item].start[0] + x_min, 
-			pieces[item].start[1] + y_min
+			pieces[item].start[0] + x_min + 1, 
+			pieces[item].start[1] + y_min + 1
 		];
 	}
 	//console.log(pieces);
+}
+
+function populateTray() {
+	let tray = $("#pieceContainer");
+	
+	for (let item in pieces) {
+		console.log("creating piece", item);
+		let piece = pieces[item];
+		let piece_start = piece.start;
+		let piece_cells = piece.cells;
+		// let piece_dim = piece.dim;
+		
+		console.log(`grid-area: ${piece_start[0]} / ${piece_start[1]}`);
+		let piece_div = $("<div>", {
+			class: "piece",
+			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`
+		});
+		
+		for (const cell of piece_cells) {
+			let cell_div = $("<div>", {
+				class: "cell",
+				style: `grid-area: ${cell[0]} / ${cell[1]}`
+			});
+			piece_div.append(cell_div);
+		}
+		tray.append(piece_div);
+	}
 }
 
 function initialiseBoard() {
@@ -155,6 +182,7 @@ function showView(view) {
 $(document).ready(function() {
 
 	populatePieces();
+	populateTray();
 
 	initialiseBoard(rows, cols);
 
