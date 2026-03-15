@@ -93,13 +93,12 @@ function populateTray() {
 	let tray = $("#pieceContainer");
 
 	for (let item in pieces) {
-		console.log("creating piece", item);
+		// console.log("creating piece", item);
 		let piece = pieces[item];
 		let piece_start = piece.start;
 		let piece_cells = piece.cells;
 		// let piece_dim = piece.dim;
 
-		console.log(`grid-area: ${piece_start[0]} / ${piece_start[1]}`);
 		let piece_div = $("<div>", {
 			class: "piece",
 			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`,
@@ -168,6 +167,13 @@ function handleCellClick(row, col) {
 	renderCell(row, col);
 };
 
+function resetTray() {
+	$("#cursor-piece").empty().hide();
+	gameState.heldPiece = null;
+	gameState.originalPiece = null;
+	
+	$("#pieceContainer").children().removeClass("used")
+}
 
 function clearBoard() {
 
@@ -207,6 +213,7 @@ $(document).ready(function() {
 
 	$("#reset-button").click(function() {
 		clearBoard();
+		resetTray();
 	});
 
 	// using buttons to switch screen view
@@ -227,7 +234,7 @@ $(document).ready(function() {
 
 		// case 1: drop piece
 		if (gameState.heldPiece !== null && clickedPiece.hasClass("used")) {
-			console.log("dropping piece!")
+			// console.log("dropping piece!")
 			gameState.heldPiece = null;
 			gameState.originalPiece.removeClass("used");
 			gameState.originalPiece = null;
@@ -264,7 +271,7 @@ $(document).ready(function() {
 		cursor.css({
 			left: e.clientX - x_off,
 			top: e.clientY - y_off
-		});
+		});		
 	});
 
 	$("#game .cell").click(function() {
