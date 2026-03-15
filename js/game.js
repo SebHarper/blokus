@@ -4,7 +4,11 @@ const cols = 20;
 const baseColor = "#bea9de"
 const selectedColor = "#cfbaef";
 
-let boardState;
+const gameState = {
+	originalPiece: null,
+	heldPiece: null,
+	boardState: []
+};
 
 //SIZE: 12 x 17
 const pieceTray = [
@@ -117,12 +121,11 @@ function populateTray() {
 
 function initialiseBoard() {
 
-	boardState = [];
 	for (let r=0; r < rows; r++) {
 
-		boardState[r] = [];
+		gameState.boardState[r] = [];
 		for (let c=0; c < cols; c++) {
-			boardState[r][c] = {selected: false, value: 0}
+			gameState.boardState[r][c] = {selected: false, value: 0}
 		}
 	}
 };
@@ -140,7 +143,7 @@ function createCellElements() {
 };
 
 function renderCell(row, col) {
-	let cellState = boardState[row][col];
+	let cellState = gameState.boardState[row][col];
 
 	let cell = $(`.cell[data-row="${row}"][data-col="${col}"]`);
 
@@ -160,7 +163,7 @@ function renderBoard() {
 };
 
 function handleCellClick(row, col) {
-	boardState[row][col].selected = !boardState[row][col].selected;
+	gameState.boardState[row][col].selected = !gameState.boardState[row][col].selected;
 
 	renderCell(row, col);
 };
@@ -170,8 +173,8 @@ function clearBoard() {
 
 	for (let r = 0; r < rows; r++) {
 		for (let c = 0; c < cols; c++) {
-			boardState[r][c].selected = false;
-			boardState[r][c].value = 0;
+			gameState.boardState[r][c].selected = false;
+			gameState.boardState[r][c].value = 0;
 		}
 	}
 	renderBoard();
@@ -211,8 +214,6 @@ $(document).ready(function() {
 	$("#settings-view").click(() => showView("#settingsContainer"));
 	$("#tileset-view").click(() => showView("#tilesetOptionsContainer"));
 
-	let originalPiece = null;
-	let heldPiece = null;
 
 	$(".piece").click(function(e) {
 
@@ -225,28 +226,28 @@ $(document).ready(function() {
 		// 4) no held piece && clicked piece not used
 
 		// case 1: drop piece
-		if (heldPiece !== null && clickedPiece.hasClass("used")) {
+		if (gameState.heldPiece !== null && clickedPiece.hasClass("used")) {
 			console.log("dropping piece!")
-			heldPiece = null;
-			originalPiece.removeClass("used");
-			originalPiece = null;
+			gameState.heldPiece = null;
+			gameState.originalPiece.removeClass("used");
+			gameState.originalPiece = null;
 			$("#cursor-piece").empty().hide();
 			return;
 		}
 
 		// case 2: replace held piece, continue to pick up clicked piece
-		if (heldPiece !== null && !clickedPiece.hasClass("used")) {
-			originalPiece.removeClass("used");
+		if (gameState.heldPiece !== null && !clickedPiece.hasClass("used")) {
+			gameState.originalPiece.removeClass("used");
 		}
 
 		// case 3: do nothing
-		if (heldPiece === null && clickedPiece.hasClass("used")) {
+		if (gameState.heldPiece === null && clickedPiece.hasClass("used")) {
 			return;
 		}
 
 		// case 4: continue to pick up piece
-		originalPiece = clickedPiece;
-		heldPiece = clickedPiece.clone(false);
+		gameState.originalPiece = clickedPiece;
+		gameState.heldPiece = clickedPiece.clone(false);
 		//$(this).hide();
 		clickedPiece.addClass("used");
 
@@ -254,7 +255,7 @@ $(document).ready(function() {
 
 		cursor
 			.empty()
-			.append(heldPiece)
+			.append(gameState.heldPiece)
 			.show();
 
 		let x_off = cursor.width() / 2;
@@ -267,17 +268,17 @@ $(document).ready(function() {
 	});
 
 	$("#game .cell").click(function() {
-		if (!heldPiece) return;
+		if (!gameState.heldPiece) return;
 
 		const row = $(this).data("row");
 		const col = $(this).data("col");
 
-		boardState[row][col].selected = true;
+		gameState.boardState[row][col].selected = true;
 		renderCell(row, col);
 
 		$("#cursor-piece").empty().hide();
-		heldPiece = null;
-		originalPiece = null;
+		gameState.heldPiece = null;
+		gameState.originalPiece = null;
 
 	});
 });
