@@ -34,6 +34,14 @@ temp {
 	column-gap: 20px;
 }
 
+#buttonContainer {
+	width: 700px;
+	margin: auto;
+	gap: 20px;
+	margin-top: 20px;
+	display: flex;
+}
+
 #boardContainer {
 	grid-column: 1;
 	grid-row: 1;
@@ -101,15 +109,6 @@ temp {
 	background-color: #904fba;
 }
 
-#buttonContainer {
-	grid-column: 1 / span 2;
-	grid-row: 2;
-
-	display: flex;
-	gap: 20px;
-	margin-top: 20px
-}
-
 .blokus-button {
 	height: 40px;
 	width: 120px;
@@ -152,10 +151,6 @@ temp {
 
 .cell.filled {
 	background-color: #904fba;
-}
-
-.cell.ghost-invalid {
-	background-color: #888888;
 }
 
 #cursor-piece.invalid {
