@@ -7,7 +7,15 @@ const selectedColor = "#cfbaef";
 const gameState = {
 	originalPiece: null,
 	heldPiece: null,
-	boardState: []
+	boardState: [],
+	cellElements: [],
+	ghostCells: []
+};
+
+const CELL = {
+    EMPTY: 0,
+    FILLED: 1,
+    GHOST: 2
 };
 
 //SIZE: 12 x 17
@@ -28,7 +36,7 @@ const pieceTray = [
 	"PPP Q      O",
 	"P P QQ RR   ",
 	"        RR S",
-	"TTTT UU     ",
+	"TTTT UU     "
 ]
 
 const pieces = {};
@@ -43,7 +51,6 @@ function populatePieces() {
 
 		for (let j = 0; j < row.length; j++) {
 			if (row[j] != " ") {
-
 
 				if (!(row[j] in pieces)) {
 					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: []};
@@ -91,7 +98,7 @@ function populatePieces() {
 
 function populateTray() {
 	let tray = $("#pieceContainer");
-
+	
 	for (let item in pieces) {
 		// console.log("creating piece", item);
 		let piece = pieces[item];
@@ -124,7 +131,7 @@ function initialiseBoard() {
 
 		gameState.boardState[r] = [];
 		for (let c=0; c < cols; c++) {
-			gameState.boardState[r][c] = {selected: false, value: 0}
+			gameState.boardState[r][c] = CELL.EMPTY;
 		}
 	}
 };
@@ -135,8 +142,19 @@ function createCellElements() {
 	boardElement.empty();
 
 	for (let r=0; r < rows; r++) {
+		
+		gameState.cellElements[r] = [];
+		
 		for (let c=0; c < cols; c++) {
-			boardElement.append(`<div class="cell" data-row=${r} data-col=${c}></div>`);
+
+			let cell = $(`<div class="cell"></div>`)
+			.attr("data-row", r)
+			.attr("data-col", c);
+			
+			// boardElement.append(`<div class="cell empty" data-row=${r} data-col=${c}></div>`);
+			
+			boardElement.append(cell);
+			gameState.cellElements[r][c] = cell;
 		}
 	}
 };
@@ -144,13 +162,23 @@ function createCellElements() {
 function renderCell(row, col) {
 	let cellState = gameState.boardState[row][col];
 
-	let cell = $(`.cell[data-row="${row}"][data-col="${col}"]`);
-
-	if (cellState.selected) {
-		cell.css("background-color", selectedColor);
-	} else {
-		cell.css("background-color", baseColor);
-	}
+	// let cell = $(`.cell[data-row="${row}"][data-col="${col}"]`);
+	let cell = gameState.cellElements[row][col]
+	
+	if (cellState === CELL.EMPTY) {		
+		cell.addClass("empty");
+		cell.removeClass("filled");
+		cell.removeClass("ghost");
+	} 
+	else if (cellState === CELL.FILLED){
+		cell.removeClass("empty");
+		cell.addClass("filled");
+		cell.removeClass("ghost");		
+	} 
+	else if (cellState === CELL.GHOST){
+		cell.removeClass("empty");
+		cell.removeClass("filled");
+		cell.addClass("ghost");	}
 };
 
 function renderBoard() {
@@ -161,11 +189,11 @@ function renderBoard() {
 	}
 };
 
-function handleCellClick(row, col) {
+/*function handleCellClick(row, col) {
 	gameState.boardState[row][col].selected = !gameState.boardState[row][col].selected;
 
 	renderCell(row, col);
-};
+};*/
 
 function resetTray() {
 	$("#cursor-piece").empty().hide();
@@ -179,8 +207,7 @@ function clearBoard() {
 
 	for (let r = 0; r < rows; r++) {
 		for (let c = 0; c < cols; c++) {
-			gameState.boardState[r][c].selected = false;
-			gameState.boardState[r][c].value = 0;
+			gameState.boardState[r][c] = CELL.EMPTY;
 		}
 	}
 	renderBoard();
@@ -201,7 +228,7 @@ $(document).ready(function() {
 	createCellElements();
 	renderBoard();
 
-	$("#game .cell").click(function() {
+/*	$("#game .cell").click(function() {
 
 		let selector = $(this);
 
@@ -209,7 +236,7 @@ $(document).ready(function() {
 		let col = selector.data("col");
 
 		handleCellClick(row, col);
-	});
+	});*/
 
 	$("#reset-button").click(function() {
 		clearBoard();
