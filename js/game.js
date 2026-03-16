@@ -298,34 +298,102 @@ $(document).ready(function() {
 		cursor.css({
 			left: e.clientX - x_off,
 			top: e.clientY - y_off
-		});		
+		});	
 	});
 
 	$("#game .cell").click(function() {
+
 		if (!gameState.heldPiece) return;
+		
+		if (gameState.ghostCells.length == 0) return;
+		
+		for (const cell of gameState.ghostCells) {
+			gameState.boardState[cell[0]][cell[1]] = CELL.FILLED;
+		}
 
-		const row = $(this).data("row");
-		const col = $(this).data("col");
-
-		gameState.boardState[row][col].selected = true;
-		renderCell(row, col);
+		renderBoard();
 
 		$("#cursor-piece").empty().hide();
 		gameState.heldPiece = null;
 		gameState.originalPiece = null;
 
 	});
-});
 
-$(document).mousemove(function(e) {
-	
-	let p = $("#cursor-piece");
-	let x_off = p.width() / 2;
-	let y_off = p.height() / 2;
-	
-	p.css({
-		left: e.clientX - x_off,
-		top: e.clientY - y_off
+	$(document).mousemove(function(e) {
+
+		let p = $("#cursor-piece");
+		let x_off = p.width() / 2;
+		let y_off = p.height() / 2;
+
+		p.css({
+			left: e.clientX - x_off,
+			top: e.clientY - y_off
+		});
+
+		if (mouseInside($("#game"), e.pageX, e.pageY)) {
+			
+			// console.log("mouse over game")
+
+			if (!gameState.heldPiece) return;
+			
+			const el = document.elementFromPoint(e.clientX, e.clientY);
+			const cell = $(el).closest(".cell");
+
+			if (!cell.length) return;
+
+			const row = parseInt(cell.data("row"));
+			const col = parseInt(cell.data("col"));
+
+
+			const pieceID = gameState.originalPiece.data("id");
+			const piece = pieces[pieceID];
+			
+			$(".ghost").removeClass("ghost");
+			gameState.ghostCells = [];
+			
+
+			for (const cellOffset  of piece.cells) {
+				const r = row + cellOffset [0] - Math.ceil((piece.dim[0] / 2) + 0.5);
+				const c = col + cellOffset [1] - Math.ceil((piece.dim[1] / 2) + 0.5);
+								
+				if (r >= 0 && r < rows && c >= 0 && c < cols) {
+					
+					// if (cellState === CELL.FILLED) cell.addClass("filled");
+					// if (cellState === CELL.GHOST) cell.addClass("ghost");
+					
+					let cellEl = gameState.cellElements[r][c];
+					
+					let status = gameState.boardState[r][c];
+					
+					if (status == CELL.EMPTY) {
+						cellEl.addClass("ghost");
+						gameState.ghostCells.push([r, c]);
+					} 
+					else {
+						gameState.ghostCells = [];
+						break;
+					}
+				}
+				else {
+					gameState.ghostCells = [];
+					break;
+				}
+			}
+		} else {
+			$(".ghost").removeClass("ghost");
+			gameState.ghostCells = [];
+		}
+		
 	});
-
 });
+
+
+function mouseInside(el, x, y) {
+	let o = el.offset();
+	return (
+		x >= o.left &&
+		x <= o.left + el.outerWidth() &&
+		y >= o.top &&
+		y <= o.top + el.outerHeight()
+	);
+}
