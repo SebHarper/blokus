@@ -39,7 +39,7 @@ const pieceTray = [
 	"P P QQ RR   ",
 	"        RR S",
 	"TTTT UU     "
-]
+];
 
 const pieces = {};
 
@@ -103,7 +103,7 @@ function populatePieces() {
 			Math.ceil((p.dim[1] / 2) + 0.5)
 		];
 	}
-}
+};
 
 function populateTray() {
 	let tray = $("#pieceContainer");
@@ -130,7 +130,7 @@ function populateTray() {
 		}
 		tray.append(piece_div);
 	}
-}
+};
 
 function initialiseBoard() {
 
@@ -173,12 +173,12 @@ function renderCell(row, col) {
 		cell.addClass("empty");
 		cell.removeClass("filled");
 		cell.removeClass("ghost");
-	} 
+	}
 	else if (cellState === CELL.FILLED){
 		cell.removeClass("empty");
 		cell.addClass("filled");
 		cell.removeClass("ghost");		
-	} 
+	}
 	else if (cellState === CELL.GHOST){
 		cell.removeClass("empty");
 		cell.removeClass("filled");
@@ -199,7 +199,7 @@ function resetTray() {
 	gameState.originalPiece = null;
 
 	$("#pieceContainer").children().removeClass("used")
-}
+};
 
 function clearBoard() {
 
@@ -214,7 +214,7 @@ function clearBoard() {
 function showView(view) {
 	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
 	$(view).show();
-}
+};
 
 function getPiecePreview(piece, row, col) {
 
@@ -237,7 +237,7 @@ function getPiecePreview(piece, row, col) {
 		previewCells.push([r, c]);
 	}
 	return previewCells;
-}
+};
 
 $(document).ready(function() {
 
@@ -402,4 +402,4 @@ function mouseInside(el, x, y) {
 		y >= o.top &&
 		y <= o.top + el.outerHeight()
 	);
-}
+};
