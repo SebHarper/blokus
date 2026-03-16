@@ -16,9 +16,9 @@ body h1 {
 	text-align: center;
 }
 
-/*temp {
+temp {
 	outline: 1px solid red;
-}*/
+}
 
 
 #headerContainer {
@@ -88,10 +88,6 @@ body h1 {
 	background-color: var(--cell-color);
 }
 
-.selected-cell {
-	background-color: var(--selected-cell-color);
-}
-
 .cell.empty {
 	background: transparent;
 }
@@ -135,13 +131,26 @@ body h1 {
 	position: fixed;
 	pointer-events: none;
 	z-index: 10;
-	display:none;
+	display: none;
 }
 
 #cursor-piece .piece {
 	pointer-events: none;
 }
 
-.used {
+.piece.used {
 	opacity: 0.3;
+}
+
+.cell.empty {
+	background-color: var(--cell-color);
+}
+
+.cell.filled {
+	background-color: #904fba;
+}
+
+.cell.ghost {
+	background-color: #702d98;
+	opacity: 0.5;
 }
