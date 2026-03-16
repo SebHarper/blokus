@@ -9,7 +9,9 @@ const gameState = {
 	heldPiece: null,
 	boardState: [],
 	cellElements: [],
-	ghostCells: []
+	ghostCells: [],
+	hoverRow: null,
+	hoverCol: null
 };
 
 const CELL = {
@@ -343,15 +345,21 @@ $(document).ready(function() {
 			const row = parseInt(cell.data("row"));
 			const col = parseInt(cell.data("col"));
 
+			// only continue if mouse position enters a new cell
+			if (row === gameState.hoverRow && col === gameState.hoverCol) {
+				return;
+			}
+			gameState.hoverRow = row;
+			gameState.hoverCol = col;
 
 			const pieceID = gameState.originalPiece.data("id");
 			const piece = pieces[pieceID];
 
-			$(".ghost, .ghost-invalid").removeClass("ghost ghost-invalid");	
+			$(".ghost").removeClass("ghost");
 
 			gameState.ghostCells = [];
 
-			let previewCells = getPiecePreview(piece, row, col);	
+			let previewCells = getPiecePreview(piece, row, col);
 
 			if (previewCells.length !== 0) {
 				for (const [r,c] of previewCells) {
@@ -362,13 +370,17 @@ $(document).ready(function() {
 					gameState.ghostCells.push([r, c]);
 				}
 				p.removeClass("invalid");
+				p.hide();
 			} else {
 				p.addClass("invalid");
+				p.show();
 			}
 
 		} else {
 			gameState.ghostCells = [];
 			$(".ghost").removeClass("ghost");
+			p.removeClass("invalid");
+			p.show();
 		}
 	});
 });
