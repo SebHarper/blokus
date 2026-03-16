@@ -13,9 +13,9 @@ const gameState = {
 };
 
 const CELL = {
-    EMPTY: 0,
-    FILLED: 1,
-    GHOST: 2
+	EMPTY: 0,
+	FILLED: 1,
+	GHOST: 2
 };
 
 //SIZE: 12 x 17
@@ -93,18 +93,15 @@ function populatePieces() {
 			pieces[item].start[1] + y_min + 1
 		];
 	}
-	//console.log(pieces);
 }
 
 function populateTray() {
 	let tray = $("#pieceContainer");
-	
+
 	for (let item in pieces) {
-		// console.log("creating piece", item);
 		let piece = pieces[item];
 		let piece_start = piece.start;
 		let piece_cells = piece.cells;
-		// let piece_dim = piece.dim;
 
 		let piece_div = $("<div>", {
 			class: "piece",
@@ -150,9 +147,7 @@ function createCellElements() {
 			let cell = $(`<div class="cell"></div>`)
 			.attr("data-row", r)
 			.attr("data-col", c);
-			
-			// boardElement.append(`<div class="cell empty" data-row=${r} data-col=${c}></div>`);
-			
+
 			boardElement.append(cell);
 			gameState.cellElements[r][c] = cell;
 		}
@@ -162,9 +157,8 @@ function createCellElements() {
 function renderCell(row, col) {
 	let cellState = gameState.boardState[row][col];
 
-	// let cell = $(`.cell[data-row="${row}"][data-col="${col}"]`);
 	let cell = gameState.cellElements[row][col]
-	
+
 	if (cellState === CELL.EMPTY) {		
 		cell.addClass("empty");
 		cell.removeClass("filled");
@@ -189,17 +183,11 @@ function renderBoard() {
 	}
 };
 
-/*function handleCellClick(row, col) {
-	gameState.boardState[row][col].selected = !gameState.boardState[row][col].selected;
-
-	renderCell(row, col);
-};*/
-
 function resetTray() {
 	$("#cursor-piece").empty().hide();
 	gameState.heldPiece = null;
 	gameState.originalPiece = null;
-	
+
 	$("#pieceContainer").children().removeClass("used")
 }
 
@@ -227,16 +215,6 @@ $(document).ready(function() {
 
 	createCellElements();
 	renderBoard();
-
-/*	$("#game .cell").click(function() {
-
-		let selector = $(this);
-
-		let row = selector.data("row");
-		let col = selector.data("col");
-
-		handleCellClick(row, col);
-	});*/
 
 	$("#reset-button").click(function() {
 		clearBoard();
@@ -304,9 +282,9 @@ $(document).ready(function() {
 	$("#game .cell").click(function() {
 
 		if (!gameState.heldPiece) return;
-		
+
 		if (gameState.ghostCells.length == 0) return;
-		
+
 		for (const cell of gameState.ghostCells) {
 			gameState.boardState[cell[0]][cell[1]] = CELL.FILLED;
 		}
@@ -331,11 +309,9 @@ $(document).ready(function() {
 		});
 
 		if (mouseInside($("#game"), e.pageX, e.pageY)) {
-			
-			// console.log("mouse over game")
 
 			if (!gameState.heldPiece) return;
-			
+
 			const el = document.elementFromPoint(e.clientX, e.clientY);
 			const cell = $(el).closest(".cell");
 
@@ -347,28 +323,28 @@ $(document).ready(function() {
 
 			const pieceID = gameState.originalPiece.data("id");
 			const piece = pieces[pieceID];
-			
+
 			$(".ghost, .ghost-invalid").removeClass("ghost ghost-invalid");	
-			
+
 			gameState.ghostCells = [];
-			
+
 			let validPlacement = true;
 			let previewCells = [];
 
 			for (const cellOffset  of piece.cells) {
 				const r = row + cellOffset [0] - Math.ceil((piece.dim[0] / 2) + 0.5);
 				const c = col + cellOffset [1] - Math.ceil((piece.dim[1] / 2) + 0.5);
-								
+
 				if (r >= 0 && r < rows && c >= 0 && c < cols) {
-					
+
 					let status = gameState.boardState[r][c];
-					
+
 					previewCells.push([r, c]);
-					
+
 					if (status !== CELL.EMPTY) {
 						validPlacement = false;
 					} 
-				
+
 				} else {
 					validPlacement = false;
 				}
@@ -386,7 +362,7 @@ $(document).ready(function() {
 			} else {
 				p.addClass("invalid");
 			}
-			
+
 		} else {
 			gameState.ghostCells = [];
 			$(".ghost").removeClass("ghost");
