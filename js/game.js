@@ -348,9 +348,12 @@ $(document).ready(function() {
 			const pieceID = gameState.originalPiece.data("id");
 			const piece = pieces[pieceID];
 			
-			$(".ghost").removeClass("ghost");
+			$(".ghost, .ghost-invalid").removeClass("ghost ghost-invalid");	
+			
 			gameState.ghostCells = [];
 			
+			let validPlacement = true;
+			let previewCells = [];
 
 			for (const cellOffset  of piece.cells) {
 				const r = row + cellOffset [0] - Math.ceil((piece.dim[0] / 2) + 0.5);
@@ -358,32 +361,36 @@ $(document).ready(function() {
 								
 				if (r >= 0 && r < rows && c >= 0 && c < cols) {
 					
-					// if (cellState === CELL.FILLED) cell.addClass("filled");
-					// if (cellState === CELL.GHOST) cell.addClass("ghost");
-					
-					let cellEl = gameState.cellElements[r][c];
-					
 					let status = gameState.boardState[r][c];
 					
-					if (status == CELL.EMPTY) {
-						cellEl.addClass("ghost");
-						gameState.ghostCells.push([r, c]);
+					previewCells.push([r, c]);
+					
+					if (status !== CELL.EMPTY) {
+						validPlacement = false;
 					} 
-					else {
-						gameState.ghostCells = [];
-						break;
-					}
-				}
-				else {
-					gameState.ghostCells = [];
-					break;
+				
+				} else {
+					validPlacement = false;
 				}
 			}
+
+			if (validPlacement) {
+				for (const [r,c] of previewCells) {
+
+					let cellEl = gameState.cellElements[r][c];
+
+					cellEl.addClass("ghost");
+					gameState.ghostCells.push([r,c]);
+				}
+				p.removeClass("invalid");
+			} else {
+				p.addClass("invalid");
+			}
+			
 		} else {
-			$(".ghost").removeClass("ghost");
 			gameState.ghostCells = [];
+			$(".ghost").removeClass("ghost");
 		}
-		
 	});
 });
 

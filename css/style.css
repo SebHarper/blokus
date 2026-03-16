@@ -146,11 +146,19 @@ temp {
 	background-color: var(--cell-color);
 }
 
+.cell.ghost {
+	background-color: #b26fdc;
+}
+
 .cell.filled {
 	background-color: #904fba;
 }
 
-.cell.ghost {
-	background-color: #702d98;
+.cell.ghost-invalid {
+	background-color: #888888;
+}
+
+#cursor-piece.invalid {
+	filter: grayscale(80%);
 	opacity: 0.5;
 }
