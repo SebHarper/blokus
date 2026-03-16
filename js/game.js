@@ -206,6 +206,29 @@ function showView(view) {
 	$(view).show();
 }
 
+function getPiecePreview(piece, row, col) {
+
+	let previewCells = [];
+
+	for (const cellOffset  of piece.cells) {
+		const r = row + cellOffset[0] - Math.ceil((piece.dim[0] / 2) + 0.5);
+		const c = col + cellOffset[1] - Math.ceil((piece.dim[1] / 2) + 0.5);
+
+		previewCells.push([r, c]);
+
+		if (r < 0 || r >= rows || c < 0 || c >= cols) {
+			return [];
+		}
+
+		if (gameState.boardState[r][c] !== CELL.EMPTY) {
+			return [];
+		}
+
+		previewCells.push([r, c]);
+	}
+	return previewCells;
+}
+
 $(document).ready(function() {
 
 	populatePieces();
@@ -328,35 +351,15 @@ $(document).ready(function() {
 
 			gameState.ghostCells = [];
 
-			let validPlacement = true;
-			let previewCells = [];
+			let previewCells = getPiecePreview(piece, row, col);	
 
-			for (const cellOffset  of piece.cells) {
-				const r = row + cellOffset [0] - Math.ceil((piece.dim[0] / 2) + 0.5);
-				const c = col + cellOffset [1] - Math.ceil((piece.dim[1] / 2) + 0.5);
-
-				if (r >= 0 && r < rows && c >= 0 && c < cols) {
-
-					let status = gameState.boardState[r][c];
-
-					previewCells.push([r, c]);
-
-					if (status !== CELL.EMPTY) {
-						validPlacement = false;
-					} 
-
-				} else {
-					validPlacement = false;
-				}
-			}
-
-			if (validPlacement) {
+			if (previewCells.length !== 0) {
 				for (const [r,c] of previewCells) {
 
 					let cellEl = gameState.cellElements[r][c];
 
 					cellEl.addClass("ghost");
-					gameState.ghostCells.push([r,c]);
+					gameState.ghostCells.push([r, c]);
 				}
 				p.removeClass("invalid");
 			} else {
