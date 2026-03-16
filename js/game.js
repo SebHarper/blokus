@@ -55,7 +55,7 @@ function populatePieces() {
 			if (row[j] != " ") {
 
 				if (!(row[j] in pieces)) {
-					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: []};
+					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: [], offset: []};
 
 				} else {
 					let x_off = i - pieces[row[j]].start[0];
@@ -66,6 +66,8 @@ function populatePieces() {
 		}
 	}
 	for (let item in pieces) {
+		
+		let p = pieces[item];
 
 		let x_min = 100;
 		let x_max = -100;
@@ -73,7 +75,7 @@ function populatePieces() {
 		let y_max = -100;
 
 		// pass one: compute bounding box
-		for (const cell of pieces[item].cells) {
+		for (const cell of p.cells) {
 			x_min = Math.min(cell[0], x_min);
 			x_max = Math.max(cell[0], x_max);
 			y_min = Math.min(cell[1], y_min);
@@ -81,18 +83,24 @@ function populatePieces() {
 		}
 
 		// pass two: normalise cells (1-indexed)
-		for (const cell of pieces[item].cells) {
+		for (const cell of p.cells) {
 			cell[0] = cell[0] - x_min + 1;
 			cell[1] = cell[1] - y_min + 1;
 		}
 
 		// set bounding box
-		pieces[item].dim = [x_max - x_min + 1, y_max - y_min + 1];
+		p.dim = [x_max - x_min + 1, y_max - y_min + 1];
 
 		// set correct origin
-		pieces[item].start = [
-			pieces[item].start[0] + x_min + 1,
-			pieces[item].start[1] + y_min + 1
+		p.start = [
+			p.start[0] + x_min + 1,
+			p.start[1] + y_min + 1
+		];
+		
+		// set placement offset
+		p.offset = [
+			Math.ceil((p.dim[0] / 2) + 0.5),
+			Math.ceil((p.dim[1] / 2) + 0.5)
 		];
 	}
 }
@@ -213,8 +221,8 @@ function getPiecePreview(piece, row, col) {
 	let previewCells = [];
 
 	for (const cellOffset  of piece.cells) {
-		const r = row + cellOffset[0] - Math.ceil((piece.dim[0] / 2) + 0.5);
-		const c = col + cellOffset[1] - Math.ceil((piece.dim[1] / 2) + 0.5);
+		const r = row + cellOffset[0] - piece.offset[0];
+		const c = col + cellOffset[1] - piece.offset[1];
 
 		previewCells.push([r, c]);
 
@@ -324,11 +332,11 @@ $(document).ready(function() {
 
 	$(document).mousemove(function(e) {
 
-		let p = $("#cursor-piece");
-		let x_off = p.width() / 2;
-		let y_off = p.height() / 2;
+		let cursorPiece = $("#cursor-piece");
+		let x_off = cursorPiece.width() / 2;
+		let y_off = cursorPiece.height() / 2;
 
-		p.css({
+		cursorPiece.css({
 			left: e.clientX - x_off,
 			top: e.clientY - y_off
 		});
@@ -369,18 +377,18 @@ $(document).ready(function() {
 					cellEl.addClass("ghost");
 					gameState.ghostCells.push([r, c]);
 				}
-				p.removeClass("invalid");
-				p.hide();
+				cursorPiece.removeClass("invalid");
+				cursorPiece.hide();
 			} else {
-				p.addClass("invalid");
-				p.show();
+				cursorPiece.addClass("invalid");
+				cursorPiece.show();
 			}
 
 		} else {
 			gameState.ghostCells = [];
 			$(".ghost").removeClass("ghost");
-			p.removeClass("invalid");
-			p.show();
+			cursorPiece.removeClass("invalid");
+			cursorPiece.show();
 		}
 	});
 });
