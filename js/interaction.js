@@ -1,6 +1,6 @@
 import {gameState, CELL, renderBoard, getPiecePreview, attemptPlacePiece, clearBoard} from './board.js';
 import {pieces} from './pieces.js';
-import {updateCursorPosition, showGhostCells} from './cursor.js';
+//import {updateCursorPosition, showGhostCells} from './cursor.js';
 
 
 function showView(view) {
@@ -18,9 +18,15 @@ function mouseInside(el, x, y) {
 	);
 };
 
-function handlePieceClick(e) {
+function handlePieceTrayClick(e) {
 
-	let clickedPiece = $(this);
+	let clickedPiece = $(e.target).closest(".piece");
+
+	// attempt to drop piece if tray clicked instead of a piece
+	if (clickedPiece.length === 0) {
+		handleContainerDrop();
+		return;
+	}
 
 	// options:
 	// 1) held piece && clicked piece used
@@ -150,9 +156,20 @@ function handleMouseMove(e) {
 	}
 };
 
+function handleContainerDrop() {
+
+	if (gameState.heldPiece === null) return;
+
+	gameState.heldPiece = null;
+	gameState.originalPiece.removeClass("used");
+	gameState.originalPiece = null;
+	$("#cursor-piece").empty().hide();
+
+};
+
 export function bindEventHandlers() {
 
-	$(".piece").click(handlePieceClick);
+	$("#pieceContainer").click(handlePieceTrayClick);
 	$("#game .cell").click(handleCellClick);
 	$("#reset-button").click(handleGameReset);
 	$(document).mousemove(handleMouseMove);
