@@ -23,8 +23,8 @@ function handlePieceTrayClick(e) {
 	let clickedPiece = $(e.target).closest(".piece");
 
 	// attempt to drop piece if tray clicked instead of a piece
-	if (clickedPiece.length === 0) {
-		handleContainerDrop();
+	if (clickedPiece.length === 0 && gameState.heldPiece !== null) {
+		dropHeldPiece();
 		return;
 	}
 
@@ -36,11 +36,7 @@ function handlePieceTrayClick(e) {
 
 	// case 1: drop piece
 	if (gameState.heldPiece !== null && clickedPiece.hasClass("used")) {
-		// console.log("dropping piece!")
-		gameState.heldPiece = null;
-		gameState.originalPiece.removeClass("used");
-		gameState.originalPiece = null;
-		$("#cursor-piece").empty().hide();
+		dropHeldPiece();
 		return;
 	}
 
@@ -156,9 +152,7 @@ function handleMouseMove(e) {
 	}
 };
 
-function handleContainerDrop() {
-
-	if (gameState.heldPiece === null) return;
+function dropHeldPiece() {
 
 	gameState.heldPiece = null;
 	gameState.originalPiece.removeClass("used");
