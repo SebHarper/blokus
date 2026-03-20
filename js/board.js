@@ -2,20 +2,42 @@ export const rows = 20;
 export const cols = 20;
 
 export const gameState = {
-	originalPiece: null,
-	heldPiece: null,
+	currentPlayer: 0,
+	playerCount: 2,
 	boardState: [],
+
+	playerTrays: [],
+
+	moveHistory: [],
+
+	heldPiece: {piece: null, rotation: 0, flipped: false},
+	selectedPiece: null,
+
 	cellElements: [],
+	pieceElements: {},
+
 	ghostCells: [],
 	hoverRow: null,
 	hoverCol: null
 };
 
+export const UIState = {
+	
+};
+
+window.gameState = gameState;
+
 export const CELL = {
 	EMPTY: 0,
-	FILLED: 1,
-	GHOST: 2
+	PLAYER_1: 1,
+	PLAYER_2: 2,
+	PLAYER_3: 3,
+	PLAYER_4: 4,
+	FILLED: 5,
+	GHOST: -1
 };
+
+export const EMPTY_HELD_PIECE = { piece:null, rotation:0, flipped:false };
 
 export function initialiseBoard() {
 
@@ -27,27 +49,6 @@ export function initialiseBoard() {
 		}
 	}
 	gameState.boardState[10][10] = CELL.FILLED;
-};
-
-export function createCellElements() {
-
-	let boardElement = $("#game");
-	boardElement.empty();
-
-	for (let r=0; r < rows; r++) {
-
-		gameState.cellElements[r] = [];
-
-		for (let c=0; c < cols; c++) {
-
-			let cell = $(`<div class="cell"></div>`)
-			.attr("data-row", r)
-			.attr("data-col", c);
-
-			boardElement.append(cell);
-			gameState.cellElements[r][c] = cell;
-		}
-	}
 };
 
 export function renderCell(row, col) {
@@ -218,9 +219,9 @@ export function getPiecePreview(piece, row, col) {
 
 export function attemptPlacePiece() {
 
-	if (!gameState.heldPiece) return;
+	if (!gameState.heldPiece.piece) return null;
 
-	if (gameState.ghostCells.length == 0) return;
+	if (gameState.ghostCells.length == 0) return null;
 
 	for (const cell of gameState.ghostCells) {
 		gameState.boardState[cell[0]][cell[1]] = CELL.FILLED;
@@ -228,7 +229,12 @@ export function attemptPlacePiece() {
 
 	renderBoard();
 
-	$("#cursor-piece").empty().hide();
-	gameState.heldPiece = null;
-	gameState.originalPiece = null;
+	gameState.playerTrays[gameState.currentPlayer][gameState.heldPiece.piece] = false;
+
+	let p = gameState.heldPiece.piece;
+
+	gameState.heldPiece = EMPTY_HELD_PIECE;
+	gameState.selectedPiece = null;
+
+	return p;
 };
