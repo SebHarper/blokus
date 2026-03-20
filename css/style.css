@@ -137,9 +137,16 @@ temp {
 	pointer-events: none;
 }
 
-.piece.used {
-	opacity: 0.3;
+.piece.selected {
+	opacity: 0.5;
 }
+
+.piece.used {
+	opacity: 0.5;
+	filter: grayscale(1);
+}
+
+
 
 .cell.empty {
 	background-color: var(--cell-color);
