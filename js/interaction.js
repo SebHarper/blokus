@@ -1,6 +1,6 @@
-import {gameState, CELL, renderBoard, getPiecePreview, attemptPlacePiece, clearBoard} from './board.js';
+import {gameState, getPiecePreview, attemptPlacePiece, clearBoard, EMPTY_HELD_PIECE} from './board.js';
 import {pieces} from './pieces.js';
-//import {updateCursorPosition, showGhostCells} from './cursor.js';
+import * as renderer from "./renderer.js";
 
 
 function showView(view) {
@@ -18,148 +18,130 @@ function mouseInside(el, x, y) {
 	);
 };
 
+
 function handlePieceTrayClick(e) {
 
-	let clickedPiece = $(e.target).closest(".piece");
+	const pieceEl = $(e.target).closest(".piece");
 
-	// attempt to drop piece if tray clicked instead of a piece
-	if (clickedPiece.length === 0 && gameState.heldPiece !== null) {
+	if (!pieceEl.length) {
+		if (gameState.heldPiece.piece !== null) {
+			dropHeldPiece();
+			renderer.updateCursorPiece(e, null);
+		}
+		return;
+	}
+
+	const pieceID = pieceEl.data("id");
+	let tray = gameState.playerTrays[gameState.currentPlayer];
+
+	const selected = gameState.selectedPiece;
+	const available = gameState.playerTrays[gameState.currentPlayer][pieceID];
+
+	if (selected === pieceID) {
 		dropHeldPiece();
+		renderer.updateCursorPiece(e, null);
 		return;
 	}
 
-	// options:
-	// 1) held piece && clicked piece used
-	// 2) held piece && clicked piece not used
-	// 3) no held piece && clicked piece used
-	// 4) no held piece && clicked piece not used
-
-	// case 1: drop piece
-	if (gameState.heldPiece !== null && clickedPiece.hasClass("used")) {
+	if (gameState.heldPiece.piece && !available) {
 		dropHeldPiece();
+		renderer.updateCursorPiece(e, null);
 		return;
 	}
 
-	// case 2: replace held piece, continue to pick up clicked piece
-	if (gameState.heldPiece !== null && !clickedPiece.hasClass("used")) {
-		gameState.originalPiece.removeClass("used");
+	if (gameState.heldPiece.piece && available) {
+		renderer.clearTrayHighlight(gameState.selectedPiece);
 	}
 
-	// case 3: do nothing
-	if (gameState.heldPiece === null && clickedPiece.hasClass("used")) {
+	if (!gameState.heldPiece.piece && !available) {
 		return;
 	}
 
-	// case 4: continue to pick up piece
-	gameState.originalPiece = clickedPiece;
-	gameState.heldPiece = clickedPiece.clone(false);
-	//$(this).hide();
-	clickedPiece.addClass("used");
+	gameState.selectedPiece = pieceID;
+	gameState.heldPiece = { piece: pieceID, rotation:0, flipped:false };
 
-	let cursor = $("#cursor-piece");
+	renderer.updateCursorPiece(e, pieceID);
+	renderer.highlightTrayPiece(pieceID);
 
-	cursor
-		.empty()
-		.append(gameState.heldPiece)
-		.show();
-
-	let x_off = cursor.width() / 2;
-	let y_off = cursor.height() / 2;
-
-	cursor.css({
-		left: e.clientX - x_off,
-		top: e.clientY - y_off
-	});
-
-};
+}
 
 function handleCellClick(e) {
-	attemptPlacePiece();
+	const piece = attemptPlacePiece();
+
+	if (piece) {
+		renderer.updateCursorPiece(e, null);
+		renderer.markTrayPieceUsed(piece);
+	}
 };
+
 
 function resetTray() {
-	$("#cursor-piece").empty().hide();
-	gameState.heldPiece = null;
-	gameState.originalPiece = null;
+	gameState.heldPiece = EMPTY_HELD_PIECE;
+	gameState.selectedPiece = null;
 
-	$("#pieceContainer").children().removeClass("used")
-};
+	renderer.resetTrayUI();
+}
 
 function handleGameReset(e) {
 	clearBoard();
 	resetTray();
 }
 
+
 function handleMouseMove(e) {
 
-	let cursorPiece = $("#cursor-piece");
-	let x_off = cursorPiece.width() / 2;
-	let y_off = cursorPiece.height() / 2;
+	renderer.moveCursorPiece(e);
 
-	cursorPiece.css({
-		left: e.clientX - x_off,
-		top: e.clientY - y_off
-	});
+	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
 
-	if (mouseInside($("#game"), e.pageX, e.pageY)) {
+	if (!gameState.heldPiece.piece) return;
 
-		if (!gameState.heldPiece) return;
+	const el = document.elementFromPoint(e.clientX, e.clientY);
+	const cell = $(el).closest(".cell");
 
-		const el = document.elementFromPoint(e.clientX, e.clientY);
-		const cell = $(el).closest(".cell");
-
-		if (!cell.length) return;
-
-		const row = parseInt(cell.data("row"));
-		const col = parseInt(cell.data("col"));
-
-		// only continue if mouse position enters a new cell
-		if (row === gameState.hoverRow && col === gameState.hoverCol) {
-			return;
-		}
-		gameState.hoverRow = row;
-		gameState.hoverCol = col;
-
-		const pieceID = gameState.originalPiece.data("id");
-		const piece = pieces[pieceID];
-
-		$(".ghost").removeClass("ghost");
-
+	if (!cell.length) {
 		gameState.ghostCells = [];
-
-		let previewCells = getPiecePreview(piece, row, col);
-
-		if (previewCells.length !== 0) {
-			for (const [r,c] of previewCells) {
-
-				let cellEl = gameState.cellElements[r][c];
-
-				cellEl.addClass("ghost");
-				gameState.ghostCells.push([r, c]);
-			}
-			cursorPiece.removeClass("invalid");
-			cursorPiece.hide();
-		} else {
-			cursorPiece.addClass("invalid");
-			cursorPiece.show();
-		}
-
-	} else {
-		gameState.ghostCells = [];
-		$(".ghost").removeClass("ghost");
-		cursorPiece.removeClass("invalid");
-		cursorPiece.show();
+		gameState.hoverRow = null;
+		gameState.hoverCol = null;
+		renderer.clearGhostCells();
+		renderer.setCursorInvalid(false);
+		return;
 	}
-};
+
+	const row = parseInt(cell.data("row"));
+	const col = parseInt(cell.data("col"));
+
+	if (row === gameState.hoverRow && col === gameState.hoverCol) return;
+
+	gameState.hoverRow = row;
+	gameState.hoverCol = col;
+
+	const piece = pieces[gameState.heldPiece.piece];
+
+	const previewCells = getPiecePreview(piece, row, col);
+
+	gameState.ghostCells = previewCells;
+
+	if (previewCells.length) {
+		renderer.renderGhostCells(previewCells);
+		renderer.setCursorInvalid(false);
+		renderer.hideCursorPiece();
+	} else {
+		renderer.clearGhostCells();
+		renderer.setCursorInvalid(true);
+		renderer.showCursorPiece();
+	}
+}
 
 function dropHeldPiece() {
 
-	gameState.heldPiece = null;
-	gameState.originalPiece.removeClass("used");
-	gameState.originalPiece = null;
-	$("#cursor-piece").empty().hide();
+	if (!gameState.selectedPiece) return;
 
-};
+	renderer.clearTrayHighlight(gameState.selectedPiece);
+
+	gameState.selectedPiece = null;
+	gameState.heldPiece = EMPTY_HELD_PIECE;
+}
 
 export function bindEventHandlers() {
 
@@ -167,6 +149,13 @@ export function bindEventHandlers() {
 	$("#game .cell").click(handleCellClick);
 	$("#reset-button").click(handleGameReset);
 	$(document).mousemove(handleMouseMove);
+	
+	$(document).on("keydown", function (e) {
+		if (e.key === "r") {
+			renderer.rotateCursor();
+			console.log(pieces[gameState.selectedPiece]);
+		}
+	});
 
 	// using buttons to switch screen view
 	$("#game-view").click(() => showView("#gameContainer"));
