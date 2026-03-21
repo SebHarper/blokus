@@ -1,4 +1,4 @@
-import { rows, cols, gameState } from './board.js';
+import {rows, cols, gameState} from './board.js';
 
 //SIZE: 12 x 17
 export const pieceTray = [
@@ -85,29 +85,13 @@ export function populatePieces() {
 	}
 };
 
-export function populateTray() {
-	let tray = $("#pieceContainer");
+export function populatePlayerTrayState() {
+	for (let i = 0; i < gameState.playerCount; i++) {
+		gameState.playerTrays[i] = {};
 
-	for (let item in pieces) {
-		let piece = pieces[item];
-		let piece_start = piece.start;
-		let piece_cells = piece.cells;
-
-		let piece_div = $("<div>", {
-			class: "piece",
-			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`,
-			"data-id": item,
-			"data-width": piece.dim[0],
-			"data-height": piece.dim[1]
-		});
-
-		for (const cell of piece_cells) {
-			let cell_div = $("<div>", {
-				class: "cell",
-				style: `grid-area: ${cell[0]} / ${cell[1]}`
-			});
-			piece_div.append(cell_div);
+		for (const piece in pieces) {
+			gameState.playerTrays[i][piece] = true;
 		}
-		tray.append(piece_div);
+
 	}
 };

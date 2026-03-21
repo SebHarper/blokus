@@ -1,16 +1,18 @@
-import {populatePieces, populateTray} from './pieces.js';
-import {initialiseBoard, createCellElements, renderBoard, testEnccodeDecode} from './board.js';
+import {populatePieces, populatePlayerTrayState} from './pieces.js';
+import {createPieceElements, createCellElements} from './renderer.js'
+import {gameState, initialiseBoard, renderBoard, testEnccodeDecode} from './board.js';
 import {bindEventHandlers} from './interaction.js';
 
-$(document).ready(function() {
 
+$(document).ready(function() {
 	populatePieces();
-	populateTray();
+	createPieceElements();
+	populatePlayerTrayState();
+
 	initialiseBoard();
 	createCellElements();
 
 	renderBoard();
 
 	bindEventHandlers();
-
 });
