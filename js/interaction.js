@@ -1,5 +1,5 @@
 import {gameState, getPiecePreview, attemptPlacePiece, clearBoard, EMPTY_HELD_PIECE} from './board.js';
-import {pieces} from './pieces.js';
+import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './pieces.js';
 import * as renderer from "./renderer.js";
 
 
@@ -24,7 +24,7 @@ function handlePieceTrayClick(e) {
 	const pieceEl = $(e.target).closest(".piece");
 
 	if (!pieceEl.length) {
-		if (gameState.heldPiece.piece !== null) {
+		if (gameState.heldPiece.pieceID !== null) {
 			dropHeldPiece();
 			renderer.updateCursorPiece(e, null);
 		}
@@ -43,26 +43,27 @@ function handlePieceTrayClick(e) {
 		return;
 	}
 
-	if (gameState.heldPiece.piece && !available) {
+	if (gameState.heldPiece.pieceID && !available) {
 		dropHeldPiece();
 		renderer.updateCursorPiece(e, null);
 		return;
 	}
 
-	if (gameState.heldPiece.piece && available) {
+	if (gameState.heldPiece.pieceID && available) {
 		renderer.clearTrayHighlight(gameState.selectedPiece);
 	}
 
-	if (!gameState.heldPiece.piece && !available) {
+	if (!gameState.heldPiece.pieceID && !available) {
 		return;
 	}
 
 	gameState.selectedPiece = pieceID;
-	gameState.heldPiece = { piece: pieceID, rotation:0, flipped:false };
+	gameState.heldPiece = { pieceID: pieceID, rotation:0, flipped:false };
 
 	renderer.updateCursorPiece(e, pieceID);
 	renderer.highlightTrayPiece(pieceID);
 
+	computeHeldPieceGeometry();
 }
 
 function handleCellClick(e) {
@@ -77,7 +78,10 @@ function handleCellClick(e) {
 
 function resetTray() {
 	gameState.heldPiece = EMPTY_HELD_PIECE;
+	gameState.heldPieceGeometry = null;
 	gameState.selectedPiece = null;
+
+	populatePlayerTrayState();
 
 	renderer.resetTrayUI();
 }
@@ -87,16 +91,24 @@ function handleGameReset(e) {
 	resetTray();
 }
 
+let lastMouseX = 0;
+let lastMouseY = 0;
 
 function handleMouseMove(e) {
 
+	lastMouseX = e.clientX;
+	lastMouseY = e.clientY;
+
 	renderer.moveCursorPiece(e);
-
 	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
+	updateGhostPreview(lastMouseX, lastMouseY);
+}
 
-	if (!gameState.heldPiece.piece) return;
+function updateGhostPreview(x, y, forceUpdate = false) {
 
-	const el = document.elementFromPoint(e.clientX, e.clientY);
+	if (!gameState.heldPiece.pieceID) return;
+
+	const el = document.elementFromPoint(x, y);
 	const cell = $(el).closest(".cell");
 
 	if (!cell.length) {
@@ -111,14 +123,14 @@ function handleMouseMove(e) {
 	const row = parseInt(cell.data("row"));
 	const col = parseInt(cell.data("col"));
 
-	if (row === gameState.hoverRow && col === gameState.hoverCol) return;
+	if (!forceUpdate && row === gameState.hoverRow && col === gameState.hoverCol) return;
 
 	gameState.hoverRow = row;
 	gameState.hoverCol = col;
 
-	const piece = pieces[gameState.heldPiece.piece];
+	const piece = pieces[gameState.heldPiece.pieceID];
 
-	const previewCells = getPiecePreview(piece, row, col);
+	const previewCells = getPiecePreview(gameState.heldPieceGeometry, row, col);
 
 	gameState.ghostCells = previewCells;
 
@@ -143,17 +155,45 @@ function dropHeldPiece() {
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 }
 
+export function rotateCursor() {
+
+	if (!gameState.heldPiece.pieceID) return;
+
+	let rot = gameState.heldPiece.rotation;
+	rot = (rot + 1) % 4;
+	gameState.heldPiece.rotation = rot;
+
+	renderer.applyCursorTransform();
+
+	computeHeldPieceGeometry();
+
+	updateGhostPreview(lastMouseX, lastMouseY, true);
+}
+
+export function flipCursor() {
+	if (!gameState.heldPiece.pieceID) return;
+
+	gameState.heldPiece.flipped = !gameState.heldPiece.flipped;
+
+	renderer.applyCursorTransform();
+
+	computeHeldPieceGeometry();
+
+	updateGhostPreview(lastMouseX, lastMouseY, true);
+}
+
 export function bindEventHandlers() {
 
 	$("#pieceContainer").click(handlePieceTrayClick);
 	$("#game .cell").click(handleCellClick);
 	$("#reset-button").click(handleGameReset);
 	$(document).mousemove(handleMouseMove);
-	
+
 	$(document).on("keydown", function (e) {
 		if (e.key === "r") {
-			renderer.rotateCursor();
-			console.log(pieces[gameState.selectedPiece]);
+			rotateCursor(e);
+		} else if (e.key === "f") {
+			flipCursor();
 		}
 	});
 

@@ -1,5 +1,5 @@
 import {rows, cols, gameState} from './board.js';
-import {pieces, pieceTray} from './pieces.js';
+import {pieces, pieceTray, computeHeldPieceGeometry} from './pieces.js';
 
 
 export function createCellElements() {
@@ -52,13 +52,16 @@ export function createPieceElements() {
 	}
 };
 
+export function createCursorReference() {
+	gameState.cursorElement = $("#cursor-piece");
+}
+
 export function updateCursorPiece(e, letter) {
-	let cursor = $("#cursor-piece");
+	let cursor = gameState.cursorElement;
 
 	// reset element rotation and state rotation
 	cursor.css("transform", "none");
 	gameState.heldPiece.rotation = 0;
-
 
 	cursor.hide().empty();
 
@@ -67,7 +70,6 @@ export function updateCursorPiece(e, letter) {
 	let template = gameState.pieceElements[letter];
 	let clone = template.clone(false);
 
-
 	cursor.append(clone).show();
 
 	moveCursorPiece(e);
@@ -75,7 +77,7 @@ export function updateCursorPiece(e, letter) {
 
 export function moveCursorPiece(e) {
 
-	let cursor = $("#cursor-piece");
+	let cursor = gameState.cursorElement;
 
 	let x_off = cursor.width() / 2;
 	let y_off = cursor.height() / 2;
@@ -122,7 +124,7 @@ export function clearGhostCells() {
 
 export function setCursorInvalid(invalid) {
 
-	const cursor = $("#cursor-piece");
+	const cursor = gameState.cursorElement;
 
 	if (invalid) {
 		cursor.addClass("invalid");
@@ -133,28 +135,25 @@ export function setCursorInvalid(invalid) {
 
 export function resetTrayUI() {
 
-	$("#cursor-piece").empty().hide();
+	gameState.cursorElement.empty().hide();
 	$("#pieceContainer .piece").removeClass("used selected");
 };
 
 export function hideCursorPiece() {
-	$("#cursor-piece").hide();
+	gameState.cursorElement.hide();
 }
 
 export function showCursorPiece() {
-	$("#cursor-piece").show();
+	gameState.cursorElement.show();
 }
 
-export function rotateCursor() {
+export function applyCursorTransform() {
+	const rot = gameState.heldPiece.rotation;
+	const flipped = gameState.heldPiece.flipped;
+	const scaleX = flipped ? -1 : 1;
+	
+	const rotationDegrees = flipped ? -rot * 90 : rot * 90;
 
-	// do nothing if no piece in hand
-	if (!gameState.heldPiece.piece) return;
 
-	let rot = gameState.heldPiece.rotation;
-
-	rot = (rot + 1) % 4
-
-	gameState.heldPiece.rotation = rot;
-
-	$("#cursor-piece").css("transform", `rotate(${rot*90}deg)`);
-};
+	gameState.cursorElement.css("transform", `scaleX(${scaleX}) rotate(${rotationDegrees}deg)`);
+}
