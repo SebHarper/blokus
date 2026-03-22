@@ -10,11 +10,15 @@ export const gameState = {
 
 	moveHistory: [],
 
-	heldPiece: {piece: null, rotation: 0, flipped: false},
+	heldPiece: {pieceID: null, rotation: 0, flipped: false},
+	heldPieceGeometry: null,
 	selectedPiece: null,
 
 	cellElements: [],
 	pieceElements: {},
+	
+	cursorElement: null,
+	cursorFlipElement: null,
 
 	ghostCells: [],
 	hoverRow: null,
@@ -37,7 +41,7 @@ export const CELL = {
 	GHOST: -1
 };
 
-export const EMPTY_HELD_PIECE = { piece:null, rotation:0, flipped:false };
+export const EMPTY_HELD_PIECE = { pieceID:null, rotation:0, flipped:false };
 
 export function initialiseBoard() {
 
@@ -118,6 +122,8 @@ let boardCorners = [];
 
 
 export function getPiecePreview(piece, row, col) {
+
+	if (!piece) return [];
 
 	let previewCells = [];
 
@@ -219,7 +225,7 @@ export function getPiecePreview(piece, row, col) {
 
 export function attemptPlacePiece() {
 
-	if (!gameState.heldPiece.piece) return null;
+	if (!gameState.heldPieceGeometry) return null;
 
 	if (gameState.ghostCells.length == 0) return null;
 
@@ -228,13 +234,14 @@ export function attemptPlacePiece() {
 	}
 
 	renderBoard();
+	
+	const pieceID = gameState.heldPiece.pieceID;
 
-	gameState.playerTrays[gameState.currentPlayer][gameState.heldPiece.piece] = false;
-
-	let p = gameState.heldPiece.piece;
+	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
 
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 	gameState.selectedPiece = null;
-
-	return p;
+	gameState.heldPieceGeometry = null;
+	gameState.ghostCells = [];
+	return pieceID;
 };

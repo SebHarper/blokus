@@ -137,6 +137,11 @@ temp {
 	pointer-events: none;
 }
 
+#cursor-piece.invalid {
+	filter: grayscale(80%);
+	opacity: 0.5;
+}
+
 .piece.selected {
 	opacity: 0.5;
 }
@@ -158,9 +163,4 @@ temp {
 
 .cell.filled {
 	background-color: #904fba;
-}
-
-#cursor-piece.invalid {
-	filter: grayscale(80%);
-	opacity: 0.5;
 }
