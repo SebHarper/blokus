@@ -1,5 +1,5 @@
-import {populatePieces, populatePlayerTrayState} from './pieces.js';
-import {createPieceElements, createCellElements} from './renderer.js'
+import {pieces, populatePieces, populatePlayerTrayState, rotatePiece} from './pieces.js';
+import {createPieceElements, createCellElements, createCursorReference} from './renderer.js'
 import {gameState, initialiseBoard, renderBoard, testEnccodeDecode} from './board.js';
 import {bindEventHandlers} from './interaction.js';
 
@@ -11,6 +11,7 @@ $(document).ready(function() {
 
 	initialiseBoard();
 	createCellElements();
+	createCursorReference();
 
 	renderBoard();
 
