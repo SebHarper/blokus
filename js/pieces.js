@@ -79,7 +79,7 @@ export function populatePieces() {
 
 		// set placement offset
 		p.offset = [
-			Math.ceil((p.dim[0] / 2) + 0.5),
+			Math.ceil((p.dim[0] / 2) + 0.5), 
 			Math.ceil((p.dim[1] / 2) + 0.5)
 		];
 	}
@@ -94,4 +94,56 @@ export function populatePlayerTrayState() {
 		}
 
 	}
+};
+
+export function rotatePiece(piece) {
+	const [rows, cols] = piece.dim;
+	const [rOff, cOff] = piece.offset;
+
+	let new_piece = structuredClone(piece);
+
+	for (let i = 0; i < new_piece.cells.length; i++) {
+		const [r, c] = new_piece.cells[i];
+		new_piece.cells[i] = [c, rows - r + 1];
+	}
+	new_piece.dim = [cols, rows];
+	new_piece.offset = [cOff, rows - rOff + 1];
+
+	return new_piece;
+};
+
+export function flipPiece(piece) {
+	const [rows, cols] = piece.dim;
+	const [rOff, cOff] = piece.offset;
+
+	let new_piece = structuredClone(piece);
+
+	for (let i = 0; i < new_piece.cells.length; i++) {
+		const [r, c] = new_piece.cells[i];
+		new_piece.cells[i] = [r, cols - c + 1];
+	}
+	new_piece.offset = [rOff, cols - cOff + 1];
+
+	return new_piece;
+};
+
+export function computeHeldPieceGeometry() {
+	const held = gameState.heldPiece;
+
+	if (!held.pieceID) return;
+
+	let piece = structuredClone(pieces[held.pieceID]);
+
+	let rotCount = held.flipped ? (4 - held.rotation) % 4: held.rotation;
+	console.log(held.rotation, rotCount);
+
+	for (let i = 0; i < rotCount; i++) {
+		piece = rotatePiece(piece);
+	}
+
+	if (held.flipped) {
+		piece = flipPiece(piece);
+	}
+
+	gameState.heldPieceGeometry = piece;
 };
