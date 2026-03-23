@@ -1,5 +1,5 @@
 import {rows, cols, gameState} from './board.js';
-import {pieces, pieceTray, computeHeldPieceGeometry} from './pieces.js';
+import {pieces} from './pieces.js';
 
 
 export function createCellElements() {
@@ -151,7 +151,9 @@ export function applyCursorTransform() {
 	const rot = gameState.heldPiece.rotation;
 	const flipped = gameState.heldPiece.flipped;
 	const scaleX = flipped ? -1 : 1;
-	
+
+	// change rotation direction depending on flipped state
+	// - this ensures shape always rotates clockwise
 	const rotationDegrees = flipped ? -rot * 90 : rot * 90;
 
 

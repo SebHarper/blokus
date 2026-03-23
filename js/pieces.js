@@ -134,8 +134,8 @@ export function computeHeldPieceGeometry() {
 
 	let piece = structuredClone(pieces[held.pieceID]);
 
+	// sync rotation with cursor rotation (depends on flipped bool)
 	let rotCount = held.flipped ? (4 - held.rotation) % 4: held.rotation;
-	console.log(held.rotation, rotCount);
 
 	for (let i = 0; i < rotCount; i++) {
 		piece = rotatePiece(piece);
