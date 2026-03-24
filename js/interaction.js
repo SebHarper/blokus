@@ -3,11 +3,6 @@ import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './piece
 import * as renderer from "./renderer.js";
 
 
-function showView(view) {
-	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
-	$(view).show();
-};
-
 function mouseInside(el, x, y) {
 	let o = el.offset();
 	return (
@@ -198,7 +193,7 @@ export function bindEventHandlers() {
 	});
 
 	// using buttons to switch screen view
-	$("#game-view").click(() => showView("#gameContainer"));
-	$("#settings-view").click(() => showView("#settingsContainer"));
-	$("#tileset-view").click(() => showView("#tilesetOptionsContainer"));
+	$("#game-view").click(() => renderer.showView("#gameContainer"));
+	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
+	$("#tileset-view").click(() => renderer.showView("#tilesetOptionsContainer"));
 };

@@ -159,3 +159,8 @@ export function applyCursorTransform() {
 
 	gameState.cursorElement.css("transform", `scaleX(${scaleX}) rotate(${rotationDegrees}deg)`);
 }
+
+export function showView(view) {
+	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
+	$(view).show();
+};
