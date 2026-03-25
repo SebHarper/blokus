@@ -91,19 +91,19 @@ let lastMouseY = 0;
 
 function handleMouseMove(e) {
 
-	lastMouseX = e.clientX;
-	lastMouseY = e.clientY;
+	gameState.mouse.x = e.clientX;
+	gameState.mouse.y = e.clientY;
 
 	renderer.moveCursorPiece(e);
 	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
-	updateGhostPreview(lastMouseX, lastMouseY);
+	updateGhostPreview();
 }
 
-function updateGhostPreview(x, y, forceUpdate = false) {
+function updateGhostPreview(forceUpdate = false) {
 
 	if (!gameState.heldPiece.pieceID) return;
 
-	const el = document.elementFromPoint(x, y);
+	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
 	const cell = $(el).closest(".cell");
 
 	if (!cell.length) {
@@ -162,7 +162,7 @@ export function rotateCursor() {
 
 	computeHeldPieceGeometry();
 
-	updateGhostPreview(lastMouseX, lastMouseY, true);
+	updateGhostPreview(true);
 }
 
 export function flipCursor() {
@@ -174,7 +174,7 @@ export function flipCursor() {
 
 	computeHeldPieceGeometry();
 
-	updateGhostPreview(lastMouseX, lastMouseY, true);
+	updateGhostPreview(true);
 }
 
 export function bindEventHandlers() {

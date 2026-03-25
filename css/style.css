@@ -100,6 +100,10 @@ temp {
 	background: transparent;
 }
 
+/* #game .cell {
+	outline: 1px solid #eedec5;
+} */
+
 #game .cell:hover {
 	border: 1px solid #ffffff;
 	box-sizing: border-box;
