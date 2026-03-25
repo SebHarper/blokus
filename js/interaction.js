@@ -102,16 +102,11 @@ function handleMouseMove(e) {
 function updateGhostPreview(forceUpdate = false) {
 
 	if (!gameState.heldPiece.pieceID) return;
-
-	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
-	const cell = $(el).closest(".cell");
+	
+	const cell = getCellUnderCursor();
 
 	if (!cell.length) {
-		gameState.ghostCells = [];
-		gameState.hoverRow = null;
-		gameState.hoverCol = null;
-		renderer.clearGhostCells();
-		renderer.setCursorInvalid(false);
+		clearGhostState();
 		return;
 	}
 
@@ -139,6 +134,23 @@ function updateGhostPreview(forceUpdate = false) {
 		renderer.showCursorPiece();
 	}
 }
+
+function getCellUnderCursor() {
+	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
+	const cellEl $(el).closest(".cell");
+
+	return cellEl;
+}
+
+function clearGhostState() {
+	gameState.ghostCells = [];
+	gameState.hoverRow = null;
+	gameState.hoverCol = null;
+	renderer.clearGhostCells();
+	renderer.setCursorInvalid(false);
+}
+
+
 
 function dropHeldPiece() {
 
