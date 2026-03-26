@@ -10,13 +10,15 @@ export const gameState = {
 
 	moveHistory: [],
 
+	hadFirstMove: [false, false, false, false],
+
 	heldPiece: {pieceID: null, rotation: 0, flipped: false},
 	heldPieceGeometry: null,
 	selectedPiece: null,
 
 	cellElements: [],
 	pieceElements: {},
-	
+
 	cursorElement: null,
 	cursorFlipElement: null,
 
@@ -37,7 +39,6 @@ export const CELL = {
 	PLAYER_2: 2,
 	PLAYER_3: 3,
 	PLAYER_4: 4,
-	FILLED: 5,
 	GHOST: -1
 };
 
@@ -57,23 +58,19 @@ export function initialiseBoard() {
 
 export function renderCell(row, col) {
 	let cellState = gameState.boardState[row][col];
+	let cell = gameState.cellElements[row][col];
 
-	let cell = gameState.cellElements[row][col]
+	cell.removeClass("empty ghost p1 p2 p3 p4");
 
 	if (cellState === CELL.EMPTY) {
 		cell.addClass("empty");
-		cell.removeClass("filled");
-		cell.removeClass("ghost");
 	}
-	else if (cellState === CELL.FILLED){
-		cell.removeClass("empty");
-		cell.addClass("filled");
-		cell.removeClass("ghost");
+	else if (cellState >= CELL.PLAYER_1 && cellState <= CELL.PLAYER_4){
+		cell.addClass(`p${cellState}`);
 	}
-	else if (cellState === CELL.GHOST){
-		cell.removeClass("empty");
-		cell.removeClass("filled");
-		cell.addClass("ghost");	}
+	else if (cellState === CELL.GHOST) {
+		cell.addClass("ghost");
+	}
 };
 
 export function renderBoard() {
@@ -127,14 +124,14 @@ export function getPiecePreview(piece, row, col) {
 
 	let previewCells = [];
 
-	// let cardinalAdjacentCells = [];
-	// let diagonalAdjacentCells = [];
-
 	let cardinalAdjacentCells = new Set();
 	let diagonalAdjacentCells = new Set();
 
 	let diagonalCheck = false;
 	let touchingCorner = false;
+
+	const currentPlayerCell = CELL.PLAYER_1 + gameState.currentPlayer;
+	const isFirstMove = !gameState.hadFirstMove[gameState.currentPlayer];
 
 	for (const cellOffset of piece.cells) {
 		const r = row + cellOffset[0] - piece.offset[0];
@@ -184,19 +181,18 @@ export function getPiecePreview(piece, row, col) {
 
 	}
 
-	let onlyCorners = diagonalAdjacentCells.difference(cardinalAdjacentCells);
+	// let onlyCorners = diagonalAdjacentCells.difference(cardinalAdjacentCells);
 
 	// check for any filled adjacent cells
 	for (const value of cardinalAdjacentCells) {
 
-		let r, c;
-		[r, c] = decodeCoord(value);
+		let [r, c] = decodeCoord(value);
 
 		if (r < 0 || r >= rows || c < 0 || c >= cols) {
 			continue;
 		}
 
-		if (gameState.boardState[r][c] === CELL.FILLED) {
+		if (gameState.boardState[r][c] === currentPlayerCell) {
 			return [];
 		}
 	}
@@ -204,19 +200,18 @@ export function getPiecePreview(piece, row, col) {
 	// check piece is diagonally adjacent to another
 	for (const value of diagonalAdjacentCells) {
 
-		let r, c;
-		[r, c] = decodeCoord(value);
+		let [r, c] = decodeCoord(value);
 
 		if (r < 0 || r >= rows || c < 0 || c >= cols) {
 			continue;
 		}
 
-		if (gameState.boardState[r][c] === CELL.FILLED) {
+		if (gameState.boardState[r][c] === currentPlayerCell) {
 			diagonalCheck = true;
 		}
 	}
 
-	if (diagonalCheck || touchingCorner) {
+	if (diagonalCheck || ( touchingCorner && isFirstMove )) {
 		return previewCells;
 	}
 
@@ -230,18 +225,23 @@ export function attemptPlacePiece() {
 	if (gameState.ghostCells.length == 0) return null;
 
 	for (const cell of gameState.ghostCells) {
-		gameState.boardState[cell[0]][cell[1]] = CELL.FILLED;
+		gameState.boardState[cell[0]][cell[1]] = gameState.currentPlayer + 1;
 	}
 
 	renderBoard();
-	
+
 	const pieceID = gameState.heldPiece.pieceID;
 
 	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
+
+	gameState.hadFirstMove[gameState.currentPlayer] = true;
 
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 	gameState.selectedPiece = null;
 	gameState.heldPieceGeometry = null;
 	gameState.ghostCells = [];
+
+	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
+
 	return pieceID;
 };

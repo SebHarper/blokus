@@ -4,6 +4,10 @@
 	--hovered-button-color: #3f5593;
 	--cell-color: #bea9de;
 	--selected-cell-color: #cfbaef;
+	--p1-color: #eb5353;
+	--p2-color: #187498;
+	--p3-color: #36ae7c;
+	--p4-color: #f9d923;
 }
 
 body { 
@@ -90,21 +94,6 @@ temp {
 	grid-template-rows: repeat(20, 20px);
 }
 
-.cell {
-	width: 20px;
-	height: 20px;
-	background-color: var(--cell-color);
-}
-
-.cell.empty {
-	background: transparent;
-}
-
-#game .cell:hover {
-	border: 1px solid #ffffff;
-	box-sizing: border-box;
-}
-
 .piece .cell {
 	background-color: #904fba;
 }
@@ -151,9 +140,14 @@ temp {
 	filter: grayscale(1);
 }
 
-
+.cell {
+	width: 20px;
+	height: 20px;
+	background-color: var(--cell-color);
+}
 
 .cell.empty {
+	/* background: transparent; */
 	background-color: var(--cell-color);
 }
 
@@ -161,6 +155,27 @@ temp {
 	background-color: #b26fdc;
 }
 
-.cell.filled {
+/* .cell.filled {
 	background-color: #904fba;
+} */
+
+.cell.p1 {
+	background-color: var(--p1-color)
+}
+
+.cell.p2 {
+	background-color: var(--p2-color)
+}
+
+.cell.p3 {
+	background-color: var(--p3-color)
+}
+
+.cell.p4 {
+	background-color: var(--p4-color)
+}
+
+#game .cell:hover {
+	border: 1px solid #ffffff;
+	box-sizing: border-box;
 }

@@ -19,6 +19,7 @@ function mouseInside(el, x, y) {
 };
 
 
+
 function handlePieceTrayClick(e) {
 
 	const pieceEl = $(e.target).closest(".piece");
@@ -76,19 +77,18 @@ function handleCellClick(e) {
 };
 
 
-function resetTray() {
+function resetGameState() {
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 	gameState.heldPieceGeometry = null;
 	gameState.selectedPiece = null;
-
-	populatePlayerTrayState();
-
-	renderer.resetTrayUI();
+	gameState.hadFirstMove = [false, false, false, false];
 }
 
 function handleGameReset(e) {
 	clearBoard();
-	resetTray();
+	resetGameState();
+	populatePlayerTrayState();
+	renderer.resetTrayUI();
 }
 
 let lastMouseX = 0;
@@ -129,6 +129,8 @@ function updateGhostPreview(x, y, forceUpdate = false) {
 	gameState.hoverCol = col;
 
 	const piece = pieces[gameState.heldPiece.pieceID];
+
+	if (!mouseInside($("#game"), x, y)) return;
 
 	const previewCells = getPiecePreview(gameState.heldPieceGeometry, row, col);
 
