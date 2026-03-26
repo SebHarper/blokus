@@ -3,11 +3,6 @@ import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './piece
 import * as renderer from "./renderer.js";
 
 
-function showView(view) {
-	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
-	$(view).show();
-};
-
 function mouseInside(el, x, y) {
 	let o = el.offset();
 	return (
@@ -96,27 +91,22 @@ let lastMouseY = 0;
 
 function handleMouseMove(e) {
 
-	lastMouseX = e.clientX;
-	lastMouseY = e.clientY;
+	gameState.mouse.x = e.clientX;
+	gameState.mouse.y = e.clientY;
 
 	renderer.moveCursorPiece(e);
 	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
-	updateGhostPreview(lastMouseX, lastMouseY);
+	updateGhostPreview();
 }
 
-function updateGhostPreview(x, y, forceUpdate = false) {
+function updateGhostPreview(forceUpdate = false) {
 
 	if (!gameState.heldPiece.pieceID) return;
-
-	const el = document.elementFromPoint(x, y);
-	const cell = $(el).closest(".cell");
+	
+	const cell = getCellUnderCursor();
 
 	if (!cell.length) {
-		gameState.ghostCells = [];
-		gameState.hoverRow = null;
-		gameState.hoverCol = null;
-		renderer.clearGhostCells();
-		renderer.setCursorInvalid(false);
+		clearGhostState();
 		return;
 	}
 
@@ -147,6 +137,23 @@ function updateGhostPreview(x, y, forceUpdate = false) {
 	}
 }
 
+function getCellUnderCursor() {
+	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
+	const cellEl $(el).closest(".cell");
+
+	return cellEl;
+}
+
+function clearGhostState() {
+	gameState.ghostCells = [];
+	gameState.hoverRow = null;
+	gameState.hoverCol = null;
+	renderer.clearGhostCells();
+	renderer.setCursorInvalid(false);
+}
+
+
+
 function dropHeldPiece() {
 
 	if (!gameState.selectedPiece) return;
@@ -169,7 +176,7 @@ export function rotateCursor() {
 
 	computeHeldPieceGeometry();
 
-	updateGhostPreview(lastMouseX, lastMouseY, true);
+	updateGhostPreview(true);
 }
 
 export function flipCursor() {
@@ -181,7 +188,7 @@ export function flipCursor() {
 
 	computeHeldPieceGeometry();
 
-	updateGhostPreview(lastMouseX, lastMouseY, true);
+	updateGhostPreview(true);
 }
 
 export function bindEventHandlers() {
@@ -200,7 +207,7 @@ export function bindEventHandlers() {
 	});
 
 	// using buttons to switch screen view
-	$("#game-view").click(() => showView("#gameContainer"));
-	$("#settings-view").click(() => showView("#settingsContainer"));
-	$("#tileset-view").click(() => showView("#tilesetOptionsContainer"));
+	$("#game-view").click(() => renderer.showView("#gameContainer"));
+	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
+	$("#tileset-view").click(() => renderer.showView("#tilesetOptionsContainer"));
 };

@@ -147,7 +147,7 @@ temp {
 }
 
 .cell.empty {
-	/* background: transparent; */
+	background: transparent;
 	background-color: var(--cell-color);
 }
 
@@ -155,9 +155,6 @@ temp {
 	background-color: #b26fdc;
 }
 
-/* .cell.filled {
-	background-color: #904fba;
-} */
 
 .cell.p1 {
 	background-color: var(--p1-color)

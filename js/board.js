@@ -24,7 +24,9 @@ export const gameState = {
 
 	ghostCells: [],
 	hoverRow: null,
-	hoverCol: null
+	hoverCol: null,
+	
+	mouse: {x: 0, y: 0}
 };
 
 export const UIState = {
