@@ -1,4 +1,4 @@
-import {gameState, getPiecePreview, attemptPlacePiece, clearBoard, EMPTY_HELD_PIECE} from './board.js';
+import {gameState, getPiecePreview, attemptPlacePiece, renderBoard, clearBoard, EMPTY_HELD_PIECE} from './board.js';
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './pieces.js';
 import * as renderer from "./renderer.js";
 
@@ -65,10 +65,25 @@ function handlePieceTrayClick(e) {
 function handleCellClick(e) {
 	const piece = attemptPlacePiece();
 
-	if (piece) {
-		renderer.updateCursorPiece(e, null);
-		renderer.markTrayPieceUsed(piece);
-	}
+	if (!piece) return;
+
+	renderer.updateCursorPiece(e, null);
+	renderer.markTrayPieceUsed(piece);
+
+	renderBoard();
+
+
+	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
+
+	gameState.hadFirstMove[gameState.currentPlayer] = true;
+
+	gameState.heldPiece = EMPTY_HELD_PIECE;
+	gameState.selectedPiece = null;
+	gameState.heldPieceGeometry = null;
+	gameState.ghostCells = [];
+
+	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
+
 };
 
 
@@ -81,6 +96,7 @@ function resetGameState() {
 
 function handleGameReset(e) {
 	clearBoard();
+	renderBoard();
 	resetGameState();
 	populatePlayerTrayState();
 	renderer.resetTrayUI();
@@ -116,8 +132,6 @@ function updateGhostPreview(forceUpdate = false) {
 
 	gameState.hoverRow = row;
 	gameState.hoverCol = col;
-
-	const piece = pieces[gameState.heldPiece.pieceID];
 
 	if (!mouseInside($("#game"), gameState.mouse.x, gameState.mouse.y)) return;
 

@@ -164,3 +164,29 @@ export function showView(view) {
 	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
 	$(view).show();
 };
+
+export function renderCell(row, col) {
+	let cellState = gameState.boardState[row][col];
+	let cell = gameState.cellElements[row][col];
+
+	cell.removeClass("empty ghost p1 p2 p3 p4");
+
+	if (cellState === CELL.EMPTY) {
+		cell.addClass("empty");
+	}
+	else if (cellState >= CELL.PLAYER_1 && cellState <= CELL.PLAYER_4){
+		cell.addClass(`p${cellState}`);
+	}
+	else if (cellState === CELL.GHOST) {
+		cell.addClass("ghost");
+	}
+};
+
+export function renderBoard() {
+
+	for (let r=0; r < rows; r++) {
+		for (let c=0; c < cols; c++) {
+			renderCell(r, c);
+		}
+	}
+};

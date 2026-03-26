@@ -58,32 +58,6 @@ export function initialiseBoard() {
 	gameState.boardState[10][10] = CELL.FILLED;
 };
 
-export function renderCell(row, col) {
-	let cellState = gameState.boardState[row][col];
-	let cell = gameState.cellElements[row][col];
-
-	cell.removeClass("empty ghost p1 p2 p3 p4");
-
-	if (cellState === CELL.EMPTY) {
-		cell.addClass("empty");
-	}
-	else if (cellState >= CELL.PLAYER_1 && cellState <= CELL.PLAYER_4){
-		cell.addClass(`p${cellState}`);
-	}
-	else if (cellState === CELL.GHOST) {
-		cell.addClass("ghost");
-	}
-};
-
-export function renderBoard() {
-
-	for (let r=0; r < rows; r++) {
-		for (let c=0; c < cols; c++) {
-			renderCell(r, c);
-		}
-	}
-};
-
 export function clearBoard() {
 
 	for (let r = 0; r < rows; r++) {
@@ -91,7 +65,6 @@ export function clearBoard() {
 			gameState.boardState[r][c] = CELL.EMPTY;
 		}
 	}
-	renderBoard();
 };
 
 function encodeCoord(r, c) {
@@ -230,9 +203,7 @@ export function attemptPlacePiece() {
 		gameState.boardState[cell[0]][cell[1]] = gameState.currentPlayer + 1;
 	}
 
-	renderBoard();
-
-	const pieceID = gameState.heldPiece.pieceID;
+	return gameState.heldPiece.pieceID;
 
 	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
 
