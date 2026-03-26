@@ -86,16 +86,15 @@ function handleGameReset(e) {
 	renderer.resetTrayUI();
 }
 
-let lastMouseX = 0;
-let lastMouseY = 0;
-
 function handleMouseMove(e) {
 
 	gameState.mouse.x = e.clientX;
 	gameState.mouse.y = e.clientY;
 
 	renderer.moveCursorPiece(e);
+
 	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
+
 	updateGhostPreview();
 }
 
@@ -120,7 +119,7 @@ function updateGhostPreview(forceUpdate = false) {
 
 	const piece = pieces[gameState.heldPiece.pieceID];
 
-	if (!mouseInside($("#game"), x, y)) return;
+	if (!mouseInside($("#game"), gameState.mouse.x, gameState.mouse.y)) return;
 
 	const previewCells = getPiecePreview(gameState.heldPieceGeometry, row, col);
 
@@ -139,7 +138,7 @@ function updateGhostPreview(forceUpdate = false) {
 
 function getCellUnderCursor() {
 	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
-	const cellEl $(el).closest(".cell");
+	const cellEl = $(el).closest(".cell");
 
 	return cellEl;
 }
