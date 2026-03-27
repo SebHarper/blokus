@@ -78,6 +78,8 @@ function handleCellClick(e) {
 	finalizePiecePlacement(pieceID);
 
 	renderer.changeTrayPlayer();
+
+	renderer.changePlayerLabel();
 };
 
 function finalizePiecePlacement(pieceID) {
@@ -227,4 +229,6 @@ export function bindEventHandlers() {
 	$("#game-view").click(() => renderer.showView("#gameContainer"));
 	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
 	$("#tileset-view").click(() => renderer.showView("#tilesetOptionsContainer"));
+
+	renderer.changePlayerLabel();
 };

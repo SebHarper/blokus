@@ -249,3 +249,9 @@ export function renderGhostFromState() {
 		showCursorPiece();
 	}
 }
+
+export function changePlayerLabel() {
+	const label = $("#playerLabel");
+	
+	label.text(`Player ${gameState.currentPlayer + 1}`);
+}

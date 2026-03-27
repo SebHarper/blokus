@@ -60,7 +60,9 @@ temp {
 #pieceContainer {
 	width: 240px;
 	height: 340px;
-	
+
+	margin-top: 20px;
+
 	display: grid;
 	grid-template-columns: repeat(12, 20px);
 	grid-template-rows: repeat(17, 20px);
@@ -72,8 +74,12 @@ temp {
 	grid-auto-rows: 20px;
 }
 
-#reset-button {
-	margin-top: 60px;
+#playerLabel {
+	margin-left: 60px;
+}
+
+.noHover {
+	pointer-events: none;
 }
 
 #settingsContainer {
