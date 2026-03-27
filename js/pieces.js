@@ -91,6 +91,7 @@ export function populatePlayerTrayState() {
 
 		for (const piece in pieces) {
 			gameState.playerTrays[i][piece] = true;
+			gameState.playerTrays[i][piece] = true;
 		}
 
 	}

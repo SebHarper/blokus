@@ -1,4 +1,4 @@
-import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, EMPTY_HELD_PIECE} from './board.js';
+import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE} from './board.js';
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './pieces.js';
 import * as renderer from "./renderer.js";
 
@@ -64,10 +64,8 @@ function handlePieceTrayClick(e) {
 
 function handleCellClick(e) {
 
-	if (!gameState.heldPieceGeometry) return null;
+	if (!canPlacePiece()) return;
 
-	if (gameState.ghostCells.length == 0) return null;
-	
 	const pieceID = gameState.heldPiece.pieceID
 
 	placePieceFromGhost();
@@ -76,6 +74,11 @@ function handleCellClick(e) {
 	renderer.markTrayPieceUsed(pieceID);
 
 	renderer.renderBoard();
+
+	finalizePiecePlacement(pieceID);
+};
+
+function finalizePiecePlacement(pieceID) {
 
 	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
 
@@ -87,8 +90,7 @@ function handleCellClick(e) {
 	gameState.ghostCells = [];
 
 	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
-
-};
+}
 
 
 function resetGameState() {
@@ -116,6 +118,7 @@ function handleMouseMove(e) {
 	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
 
 	updateGhostPreview();
+	renderer.renderGhostFromState();
 }
 
 function updateGhostPreview(forceUpdate = false) {
@@ -143,15 +146,6 @@ function updateGhostPreview(forceUpdate = false) {
 
 	gameState.ghostCells = previewCells;
 
-	if (previewCells.length) {
-		renderer.renderGhostCells(previewCells);
-		renderer.setCursorInvalid(false);
-		renderer.hideCursorPiece();
-	} else {
-		renderer.clearGhostCells();
-		renderer.setCursorInvalid(true);
-		renderer.showCursorPiece();
-	}
 }
 
 function getCellUnderCursor() {

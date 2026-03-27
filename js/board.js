@@ -55,7 +55,7 @@ export function initialiseBoard() {
 			gameState.boardState[r][c] = CELL.EMPTY;
 		}
 	}
-	gameState.boardState[10][10] = CELL.FILLED;
+	gameState.boardState[10][10] = CELL.PLAYER_1;
 };
 
 export function clearBoard() {
@@ -200,3 +200,11 @@ export function placePieceFromGhost() {
 	}
 
 };
+
+export function canPlacePiece() {
+	if (!gameState.heldPieceGeometry) return false;
+
+	if (gameState.ghostCells.length === 0) return false;
+
+	return true;
+}

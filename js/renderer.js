@@ -190,3 +190,18 @@ export function renderBoard() {
 		}
 	}
 };
+
+export function renderGhostFromState() {
+
+	const ghostCells = gameState.ghostCells;
+
+	if (ghostCells.length) {
+		renderGhostCells(ghostCells);
+		setCursorInvalid(false);
+		hideCursorPiece();
+	} else {
+		clearGhostCells();
+		setCursorInvalid(true);
+		showCursorPiece();
+	}
+}
