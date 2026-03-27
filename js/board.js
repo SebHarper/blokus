@@ -193,15 +193,10 @@ export function getPiecePreview(piece, row, col) {
 	return [];
 };
 
-export function attemptPlacePiece() {
-
-	if (!gameState.heldPieceGeometry) return null;
-
-	if (gameState.ghostCells.length == 0) return null;
+export function placePieceFromGhost() {
 
 	for (const cell of gameState.ghostCells) {
 		gameState.boardState[cell[0]][cell[1]] = gameState.currentPlayer + 1;
 	}
 
-	return gameState.heldPiece.pieceID;
 };
