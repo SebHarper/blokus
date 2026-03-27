@@ -3,7 +3,7 @@ export const cols = 20;
 
 export const gameState = {
 	currentPlayer: 0,
-	playerCount: 2,
+	playerCount: 4,
 	boardState: [],
 
 	playerTrays: [],
@@ -55,7 +55,10 @@ export function initialiseBoard() {
 			gameState.boardState[r][c] = CELL.EMPTY;
 		}
 	}
-	gameState.boardState[10][10] = CELL.PLAYER_1;
+	// gameState.boardState[5][5] = 1;
+	// gameState.boardState[5][15] = 2;
+	// gameState.boardState[15][5] = 3;
+	// gameState.boardState[15][15] = 4;
 };
 
 export function clearBoard() {

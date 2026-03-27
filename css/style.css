@@ -4,6 +4,7 @@
 	--hovered-button-color: #3f5593;
 	--cell-color: #bea9de;
 	--selected-cell-color: #cfbaef;
+
 	--p1-color: #eb5353;
 	--p2-color: #187498;
 	--p3-color: #36ae7c;
@@ -143,7 +144,9 @@ temp {
 .cell {
 	width: 20px;
 	height: 20px;
+	position: relative;
 	background-color: var(--cell-color);
+	box-sizing: border-box;
 }
 
 .cell.empty {
@@ -151,28 +154,44 @@ temp {
 	background-color: var(--cell-color);
 }
 
-.cell.ghost {
-	background-color: #b26fdc;
-}
-
-
 .cell.p1 {
-	background-color: var(--p1-color)
+	background-color: var(--p1-color);
 }
 
 .cell.p2 {
-	background-color: var(--p2-color)
+	background-color: var(--p2-color);
 }
 
 .cell.p3 {
-	background-color: var(--p3-color)
+	background-color: var(--p3-color);
 }
 
 .cell.p4 {
-	background-color: var(--p4-color)
+	background-color: var(--p4-color);
 }
 
-#game .cell:hover {
-	border: 1px solid #ffffff;
+#game .cell:not(.ghost):hover {
+	border: 2px solid #ffffff;
 	box-sizing: border-box;
+}
+
+.cell.ghost {
+	position: relative;
+	border-color: #ffffff;
+}
+
+.cell.ghost-top {
+	border-top: 2px solid;
+}
+
+.cell.ghost-bottom {
+	border-bottom: 2px solid;
+}
+
+.cell.ghost-left {
+	border-left: 2px solid;
+}
+
+.cell.ghost-right {
+	border-right: 2px solid;
 }

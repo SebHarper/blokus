@@ -41,7 +41,7 @@ export function createPieceElements() {
 
 		for (const cell of piece_cells) {
 			let cell_div = $("<div>", {
-				class: "cell",
+				class: "cell p1",
 				style: `grid-area: ${cell[0]} / ${cell[1]}`
 			});
 			piece_div.append(cell_div);
@@ -107,18 +107,49 @@ export function clearTrayUsed(pieceCode) {
 	gameState.pieceElements[pieceCode].removeClass("used");
 };
 
+export function changeTrayPlayer() {
+	const player = gameState.currentPlayer;
+	const playerTray = gameState.playerTrays[player];
+
+	for (const pieceCode in playerTray) {
+		let available = playerTray[pieceCode];
+		let el = gameState.pieceElements[pieceCode];
+
+		el.removeClass("used selected");
+
+		if (!available) {
+			el.addClass("used");
+		}
+
+		el.children().removeClass("p1 p2 p3 p4");
+		el.children().addClass(`p${gameState.currentPlayer + 1}`);
+	}
+};
+
 
 export function renderGhostCells(cells) {
 
 	clearGhostCells();
 
+	const playerClass = `p${gameState.currentPlayer + 1}`;
+
+	const cellSet = new Set(cells.map(([r, c]) => `${r},${c}`));
+
 	for (const [r,c] of cells) {
-		gameState.cellElements[r][c].addClass("ghost");
+		const el = gameState.cellElements[r][c];
+
+		el.addClass("ghost").addClass(playerClass);
+
+		if (!cellSet.has(`${r-1},${c}`)) el.addClass("ghost-top");
+		if (!cellSet.has(`${r+1},${c}`)) el.addClass("ghost-bottom");
+		if (!cellSet.has(`${r},${c-1}`)) el.addClass("ghost-left");
+		if (!cellSet.has(`${r},${c+1}`)) el.addClass("ghost-right");
 	}
 };
 
 export function clearGhostCells() {
-	$(".ghost").removeClass("ghost");
+	$(".ghost").removeClass("ghost p1 p2 p3 p4");
+	$(".cell").removeClass("ghost-top ghost-bottom ghost-left ghost-right")
 };
 
 
@@ -135,8 +166,21 @@ export function setCursorInvalid(invalid) {
 
 export function resetTrayUI() {
 
-	gameState.cursorElement.empty().hide();
-	$("#pieceContainer .piece").removeClass("used selected");
+	const pieces = $("#pieceContainer .piece");
+
+	pieces.removeClass("used selected");
+
+	const children = pieces.children(".cell");
+
+	children.removeClass("p1 p2 p3 p4");
+	children.addClass("p1");
+
+
+/* 	$("#pieceContainer .piece")
+		.removeClass("used selected")
+		.children(".cell")
+		.removeClass("p1 p2 p3 p4")
+		.addClass("p1"); */
 };
 
 export function hideCursorPiece() {

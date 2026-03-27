@@ -76,6 +76,8 @@ function handleCellClick(e) {
 	renderer.renderBoard();
 
 	finalizePiecePlacement(pieceID);
+
+	renderer.changeTrayPlayer();
 };
 
 function finalizePiecePlacement(pieceID) {
@@ -90,7 +92,7 @@ function finalizePiecePlacement(pieceID) {
 	gameState.ghostCells = [];
 
 	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
-}
+};
 
 
 function resetGameState() {
@@ -98,6 +100,7 @@ function resetGameState() {
 	gameState.heldPieceGeometry = null;
 	gameState.selectedPiece = null;
 	gameState.hadFirstMove = [false, false, false, false];
+	gameState.currentPlayer = 0;
 }
 
 function handleGameReset(e) {
@@ -135,7 +138,7 @@ function updateGhostPreview(forceUpdate = false) {
 	const row = parseInt(cell.data("row"));
 	const col = parseInt(cell.data("col"));
 
-	if (!forceUpdate && row === gameState.hoverRow && col === gameState.hoverCol) return;
+	if (forceUpdate === false && row === gameState.hoverRow && col === gameState.hoverCol) return;
 
 	gameState.hoverRow = row;
 	gameState.hoverCol = col;
@@ -145,7 +148,6 @@ function updateGhostPreview(forceUpdate = false) {
 	const previewCells = getPiecePreview(gameState.heldPieceGeometry, row, col);
 
 	gameState.ghostCells = previewCells;
-
 }
 
 function getCellUnderCursor() {
@@ -188,6 +190,8 @@ export function rotateCursor() {
 	computeHeldPieceGeometry();
 
 	updateGhostPreview(true);
+
+	renderer.renderGhostFromState();
 }
 
 export function flipCursor() {
@@ -200,6 +204,8 @@ export function flipCursor() {
 	computeHeldPieceGeometry();
 
 	updateGhostPreview(true);
+
+	renderer.renderGhostFromState();
 }
 
 export function bindEventHandlers() {
