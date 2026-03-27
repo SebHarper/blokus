@@ -204,17 +204,4 @@ export function attemptPlacePiece() {
 	}
 
 	return gameState.heldPiece.pieceID;
-
-	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
-
-	gameState.hadFirstMove[gameState.currentPlayer] = true;
-
-	gameState.heldPiece = EMPTY_HELD_PIECE;
-	gameState.selectedPiece = null;
-	gameState.heldPieceGeometry = null;
-	gameState.ghostCells = [];
-
-	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
-
-	return pieceID;
 };
