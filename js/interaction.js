@@ -1,4 +1,4 @@
-import {gameState, getPiecePreview, attemptPlacePiece, renderBoard, clearBoard, EMPTY_HELD_PIECE} from './board.js';
+import {gameState, clearBoard, getPiecePreview, attemptPlacePiece, EMPTY_HELD_PIECE} from './board.js';
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './pieces.js';
 import * as renderer from "./renderer.js";
 
@@ -63,15 +63,14 @@ function handlePieceTrayClick(e) {
 }
 
 function handleCellClick(e) {
-	const piece = attemptPlacePiece();
+	const pieceID = attemptPlacePiece();
 
-	if (!piece) return;
+	if (!pieceID) return;
 
 	renderer.updateCursorPiece(e, null);
-	renderer.markTrayPieceUsed(piece);
+	renderer.markTrayPieceUsed(pieceID);
 
-	renderBoard();
-
+	renderer.renderBoard();
 
 	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
 
@@ -96,7 +95,7 @@ function resetGameState() {
 
 function handleGameReset(e) {
 	clearBoard();
-	renderBoard();
+	renderer.renderBoard();
 	resetGameState();
 	populatePlayerTrayState();
 	renderer.resetTrayUI();

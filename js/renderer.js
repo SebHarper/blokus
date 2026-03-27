@@ -1,4 +1,4 @@
-import {rows, cols, gameState} from './board.js';
+import {CELL, rows, cols, gameState} from './board.js';
 import {pieces} from './pieces.js';
 
 
