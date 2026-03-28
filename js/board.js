@@ -211,3 +211,46 @@ export function canPlacePiece() {
 
 	return true;
 }
+
+function hasPlayerNeighbour(r, c, offsets, player) {
+	let adjacent = false;
+
+	for (const offset of offsets) {
+		const nr = r + offset[0];
+		const nc = c + offset[1];
+
+		if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
+			continue;
+		}
+
+		if (gameState.boardState[nr][nc] === player) {
+			adjacent = true;
+			break;
+		}
+	}
+	return adjacent;
+}
+
+// Player move must contain at least 1 frontier cell
+// used for finding number of valid moves player can make
+export function getFrontierCells(player) {
+
+	const validCells = [];
+
+	for (let r = 0; r < rows; r++) {
+		for (let c = 0; c < cols; c++) {
+			if (gameState.boardState[r][c] !== CELL.EMPTY) continue;
+
+			let sideAdjacent = doNeighbourCheck(r, c, cardinalAdjacentCells, player);
+
+			if (sideAdjacent) continue;
+
+			let diagAdjacent = doNeighbourCheck(r, c, diagonalAdjacentCells, player);
+
+			if (diagAdjacent) {
+				validCells.push([r, c]);
+			}
+		}
+	}
+	return validCells;
+}
