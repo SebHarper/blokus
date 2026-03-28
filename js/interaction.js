@@ -111,6 +111,7 @@ function handleGameReset(e) {
 	resetGameState();
 	populatePlayerTrayState();
 	renderer.resetTrayUI();
+	renderer.updateCursorPiece(e, null);
 }
 
 function handleMouseMove(e) {
