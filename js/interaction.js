@@ -1,4 +1,4 @@
-import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE} from './board.js';
+import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE, getFrontierCells} from './board.js';
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './pieces.js';
 import * as renderer from "./renderer.js";
 
@@ -94,6 +94,9 @@ function finalizePiecePlacement(pieceID) {
 	gameState.ghostCells = [];
 
 	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
+
+	const frontier = getFrontierCells(gameState.currentPlayer + 1);
+	renderer.renderFrontierCells(frontier);
 };
 
 
@@ -112,6 +115,9 @@ function handleGameReset(e) {
 	populatePlayerTrayState();
 	renderer.resetTrayUI();
 	renderer.updateCursorPiece(e, null);
+
+	const frontier = getFrontierCells(gameState.currentPlayer + 1);
+	renderer.renderFrontierCells(frontier);
 }
 
 function handleMouseMove(e) {

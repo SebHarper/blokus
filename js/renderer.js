@@ -1,4 +1,4 @@
-import {CELL, rows, cols, gameState} from './board.js';
+import {CELL, rows, cols, gameState, RENDER_FRONTIER} from './board.js';
 import {pieces} from './pieces.js';
 
 
@@ -254,4 +254,16 @@ export function changePlayerLabel() {
 	const label = $("#playerLabel");
 	
 	label.text(`Player ${gameState.currentPlayer + 1}`);
+}
+
+export function renderFrontierCells(cells) {
+
+	if (!RENDER_FRONTIER) return;
+
+	$(".cell").removeClass("frontier");
+
+	for (const [r, c] of cells) {
+		$(`.cell[data-row=${r}][data-col=${c}]`)
+			.addClass("frontier")
+	}
 }

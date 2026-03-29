@@ -201,3 +201,7 @@ temp {
 .cell.ghost-right {
 	border-right: 2px solid;
 }
+
+.cell.frontier {
+	background-color: #00ff0099;
+}

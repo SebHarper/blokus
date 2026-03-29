@@ -46,6 +46,8 @@ export const CELL = {
 
 export const EMPTY_HELD_PIECE = { pieceID:null, rotation:0, flipped:false };
 
+export const RENDER_FRONTIER = false;
+
 export function initialiseBoard() {
 
 	for (let r=0; r < rows; r++) {
@@ -231,6 +233,9 @@ function hasPlayerNeighbour(r, c, offsets, player) {
 	return adjacent;
 }
 
+// Frontier cell:
+// empty cells diagonally adjacent to the player and not side-adjacent
+//
 // Player move must contain at least 1 frontier cell
 // used for finding number of valid moves player can make
 export function getFrontierCells(player) {
@@ -241,11 +246,11 @@ export function getFrontierCells(player) {
 		for (let c = 0; c < cols; c++) {
 			if (gameState.boardState[r][c] !== CELL.EMPTY) continue;
 
-			let sideAdjacent = doNeighbourCheck(r, c, cardinalAdjacentCells, player);
+			let sideAdjacent = hasPlayerNeighbour(r, c, cardinalNeighbourOffsets, player);
 
 			if (sideAdjacent) continue;
 
-			let diagAdjacent = doNeighbourCheck(r, c, diagonalAdjacentCells, player);
+			let diagAdjacent = hasPlayerNeighbour(r, c, diagonalNeighbourOffsets, player);
 
 			if (diagAdjacent) {
 				validCells.push([r, c]);
