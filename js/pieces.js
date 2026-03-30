@@ -148,3 +148,4 @@ export function computeHeldPieceGeometry() {
 
 	gameState.heldPieceGeometry = piece;
 };
+

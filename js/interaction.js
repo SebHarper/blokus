@@ -28,7 +28,6 @@ function handlePieceTrayClick(e) {
 	}
 
 	const pieceID = pieceEl.data("id");
-	let tray = gameState.playerTrays[gameState.currentPlayer];
 
 	const selected = gameState.selectedPiece;
 	const available = gameState.playerTrays[gameState.currentPlayer][pieceID];
@@ -77,10 +76,35 @@ function handleCellClick(e) {
 
 	finalizePiecePlacement(pieceID);
 
-	renderer.changeTrayPlayer();
-
-	renderer.updatePlayerLabel();
+	advanceTurn();
 };
+
+function advanceTurn() {
+	let attempts = 0;
+
+	do {
+		gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
+
+		getFrontierCells(gameState.currentPlayer);
+
+		attempts++;
+
+		if (attempts >= gameState.playerCount) {
+			alert("Game over - no player can move");
+			return;
+		}
+
+	} while (!playerHasMoves(gameState.currentPlayer));
+
+	renderer.changeTrayPlayer();
+	renderer.updatePlayerLabel();
+}
+
+function playerHasMoves(p) {
+	if (!gameState.hadFirstMove[p]) return true;
+
+	return gameState.frontierCells[p].length !== 0;
+}
 
 function finalizePiecePlacement(pieceID) {
 
@@ -92,10 +116,6 @@ function finalizePiecePlacement(pieceID) {
 	gameState.selectedPiece = null;
 	gameState.heldPieceGeometry = null;
 	gameState.ghostCells = [];
-
-	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
-
-	getFrontierCells(gameState.currentPlayer);
 };
 
 
@@ -231,10 +251,8 @@ export function bindEventHandlers() {
 		}
 	});
 
-	console.log(document.querySelector("#playerLabel"));
 	$("#playerLabel").on("mouseenter", () => {
 		const cells = gameState.frontierCells[gameState.currentPlayer];
-		console.log(cells);
 		renderer.displayFrontierCells(cells);
 	});
 
