@@ -250,14 +250,13 @@ export function renderGhostFromState() {
 	}
 }
 
-export function changePlayerLabel() {
+export function updatePlayerLabel() {
 	const label = $("#playerLabel");
-	
+
 	label.text(`Player ${gameState.currentPlayer + 1}`);
 }
 
-export function renderFrontierCells(cells) {
-
+export function displayFrontierCells(cells) {
 	if (!RENDER_FRONTIER) return;
 
 	$(".cell").removeClass("frontier");
@@ -266,4 +265,8 @@ export function renderFrontierCells(cells) {
 		$(`.cell[data-row=${r}][data-col=${c}]`)
 			.addClass("frontier")
 	}
-}
+};
+
+export function clearFrontierCells() {
+	$(".cell").removeClass("frontier");
+};

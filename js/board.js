@@ -3,7 +3,7 @@ export const cols = 20;
 
 export const gameState = {
 	currentPlayer: 0,
-	playerCount: 4,
+	playerCount: 2,
 	boardState: [],
 
 	playerTrays: [],
@@ -25,15 +25,15 @@ export const gameState = {
 	ghostCells: [],
 	hoverRow: null,
 	hoverCol: null,
-	
-	mouse: {x: 0, y: 0}
+
+	mouse: {x: 0, y: 0},
+
+	frontierCells: [[], [], [], []]
 };
 
 export const UIState = {
 	
 };
-
-window.gameState = gameState;
 
 export const CELL = {
 	EMPTY: 0,
@@ -46,7 +46,7 @@ export const CELL = {
 
 export const EMPTY_HELD_PIECE = { pieceID:null, rotation:0, flipped:false };
 
-export const RENDER_FRONTIER = false;
+export const RENDER_FRONTIER = true;
 
 export function initialiseBoard() {
 
@@ -246,16 +246,16 @@ export function getFrontierCells(player) {
 		for (let c = 0; c < cols; c++) {
 			if (gameState.boardState[r][c] !== CELL.EMPTY) continue;
 
-			let sideAdjacent = hasPlayerNeighbour(r, c, cardinalNeighbourOffsets, player);
+			let sideAdjacent = hasPlayerNeighbour(r, c, cardinalNeighbourOffsets, player + 1);
 
 			if (sideAdjacent) continue;
 
-			let diagAdjacent = hasPlayerNeighbour(r, c, diagonalNeighbourOffsets, player);
+			let diagAdjacent = hasPlayerNeighbour(r, c, diagonalNeighbourOffsets, player + 1);
 
 			if (diagAdjacent) {
 				validCells.push([r, c]);
 			}
 		}
 	}
-	return validCells;
+	gameState.frontierCells[player] = validCells;
 }

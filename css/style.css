@@ -78,10 +78,6 @@ temp {
 	margin-left: 60px;
 }
 
-.noHover {
-	pointer-events: none;
-}
-
 #settingsContainer {
 	width: 600px;
 	height: 440px;
@@ -118,7 +114,7 @@ temp {
 	justify-content: center;
 }
 
-.blokus-button:hover {
+.blokus-button.hoverable:hover {
 	background-color: var(--hovered-button-color);
 }
 
@@ -203,5 +199,5 @@ temp {
 }
 
 .cell.frontier {
-	background-color: #00ff0099;
+	background-color: #00ff0033;
 }

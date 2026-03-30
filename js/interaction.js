@@ -79,7 +79,7 @@ function handleCellClick(e) {
 
 	renderer.changeTrayPlayer();
 
-	renderer.changePlayerLabel();
+	renderer.updatePlayerLabel();
 };
 
 function finalizePiecePlacement(pieceID) {
@@ -95,8 +95,7 @@ function finalizePiecePlacement(pieceID) {
 
 	gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
 
-	const frontier = getFrontierCells(gameState.currentPlayer + 1);
-	renderer.renderFrontierCells(frontier);
+	getFrontierCells(gameState.currentPlayer);
 };
 
 
@@ -106,6 +105,7 @@ function resetGameState() {
 	gameState.selectedPiece = null;
 	gameState.hadFirstMove = [false, false, false, false];
 	gameState.currentPlayer = 0;
+	gameState.frontierCells = [[], [], [], []];
 }
 
 function handleGameReset(e) {
@@ -116,8 +116,7 @@ function handleGameReset(e) {
 	renderer.resetTrayUI();
 	renderer.updateCursorPiece(e, null);
 
-	const frontier = getFrontierCells(gameState.currentPlayer + 1);
-	renderer.renderFrontierCells(frontier);
+	renderer.updatePlayerLabel();
 }
 
 function handleMouseMove(e) {
@@ -232,10 +231,21 @@ export function bindEventHandlers() {
 		}
 	});
 
+	console.log(document.querySelector("#playerLabel"));
+	$("#playerLabel").on("mouseenter", () => {
+		const cells = gameState.frontierCells[gameState.currentPlayer];
+		console.log(cells);
+		renderer.displayFrontierCells(cells);
+	});
+
+	$("#playerLabel").on("mouseleave", () => {
+		renderer.clearFrontierCells();
+	});
+
 	// using buttons to switch screen view
 	$("#game-view").click(() => renderer.showView("#gameContainer"));
 	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
 	$("#tileset-view").click(() => renderer.showView("#tilesetOptionsContainer"));
 
-	renderer.changePlayerLabel();
+	renderer.updatePlayerLabel();
 };
