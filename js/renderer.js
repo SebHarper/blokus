@@ -56,14 +56,18 @@ export function createScoreLabels() {
 	const container = $("#playerScoreContainer");
 
 	for (let i = 0; i < gameState.playerCount; i++) {
+		let label = $(`<span class="score-label">P${i + 1}: 0</span>`);
+
 		let player_div = $(`
-		<div class="blokus-button">
-			<div class="cell p${i+1}"></div>
-			<span class="score-label">P${i + 1}: 0</span>
-		</div>`);
+			<div class="blokus-button">
+				<div class="cell p${i+1}"></div>
+			</div>
+		`);
+
+		player_div.append(label);
 		container.append(player_div);
 
-		gameState.scoreElements[i] = (player_div);
+		gameState.scoreElements[i] = label;
 	}
 }
 
@@ -291,6 +295,6 @@ export function clearFrontierCells() {
 export function updatePlayerScores() {
 	for (let i = 0; i < gameState.playerCount; i++) {
 
-		gameState.scoreElements[i].find(".score-label").text(`P${i + 1}: ${gameState.playerScores[i]}`);
+		gameState.scoreElements[i].text(`P${i + 1}: ${gameState.playerScores[i]}`);
 	}
 }
