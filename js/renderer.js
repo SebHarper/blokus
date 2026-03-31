@@ -295,6 +295,6 @@ export function clearFrontierCells() {
 export function updatePlayerScores() {
 	for (let i = 0; i < gameState.playerCount; i++) {
 
-		gameState.scoreElements[i].text(`P${i + 1}: ${gameState.playerScores[i]}`);
+		gameState.scoreElements[i].text(`P${i + 1}: 89 - ${gameState.playerScores[i]}`);
 	}
 }
