@@ -149,3 +149,17 @@ export function computeHeldPieceGeometry() {
 	gameState.heldPieceGeometry = piece;
 };
 
+export function calcPlayerScores() {
+
+	for (let i = 0; i < gameState.playerCount; i++) {
+		let playerScore = 0;
+
+		for (const [piece, playerHasPiece] of Object.entries(gameState.playerTrays[i])) {
+
+			if (playerHasPiece) {
+				playerScore += pieces[piece].cells.length;
+			}
+		}
+		gameState.playerScores[i] = playerScore;
+	}
+}

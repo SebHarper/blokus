@@ -52,6 +52,21 @@ export function createPieceElements() {
 	}
 };
 
+export function createScoreLabels() {
+	const container = $("#playerScoreContainer");
+
+	for (let i = 0; i < gameState.playerCount; i++) {
+		let player_div = $(`
+		<div class="blokus-button">
+			<div class="cell p${i+1}"></div>
+			<span class="score-label">P${i + 1}: 0</span>
+		</div>`);
+		container.append(player_div);
+
+		gameState.scoreElements[i] = (player_div);
+	}
+}
+
 export function createCursorReference() {
 	gameState.cursorElement = $("#cursor-piece");
 }
@@ -74,6 +89,8 @@ export function updateCursorPiece(e, letter) {
 
 	moveCursorPiece(e);
 };
+
+
 
 export function moveCursorPiece(e) {
 
@@ -270,3 +287,10 @@ export function displayFrontierCells(cells) {
 export function clearFrontierCells() {
 	$(".cell").removeClass("frontier");
 };
+
+export function updatePlayerScores() {
+	for (let i = 0; i < gameState.playerCount; i++) {
+
+		gameState.scoreElements[i].find(".score-label").text(`P${i + 1}: ${gameState.playerScores[i]}`);
+	}
+}

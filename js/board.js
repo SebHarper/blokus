@@ -3,10 +3,12 @@ export const cols = 20;
 
 export const gameState = {
 	currentPlayer: 0,
-	playerCount: 2,
+	playerCount: 4,
 	boardState: [],
 
 	playerTrays: [],
+
+	playerScores: [0,0,0,0],
 
 	moveHistory: [],
 
@@ -18,6 +20,8 @@ export const gameState = {
 
 	cellElements: [],
 	pieceElements: {},
+	
+	scoreElements: {},
 
 	cursorElement: null,
 	cursorFlipElement: null,
@@ -28,7 +32,8 @@ export const gameState = {
 
 	mouse: {x: 0, y: 0},
 
-	frontierCells: [[], [], [], []]
+	frontierCells: [[], [], [], []],
+
 };
 
 export const UIState = {

@@ -1,5 +1,5 @@
 import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE, getFrontierCells} from './board.js';
-import {pieces, computeHeldPieceGeometry, populatePlayerTrayState} from './pieces.js';
+import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
 import * as renderer from "./renderer.js";
 
 
@@ -75,6 +75,9 @@ function handleCellClick(e) {
 	renderer.renderBoard();
 
 	finalizePiecePlacement(pieceID);
+
+	calcPlayerScores();
+	renderer.updatePlayerScores();
 
 	advanceTurn();
 };
