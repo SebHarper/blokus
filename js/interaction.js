@@ -1,5 +1,5 @@
 import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE, getFrontierCells} from './board.js';
-import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
+import {computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
 import * as renderer from "./renderer.js";
 
 

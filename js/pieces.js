@@ -35,7 +35,7 @@ export function populatePieces() {
 			if (row[j] != " ") {
 
 				if (!(row[j] in pieces)) {
-					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: [], offset: []};
+					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: [], offset: [], geometries: []};
 
 				} else {
 					let x_off = i - pieces[row[j]].start[0];
@@ -83,7 +83,57 @@ export function populatePieces() {
 			Math.ceil((p.dim[1] / 2) + 0.5)
 		];
 	}
+	computePieceGeometries();
 };
+
+function sortCoords(coords) {
+	coords.sort((a, b) => {
+		if (a[0] !== b[0]) return a[0] - b[0];
+		return a[1] - b[1];
+	});
+	return coords;
+}
+
+function hashPiece(piece) {
+	let pieceRepr = `${piece.dim[0]},${piece.dim[1]}` + "|";
+
+	const sorted_cells = sortCoords(structuredClone(piece.cells));
+
+	for (let i = 0; i < sorted_cells.length; i++) {
+
+		pieceRepr += `${sorted_cells[i][0]},${sorted_cells[i][1]};`
+	}
+	return pieceRepr;
+}
+
+function computePieceGeometries() {
+	for (const id in pieces) {
+
+		let seen = new Set();
+		let geometries = [];
+
+		for (let flip = 0; flip <2; flip++) {
+			let piece = structuredClone(pieces[id]);
+
+			if (flip === 1) piece = flipPiece(piece);
+
+			for (let rot = 0; rot < 4; rot++) {
+				const key = hashPiece(piece);
+				if (!seen.has(key)) {
+					seen.add(key);
+					geometries.push({
+						cells: structuredClone(piece.cells),
+						dim: [piece.dim[0], piece.dim[1]],
+						offset: [piece.offset[0], piece.offset[1]]
+					});
+				}
+				piece = rotatePiece(piece);
+			}
+		}
+		//console.log(id, seen);
+	}
+}
+
 
 export function populatePlayerTrayState() {
 	for (let i = 0; i < gameState.playerCount; i++) {

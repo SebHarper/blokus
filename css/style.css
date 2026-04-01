@@ -116,23 +116,6 @@ temp {
 	background-color: #904fba;
 }
 
-.blokus-button {
-	height: 40px;
-	width: 120px;
-	color: #ffffff;
-	font-weight: bold;
-	background-color: var(--button-color);
-	cursor: default;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.blokus-button.hoverable:hover {
-	background-color: var(--hovered-button-color);
-	cursor: pointer;
-}
-
 #cursor-piece {
 	position: fixed;
 	pointer-events: none;
@@ -217,10 +200,28 @@ temp {
 	background-color: #00ff0099;
 }
 
+.blokus-button {
+	height: 40px;
+	width: 120px;
+	color: #ffffff;
+	font-weight: bold;
+	background-color: var(--button-color);
+	cursor: default;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.blokus-button.hoverable:hover {
+	background-color: var(--hovered-button-color);
+	cursor: pointer;
+}
+
 .blokus-button:has(.cell) {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	padding-left: 10px;
 	gap: 10px;
+	padding-left: 10px;
+	box-sizing: border-box;
 }
