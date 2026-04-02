@@ -1,5 +1,5 @@
 import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE, getFrontierCells} from './board.js';
-import {computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
+import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
 import * as renderer from "./renderer.js";
 
 
@@ -97,16 +97,37 @@ function advanceTurn() {
 			return;
 		}
 
-	} while (!playerHasMoves(gameState.currentPlayer));
+	} while (!playerHasMove(gameState.currentPlayer));
 
 	renderer.changeTrayPlayer();
 	renderer.updatePlayerLabel();
 }
 
-function playerHasMoves(p) {
-	if (!gameState.hadFirstMove[p]) return true;
+function playerHasMove(player) {
+	if (!gameState.hadFirstMove[player]) return true;
 
-	return gameState.frontierCells[p].length !== 0;
+	const frontier = gameState.frontierCells[player];
+
+	for (const pieceID in gameState.playerTrays[player]) {
+		if (!gameState.playerTrays[player][pieceID]) continue;
+
+		for (const geometry of pieces[pieceID].geometries) {
+			for (const [fr, fc] of frontier) {
+				for (const [cr, cc] of geometry.cells) {
+					const ar = fr - cr + geometry.offset[0];
+					const ac = fc - cc + geometry.offset[1];
+
+					let validMove = getPiecePreview(geometry, ar, ac);
+					if (validMove.length > 0) {
+						console.log(player, pieceID, validMove);
+						return true;
+					}
+				}
+			}
+		}
+	}
+	console.log(`player ${player + 1} has no possible moves`);
+	return false;
 }
 
 function finalizePiecePlacement(pieceID) {

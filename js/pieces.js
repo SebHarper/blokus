@@ -130,7 +130,7 @@ function computePieceGeometries() {
 				piece = rotatePiece(piece);
 			}
 		}
-		//console.log(id, seen);
+		pieces[id].geometries = geometries;
 	}
 }
 
@@ -143,7 +143,6 @@ export function populatePlayerTrayState() {
 			gameState.playerTrays[i][piece] = true;
 			gameState.playerTrays[i][piece] = true;
 		}
-
 	}
 };
 
