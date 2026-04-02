@@ -83,17 +83,15 @@ function handleCellClick(e) {
 };
 
 function advanceTurn() {
-	let attempts = 0;
+
+	const startPlayer = gameState.currentPlayer;
 
 	do {
 		gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
-
 		getFrontierCells(gameState.currentPlayer);
 
-		attempts++;
-
-		if (attempts >= gameState.playerCount) {
-			alert("Game over - no player can move");
+		if (gameState.currentPlayer === startPlayer) {
+			alert("Game over - no player can move!");
 			return;
 		}
 
@@ -119,7 +117,7 @@ function playerHasMove(player) {
 
 					let validMove = getPiecePreview(geometry, ar, ac);
 					if (validMove.length > 0) {
-						console.log(player, pieceID, validMove);
+						console.log(player + 1, pieceID, validMove);
 						return true;
 					}
 				}

@@ -3,7 +3,7 @@ export const cols = 20;
 
 export const gameState = {
 	currentPlayer: 0,
-	playerCount: 4,
+	playerCount: 2,
 	boardState: [],
 
 	playerTrays: [],
