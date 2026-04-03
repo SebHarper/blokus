@@ -117,14 +117,12 @@ function playerHasMove(player) {
 
 					let validMove = getPiecePreview(geometry, ar, ac);
 					if (validMove.length > 0) {
-						console.log(player + 1, pieceID, validMove);
 						return true;
 					}
 				}
 			}
 		}
 	}
-	console.log(`player ${player + 1} has no possible moves`);
 	return false;
 }
 
