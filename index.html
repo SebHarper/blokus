@@ -11,51 +11,50 @@
 	</head>
 
 	<body>
-		<div id="headerContainer">
-			<h1>Welcome to BLOKUS, a turn based board game</h1>
-		</div>
+		<div id="bodyContainer">
+			<div id="headerContainer">
+				<h1>Welcome to BLOKUS, a turn based board game</h1>
+			</div>
 
-		<div id="gameInfoContainer">
-			<div id="playerScoreContainer">
+			<div id="gameInfoContainer">
+				<div id="playerScoreContainer">
+
+				</div>
+
+				<div id="buttonContainer">
+					<div class="blokus-button hoverable" id="game-view">Game</div>
+					<div class="blokus-button hoverable" id="settings-view">Settings</div>
+					<div class="blokus-button hoverable" id="tileset-view">Tileset</div>
+					<div class="blokus-button hoverable" id="reset-button">Reset Board</div>
+				</div>
 
 			</div>
 
-			<div id="buttonContainer">
-				<div class="blokus-button hoverable" id="game-view">Game</div>
-				<div class="blokus-button hoverable" id="settings-view">Settings</div>
-				<div class="blokus-button hoverable" id="tileset-view">Tileset</div>
-				<div class="blokus-button hoverable" id="reset-button">Reset Board</div>
-			</div>
+			<div id="gameContainer">
 
-		</div>
+				<div id="boardContainer">
+					<div id="game">
+					</div>
+				</div>
 
-		<div id="gameContainer">
-
-			
-
-			<div id="boardContainer">
-				<div id="game">
+				<div id="sidePanel">
+					<div class="blokus-button" id="playerLabel"></div>
+					<div id="pieceContainer"></div>
 				</div>
 			</div>
 
-			<div id="sidePanel">
-				<div class="blokus-button" id="playerLabel"></div>
-				<div id="pieceContainer"></div>
+
+			<div id="settingsContainer" style="display:none">
+
 			</div>
+
+
+			<div id="tilesetOptionsContainer" style="display:none">
+
+			</div>
+
+			<div id="cursor-piece" class="piece"></div>
 		</div>
-
-
-		<div id="settingsContainer" style="display:none">
-
-		</div>
-
-
-		<div id="tilesetOptionsContainer" style="display:none">
-
-		</div>
-
-		<div id="cursor-piece" class="piece"></div>
-
 	</body>
 
 </html>
