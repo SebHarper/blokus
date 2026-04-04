@@ -52,7 +52,7 @@ export function createPieceElements() {
 	}
 };
 
-export function createScoreLabels() {
+export function createScoreButtons() {
 	const container = $("#playerScoreContainer");
 
 	for (let i = 0; i < gameState.playerCount; i++) {
@@ -67,7 +67,7 @@ export function createScoreLabels() {
 		player_div.append(label);
 		container.append(player_div);
 
-		gameState.scoreElements[i] = label;
+		gameState.scoreElements[i] = [player_div, label];
 	}
 }
 
@@ -293,8 +293,14 @@ export function clearFrontierCells() {
 };
 
 export function updatePlayerScores() {
-	for (let i = 0; i < gameState.playerCount; i++) {
 
-		gameState.scoreElements[i].text(`P${i + 1}: ${89 - gameState.playerScores[i]}`);
+	for (let i = 0; i < gameState.playerCount; i++) {
+		gameState.scoreElements[i][1].text(`P${i + 1}: ${89 - gameState.playerScores[i]}`);
 	}
+}
+
+export function highlightCurrentPlayer () {
+
+	$(".player-highlight").removeClass("player-highlight");
+	gameState.scoreElements[gameState.currentPlayer][0].addClass("player-highlight");
 }

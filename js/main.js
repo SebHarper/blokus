@@ -1,8 +1,8 @@
 import {pieces, populatePieces, populatePlayerTrayState, rotatePiece, calcPlayerScores} from './pieces.js';
-import {createPieceElements, createCellElements, createCursorReference, createScoreLabels} from './renderer.js'
+import {createPieceElements, createCellElements, createCursorReference, createScoreButtons} from './renderer.js'
 import {gameState, initialiseBoard, testEnccodeDecode} from './board.js';
 import {bindEventHandlers} from './interaction.js';
-import {renderBoard, updatePlayerScores} from './renderer.js'
+import {renderBoard, updatePlayerScores, highlightCurrentPlayer} from './renderer.js'
 
 
 $(document).ready(function() {
@@ -14,12 +14,13 @@ $(document).ready(function() {
 	createCellElements();
 	createCursorReference();
 
-	createScoreLabels();
+	createScoreButtons();
 
 	renderBoard();
 
 	calcPlayerScores();
 	updatePlayerScores();
+	highlightCurrentPlayer();
 
 	bindEventHandlers();
 });

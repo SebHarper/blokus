@@ -99,6 +99,7 @@ function advanceTurn() {
 
 	renderer.changeTrayPlayer();
 	renderer.updatePlayerLabel();
+	renderer.highlightCurrentPlayer();
 }
 
 function playerHasMove(player) {
@@ -138,16 +139,6 @@ function finalizePiecePlacement(pieceID) {
 	gameState.ghostCells = [];
 };
 
-
-function resetGameState() {
-	gameState.heldPiece = EMPTY_HELD_PIECE;
-	gameState.heldPieceGeometry = null;
-	gameState.selectedPiece = null;
-	gameState.hadFirstMove = [false, false, false, false];
-	gameState.currentPlayer = 0;
-	gameState.frontierCells = [[], [], [], []];
-}
-
 function handleGameReset(e) {
 	clearBoard();
 	renderer.renderBoard();
@@ -156,7 +147,20 @@ function handleGameReset(e) {
 	renderer.resetTrayUI();
 	renderer.updateCursorPiece(e, null);
 
+	calcPlayerScores();
+
 	renderer.updatePlayerLabel();
+	renderer.updatePlayerScores();
+	renderer.highlightCurrentPlayer();
+}
+
+function resetGameState() {
+	gameState.heldPiece = EMPTY_HELD_PIECE;
+	gameState.heldPieceGeometry = null;
+	gameState.selectedPiece = null;
+	gameState.hadFirstMove = [false, false, false, false];
+	gameState.currentPlayer = 0;
+	gameState.frontierCells = [[], [], [], []];
 }
 
 function handleMouseMove(e) {
