@@ -107,6 +107,10 @@ export function getPiecePreview(piece, row, col) {
 
 	if (!piece) return [];
 
+	if (row < 0 || row >= rows || col < 0 || col >= cols) {
+		return [];
+	}
+
 	let previewCells = [];
 
 	let cardinalAdjacentCells = new Set();
