@@ -128,8 +128,8 @@ export function clearTrayUsed(pieceCode) {
 	gameState.pieceElements[pieceCode].removeClass("used");
 };
 
-export function changeTrayPlayer() {
-	const player = gameState.currentPlayer;
+export function changeTrayPlayer(player) {
+
 	const playerTray = gameState.playerTrays[player];
 
 	for (const pieceCode in playerTray) {
@@ -143,7 +143,7 @@ export function changeTrayPlayer() {
 		}
 
 		el.children().removeClass("p1 p2 p3 p4");
-		el.children().addClass(`p${gameState.currentPlayer + 1}`);
+		el.children().addClass(`p${player + 1}`);
 	}
 };
 

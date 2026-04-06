@@ -100,7 +100,7 @@ function advanceTurn() {
 
 	} while (!playerHasMove(gameState.currentPlayer));
 
-	renderer.changeTrayPlayer();
+	renderer.changeTrayPlayer(gameState.currentPlayer);
 	renderer.updatePlayerLabel();
 	renderer.highlightCurrentPlayer();
 }
@@ -341,11 +341,13 @@ export function bindEventHandlers() {
 
 		const cells = gameState.frontierCells[player];
 		renderer.displayFrontierCells(cells);
+		renderer.changeTrayPlayer(player);
 
 	});
 
-	$(".blokus-button").on("mouseleave", function () {
+	$("#playerScoreContainer").on("mouseleave", function () {
 		renderer.clearFrontierCells();
+		renderer.changeTrayPlayer(gameState.currentPlayer);
 	});
 
 	// using buttons to switch screen view
