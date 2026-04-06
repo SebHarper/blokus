@@ -88,7 +88,10 @@ function advanceTurn() {
 
 	do {
 		gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
-		getFrontierCells(gameState.currentPlayer);
+
+		for (let p = 0; p < gameState.playerCount; p++) {
+			getFrontierCells(p);
+		}
 
 		if (gameState.currentPlayer === startPlayer) {
 			alert("Game over - no player can move!");
@@ -209,6 +212,62 @@ function getCellUnderCursor() {
 	return cellEl;
 }
 
+
+const SNAP_PIXELS = 20;
+
+function getCellUnderCursor2() {
+	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
+	const cellEl = $(el).closest(".cell");
+
+	if (!cellEl.length) return cellEl;
+
+	const row = parseInt(cellEl.data("row"));
+	const col = parseInt(cellEl.data("col"));
+
+	// 1. Check current cell first
+	if (isValidPlacement(row, col)) {
+		return cellEl;
+	}
+
+	// 2. Check 4 directions
+	const directions = [
+		{ r: row - 1, c: col }, // up
+		{ r: row + 1, c: col }, // down
+		{ r: row, c: col - 1 }, // left
+		{ r: row, c: col + 1 }  // right
+	];
+
+	let bestCell = null;
+	let bestDist = Infinity;
+
+	for (const d of directions) {
+		if (!isValidPlacement(d.r, d.c)) continue;
+
+		const candidate = $(`.cell[data-row="${d.r}"][data-col="${d.c}"]`);
+		if (!candidate.length) continue;
+
+		// distance to mouse (for picking nearest)
+		const rect = candidate[0].getBoundingClientRect();
+		const cx = rect.left + rect.width / 2;
+		const cy = rect.top + rect.height / 2;
+
+		const dist = Math.hypot(cx - gameState.mouse.x, cy - gameState.mouse.y);
+
+		if (dist < bestDist && dist <= SNAP_PIXELS) {
+			bestDist = dist;
+			bestCell = candidate;
+		}
+	}
+
+	// 3. Return best valid neighbour or fallback
+	return bestCell || cellEl;
+}
+
+function isValidPlacement(row, col) {
+	const preview = getPiecePreview(gameState.heldPieceGeometry, row, col);
+	return preview && preview.length;
+}
+
 function clearGhostState() {
 	gameState.ghostCells = [];
 	gameState.hoverRow = null;
@@ -275,12 +334,17 @@ export function bindEventHandlers() {
 		}
 	});
 
-	$("#playerLabel").on("mouseenter", () => {
-		const cells = gameState.frontierCells[gameState.currentPlayer];
+	$(".blokus-button").on("mouseenter", function () {
+		const player = parseInt($(this).data("player"));
+
+		if (isNaN(player)) return;
+
+		const cells = gameState.frontierCells[player];
 		renderer.displayFrontierCells(cells);
+
 	});
 
-	$("#playerLabel").on("mouseleave", () => {
+	$(".blokus-button").on("mouseleave", function () {
 		renderer.clearFrontierCells();
 	});
 
@@ -291,59 +355,3 @@ export function bindEventHandlers() {
 
 	renderer.updatePlayerLabel();
 };
-
-const SNAP_PIXELS = 20;
-
-function getCellUnderCursor2() {
-	const el = document.elementFromPoint(gameState.mouse.x, gameState.mouse.y);
-	const cellEl = $(el).closest(".cell");
-
-	if (!cellEl.length) return cellEl;
-
-	const row = parseInt(cellEl.data("row"));
-	const col = parseInt(cellEl.data("col"));
-
-	// 1. Check current cell first
-	if (isValidPlacement(row, col)) {
-		return cellEl;
-	}
-
-	// 2. Check 4 directions
-	const directions = [
-		{ r: row - 1, c: col }, // up
-		{ r: row + 1, c: col }, // down
-		{ r: row, c: col - 1 }, // left
-		{ r: row, c: col + 1 }  // right
-	];
-
-	let bestCell = null;
-	let bestDist = Infinity;
-
-	for (const d of directions) {
-		if (!isValidPlacement(d.r, d.c)) continue;
-
-		const candidate = $(`.cell[data-row="${d.r}"][data-col="${d.c}"]`);
-		if (!candidate.length) continue;
-
-		// distance to mouse (for picking nearest)
-		const rect = candidate[0].getBoundingClientRect();
-		const cx = rect.left + rect.width / 2;
-		const cy = rect.top + rect.height / 2;
-
-		const dist = Math.hypot(cx - gameState.mouse.x, cy - gameState.mouse.y);
-
-		if (dist < bestDist && dist <= SNAP_PIXELS) {
-			bestDist = dist;
-			bestCell = candidate;
-		}
-	}
-
-	// 3. Return best valid neighbour or fallback
-	return bestCell || cellEl;
-}
-
-function isValidPlacement(row, col) {
-	console.log(row, col);
-	const preview = getPiecePreview(gameState.heldPieceGeometry, row, col);
-	return preview && preview.length;
-}
