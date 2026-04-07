@@ -111,6 +111,7 @@ function playerHasMove(player) {
 	const frontier = gameState.frontierCells[player];
 
 	let numValidMoves = 0;
+	let bestMoves = [];
 
 	for (const pieceID in gameState.playerTrays[player]) {
 		if (!gameState.playerTrays[player][pieceID]) continue;
@@ -124,6 +125,16 @@ function playerHasMove(player) {
 					let validMove = getPiecePreview(geometry, ar, ac);
 					if (validMove.length > 0) {
 						numValidMoves++;
+
+						let score = validMove.length;
+						
+						bestMoves.push({
+							pieceID,
+							geometry,
+							ar,
+							ac,
+							score
+						});
 					}
 				}
 			}
@@ -132,9 +143,13 @@ function playerHasMove(player) {
 
 	console.log(numValidMoves);
 
-	if (numValidMoves > 0) return true;
+	if (numValidMoves === 0) return false;
 
-	return false;
+	bestMoves.sort((a, b) => b.score - a.score);
+
+	console.log(bestMoves[0]);
+
+	return true;
 }
 
 function finalizePiecePlacement(pieceID) {
