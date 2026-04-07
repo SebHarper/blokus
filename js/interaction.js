@@ -110,6 +110,8 @@ function playerHasMove(player) {
 
 	const frontier = gameState.frontierCells[player];
 
+	let numValidMoves = 0;
+
 	for (const pieceID in gameState.playerTrays[player]) {
 		if (!gameState.playerTrays[player][pieceID]) continue;
 
@@ -121,12 +123,17 @@ function playerHasMove(player) {
 
 					let validMove = getPiecePreview(geometry, ar, ac);
 					if (validMove.length > 0) {
-						return true;
+						numValidMoves++;
 					}
 				}
 			}
 		}
 	}
+
+	console.log(numValidMoves);
+
+	if (numValidMoves > 0) return true;
+
 	return false;
 }
 
