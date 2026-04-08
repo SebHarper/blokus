@@ -1,5 +1,5 @@
-export const rows = 16;
-export const cols = 16;
+export const rows = 20;
+export const cols = 20;
 
 export const gameState = {
 	currentPlayer: 0,

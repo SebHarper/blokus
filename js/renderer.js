@@ -4,10 +4,11 @@ import {pieces} from './pieces.js';
 
 export function createCellElements() {
 
+	let boardContainer = $("#gameContainer");
 	let boardElement = $("#game");
 	boardElement.empty();
 
-	boardElement.css({
+	boardContainer.css({
 		"--rows": rows,
 		"--cols": cols
 	});

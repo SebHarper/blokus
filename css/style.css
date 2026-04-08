@@ -70,7 +70,7 @@ temp {
 #boardContainer {
 	grid-column: 1;
 	grid-row: 1;
-	width: 440px;
+	width: calc((var(--cols, 20) * 20px) + 40px);
 }
 
 #sidePanel {
