@@ -41,6 +41,7 @@ temp {
 	grid-column: 2;
 	width: 120px;
 	display: grid;
+	height: 440px;
 }
 
 #gameContainer {
@@ -85,8 +86,6 @@ temp {
 	width: 240px;
 	height: 340px;
 
-	margin-top: 20px;
-
 	display: grid;
 	grid-template-columns: repeat(12, 20px);
 	grid-template-rows: repeat(17, 20px);
@@ -109,12 +108,14 @@ temp {
 }
 
 #game {
+	margin: 0 auto;
+	width: calc((var(--cols, 20) * 20px) + 40px);
 	background-color: #ffffff;
 	box-sizing: border-box;
 	border: 20px solid var(--button-color);
 	display: grid;
-	grid-template-columns: repeat(20, 20px);
-	grid-template-rows: repeat(20, 20px);
+	grid-template-columns: repeat(var(--cols, 20), 20px);
+	grid-template-rows: repeat(var(--rows, 20), 20px);
 }
 
 .piece .cell {

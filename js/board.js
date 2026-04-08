@@ -1,9 +1,9 @@
-export const rows = 20;
-export const cols = 20;
+export const rows = 16;
+export const cols = 16;
 
 export const gameState = {
 	currentPlayer: 0,
-	playerCount: 4,
+	playerCount: 2,
 	boardState: [],
 
 	playerTrays: [],
@@ -207,20 +207,18 @@ export function getPiecePreview(piece, row, col) {
 	return [];
 };
 
-export function placePieceFromGhost() {
-
-	for (const cell of gameState.ghostCells) {
-		gameState.boardState[cell[0]][cell[1]] = gameState.currentPlayer + 1;
-	}
-
-};
-
 export function canPlacePiece() {
 	if (!gameState.heldPieceGeometry) return false;
 
 	if (gameState.ghostCells.length === 0) return false;
 
 	return true;
+}
+
+export function placePiece(cells, player) {
+	for (const [r, c] of cells) {
+		gameState.boardState[r][c] = player + 1;
+	}
 }
 
 function hasPlayerNeighbour(r, c, offsets, player) {

@@ -7,6 +7,11 @@ export function createCellElements() {
 	let boardElement = $("#game");
 	boardElement.empty();
 
+	boardElement.css({
+		"--rows": rows,
+		"--cols": cols
+	});
+
 	for (let r=0; r < rows; r++) {
 
 		gameState.cellElements[r] = [];

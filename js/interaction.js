@@ -1,4 +1,4 @@
-import {gameState, clearBoard, getPiecePreview, placePieceFromGhost, canPlacePiece, EMPTY_HELD_PIECE, getFrontierCells} from './board.js';
+import {gameState, clearBoard, getPiecePreview, canPlacePiece, placePiece, EMPTY_HELD_PIECE, getFrontierCells} from './board.js';
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
 import * as renderer from "./renderer.js";
 
@@ -67,7 +67,8 @@ function handleCellClick(e) {
 
 	const pieceID = gameState.heldPiece.pieceID
 
-	placePieceFromGhost();
+	// placePieceFromGhost();
+	placePiece(gameState.ghostCells, gameState.currentPlayer);
 
 	renderer.updateCursorPiece(e, null);
 	renderer.markTrayPieceUsed(pieceID);
@@ -141,13 +142,9 @@ function playerHasMove(player) {
 		}
 	}
 
-	console.log(numValidMoves);
-
 	if (numValidMoves === 0) return false;
 
 	bestMoves.sort((a, b) => b.score - a.score);
-
-	console.log(bestMoves[0]);
 
 	return true;
 }
@@ -203,8 +200,10 @@ function handleMouseMove(e) {
 
 function updateGhostPreview(forceUpdate = false) {
 
+	if (!mouseInside($("#game"), gameState.mouse.x, gameState.mouse.y)) return;
+
 	if (!gameState.heldPiece.pieceID) return;
-	
+
 	const cell = getCellUnderCursor2();
 
 	if (!cell.length) {
