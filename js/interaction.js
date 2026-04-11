@@ -256,10 +256,10 @@ function getCellUnderCursor2() {
 		{ r: row + 1, c: col }, // down
 		{ r: row, c: col - 1 }, // left
 		{ r: row, c: col + 1 }, // right
-		{ r: row + 1, c: col + 1 }, // t-right
-		{ r: row + 1, c: col - 1 }, // t-left
-		{ r: row - 1, c: col + 1 }, // b-right
-		{ r: row - 1, c: col - 1 }  // b-left
+		{ r: row + 1, c: col + 1 }, // b-right
+		{ r: row + 1, c: col - 1 }, // b-left
+		{ r: row - 1, c: col + 1 }, // t-right
+		{ r: row - 1, c: col - 1 }  // t-left
 	];
 
 	let bestCell = null;
