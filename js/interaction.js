@@ -1,6 +1,6 @@
 import {EMPTY_HELD_PIECE} from './constants.js';
-import {gameState, clearBoard} from './board.js';
-import {getPiecePreview, canPlacePiece, placePiece, getFrontierCells} from './rules.js'
+import {gameState, clearBoard, placePiece} from './board.js';
+import {getPiecePreview, canPlacePiece, getFrontierCells} from './rules.js'
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
 import * as renderer from "./renderer.js";
 

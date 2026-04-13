@@ -90,3 +90,9 @@ export function testEnccodeDecode(coord) {
 	console.log("r equal: ", coord[0] == decoded[0]);
 	console.log("c equal: ", coord[1] == decoded[1]);
 };
+
+export function placePiece(cells, player) {
+	for (const [r, c] of cells) {
+		gameState.boardState[r][c] = player + 1;
+	}
+}
