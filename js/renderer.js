@@ -1,6 +1,8 @@
-import {CELL, rows, cols, gameState, RENDER_FRONTIER} from './board.js';
+import {CELL, BOARD_SIZE, RENDER_FRONTIER} from './constants.js';
+import {gameState} from './board.js';
 import {pieces} from './pieces.js';
 
+let { rows, cols } = BOARD_SIZE;
 
 export function createCellElements() {
 

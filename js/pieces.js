@@ -1,4 +1,7 @@
-import {rows, cols, gameState} from './board.js';
+import {BOARD_SIZE} from './constants.js';
+import {gameState} from './board.js';
+
+let { rows, cols } = BOARD_SIZE;
 
 //SIZE: 12 x 17
 export const pieceTray = [
