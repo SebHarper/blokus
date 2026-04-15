@@ -23,4 +23,6 @@ $(document).ready(function() {
 	highlightCurrentPlayer();
 
 	bindEventHandlers();
+	
+	console.log(pieces);
 });

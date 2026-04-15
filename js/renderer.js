@@ -31,32 +31,40 @@ export function createCellElements() {
 	}
 };
 
-export function createPieceElements() {
-	let tray = $("#pieceContainer");
-
-	for (let item in pieces) {
-		let piece = pieces[item];
-		let piece_start = piece.start;
-		let piece_cells = piece.cells;
-
-		let piece_div = $("<div>", {
+function createPieceElement(piece) {
+	console.log("piece element created");
+	let piece_div = $("<div>", {
 			class: "piece",
-			style: `grid-area: ${piece_start[0]} / ${piece_start[1]}`,
-			"data-id": item,
+			style: `grid-area: ${piece.start[0]} / ${piece.start[1]}`,
 			"data-width": piece.dim[0],
 			"data-height": piece.dim[1]
 		});
 
-		for (const cell of piece_cells) {
-			let cell_div = $("<div>", {
-				class: "cell p1",
-				style: `grid-area: ${cell[0]} / ${cell[1]}`
-			});
-			piece_div.append(cell_div);
-		}
+	for (const cell of piece.cells) {
+		let cell_div = $("<div>", {
+			class: "cell p1",
+			style: `grid-area: ${cell[0]} / ${cell[1]}`
+		});
+		piece_div.append(cell_div);
+	}
+	
+	return piece_div;
+}
+
+export function createPieceElements() {
+	let tray = $("#pieceContainer");
+
+	for (let pieceID in pieces) {
+		let piece = pieces[pieceID];
+		let piece_start = piece.start;
+		let piece_cells = piece.cells;
+
+		let piece_div = createPieceElement(piece);
+		piece_div.attr("data-id", pieceID);
+		
 		tray.append(piece_div);
 
-		gameState.pieceElements[item] = piece_div;
+		gameState.pieceElements[pieceID] = piece_div;
 	}
 };
 
@@ -84,6 +92,7 @@ export function createCursorReference() {
 }
 
 export function updateCursorPiece(e, letter) {
+
 	let cursor = gameState.cursorElement;
 
 	// reset element rotation and state rotation
@@ -99,12 +108,11 @@ export function updateCursorPiece(e, letter) {
 
 	cursor.append(clone).show();
 
-	moveCursorPiece(e);
+	moveCursorPiece();
 };
 
 
-
-export function moveCursorPiece(e) {
+export function moveCursorPiece() {
 
 	let cursor = gameState.cursorElement;
 
@@ -112,8 +120,8 @@ export function moveCursorPiece(e) {
 	let y_off = cursor.height() / 2;
 
 	cursor.css({
-		left: e.clientX - x_off,
-		top: e.clientY - y_off
+		left: gameState.mouse.x - x_off,
+		top: gameState.mouse.y - y_off
 	});
 
 };
@@ -220,17 +228,21 @@ export function showCursorPiece() {
 	gameState.cursorElement.show();
 }
 
-export function applyCursorTransform() {
-	const rot = gameState.heldPiece.rotation;
-	const flipped = gameState.heldPiece.flipped;
-	const scaleX = flipped ? -1 : 1;
+export function renderCursor(piece) {
+	const el = gameState.cursorElement;
+	el.empty();
+}
 
-	// change rotation direction depending on flipped state
-	// - this ensures shape always rotates clockwise
-	const rotationDegrees = flipped ? -rot * 90 : rot * 90;
+export function transformCursorPiece(e) {
+	let cursor = gameState.cursorElement;
 
+	cursor.hide().empty();
 
-	gameState.cursorElement.css("transform", `scaleX(${scaleX}) rotate(${rotationDegrees}deg)`);
+	let piece_div = createPieceElement(gameState.heldPieceGeometry);
+
+	cursor.append(piece_div.show());
+
+	moveCursorPiece();
 }
 
 export function showView(view) {

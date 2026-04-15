@@ -57,10 +57,10 @@ function handlePieceTrayClick(e) {
 	gameState.selectedPiece = pieceID;
 	gameState.heldPiece = { pieceID: pieceID, rotation:0, flipped:false };
 
+	computeHeldPieceGeometry();
+
 	renderer.updateCursorPiece(e, pieceID);
 	renderer.highlightTrayPiece(pieceID);
-
-	computeHeldPieceGeometry();
 }
 
 function handleCellClick(e) {
@@ -192,7 +192,7 @@ function handleMouseMove(e) {
 	gameState.mouse.x = e.clientX;
 	gameState.mouse.y = e.clientY;
 
-	renderer.moveCursorPiece(e);
+	renderer.moveCursorPiece();
 
 	if (!mouseInside($("#game"), e.pageX, e.pageY)) return;
 
@@ -315,7 +315,7 @@ function dropHeldPiece() {
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 }
 
-export function rotateCursor() {
+export function rotateCursor(e) {
 
 	if (!gameState.heldPiece.pieceID) return;
 
@@ -323,26 +323,22 @@ export function rotateCursor() {
 	rot = (rot + 1) % 4;
 	gameState.heldPiece.rotation = rot;
 
-	renderer.applyCursorTransform();
-
 	computeHeldPieceGeometry();
+	renderer.transformCursorPiece(e);
 
 	updateGhostPreview(true);
-
 	renderer.renderGhostFromState();
 }
 
-export function flipCursor() {
+export function flipCursor(e) {
 	if (!gameState.heldPiece.pieceID) return;
 
 	gameState.heldPiece.flipped = !gameState.heldPiece.flipped;
 
-	renderer.applyCursorTransform();
-
 	computeHeldPieceGeometry();
+	renderer.transformCursorPiece(e);
 
 	updateGhostPreview(true);
-
 	renderer.renderGhostFromState();
 }
 
@@ -357,7 +353,7 @@ export function bindEventHandlers() {
 		if (e.key === "r") {
 			rotateCursor(e);
 		} else if (e.key === "f") {
-			flipCursor();
+			flipCursor(e);
 		}
 	});
 

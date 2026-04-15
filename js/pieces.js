@@ -189,6 +189,7 @@ export function computeHeldPieceGeometry() {
 
 	// sync rotation with cursor rotation (depends on flipped bool)
 	let rotCount = held.flipped ? (4 - held.rotation) % 4: held.rotation;
+	// let rotCount = held.rotation;
 
 	for (let i = 0; i < rotCount; i++) {
 		piece = rotatePiece(piece);
