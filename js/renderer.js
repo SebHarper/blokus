@@ -32,7 +32,6 @@ export function createCellElements() {
 };
 
 function createPieceElement(piece) {
-	console.log("piece element created");
 	let piece_div = $("<div>", {
 			class: "piece",
 			style: `grid-area: ${piece.start[0]} / ${piece.start[1]}`,
@@ -61,7 +60,7 @@ export function createPieceElements() {
 
 		let piece_div = createPieceElement(piece);
 		piece_div.attr("data-id", pieceID);
-		
+
 		tray.append(piece_div);
 
 		gameState.pieceElements[pieceID] = piece_div;

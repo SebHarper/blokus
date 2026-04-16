@@ -112,8 +112,9 @@ function hashPiece(piece) {
 function computePieceGeometries() {
 	for (const id in pieces) {
 
-		let seen = new Set();
+		let seen = new Map();
 		let geometries = [];
+		let transformMap = {}; 
 
 		for (let flip = 0; flip <2; flip++) {
 			let piece = structuredClone(pieces[id]);
@@ -122,18 +123,29 @@ function computePieceGeometries() {
 
 			for (let rot = 0; rot < 4; rot++) {
 				const key = hashPiece(piece);
-				if (!seen.has(key)) {
-					seen.add(key);
+
+				let geomIndex;
+
+				if (seen.has(key)) {
+					geomIndex = seen.get(key);
+				} else {
+					geomIndex = geometries.length;
+
+					seen.set(key, geomIndex);
+
 					geometries.push({
 						cells: structuredClone(piece.cells),
 						dim: [piece.dim[0], piece.dim[1]],
 						offset: [piece.offset[0], piece.offset[1]]
 					});
 				}
+				transformMap[`${flip}-${rot}`] = geomIndex;
+
 				piece = rotatePiece(piece);
 			}
 		}
 		pieces[id].geometries = geometries;
+		pieces[id].transformMap = transformMap;
 	}
 }
 
