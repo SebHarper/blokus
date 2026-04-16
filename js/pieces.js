@@ -197,9 +197,20 @@ export function computeHeldPieceGeometry() {
 
 	if (!held.pieceID) return;
 
-	let piece = structuredClone(pieces[held.pieceID]);
+	let pieceDef = pieces[held.pieceID];
 
-	// sync rotation with cursor rotation (depends on flipped bool)
+	const flip = held.flipped ? 1 : 0;
+	const rot = held.rotation;
+
+	const effectiveRot = flip ? (4 - rot) % 4 : rot;
+
+	const key = `${flip}-${effectiveRot}`;
+	const geomIndex = pieceDef.transformMap[key];
+
+	gameState.heldPieceGeometry = pieceDef.geometries[geomIndex];
+
+
+	/* // sync rotation with cursor rotation (depends on flipped bool)
 	let rotCount = held.flipped ? (4 - held.rotation) % 4: held.rotation;
 	// let rotCount = held.rotation;
 
@@ -211,7 +222,7 @@ export function computeHeldPieceGeometry() {
 		piece = flipPiece(piece);
 	}
 
-	gameState.heldPieceGeometry = piece;
+	gameState.heldPieceGeometry = piece; */
 };
 
 export function calcPlayerScores() {

@@ -34,7 +34,6 @@ export function createCellElements() {
 function createPieceElement(piece) {
 	let piece_div = $("<div>", {
 			class: "piece",
-			style: `grid-area: ${piece.start[0]} / ${piece.start[1]}`,
 			"data-width": piece.dim[0],
 			"data-height": piece.dim[1]
 		});
@@ -59,6 +58,9 @@ export function createPieceElements() {
 		let piece_cells = piece.cells;
 
 		let piece_div = createPieceElement(piece);
+
+		piece_div.css("grid-area", `${piece.start[0]} / ${piece.start[1]}`);
+
 		piece_div.attr("data-id", pieceID);
 
 		tray.append(piece_div);
