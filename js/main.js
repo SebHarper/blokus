@@ -1,4 +1,4 @@
-import {pieces, populatePieces, populatePlayerTrayState, rotatePiece, calcPlayerScores} from './pieces.js';
+import {pieces, trayPiecePositions, populatePieces, populatePlayerTrayState, rotatePiece, calcPlayerScores} from './pieces.js';
 import {createPieceElements, createCellElements, createCursorReference, createScoreButtons} from './renderer.js'
 import {gameState, initialiseBoard, testEnccodeDecode} from './board.js';
 import {bindEventHandlers} from './interaction.js';

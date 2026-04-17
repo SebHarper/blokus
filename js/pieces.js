@@ -26,31 +26,36 @@ export const pieceTray = [
 
 export const pieces = {};
 
+export const trayPiecePositions = {};
+
 export function populatePieces() {
 
 	// create game pieces dynamically
 	// - cell positions normalised relative to upper left of piece bounding box
 
+	const tempPieces = {};
+
 	for (let i = 0; i < pieceTray.length; i++) {
 		let row = pieceTray[i];
 
 		for (let j = 0; j < row.length; j++) {
-			if (row[j] != " ") {
+			const id = row[j];
+			if (id != " ") {
 
-				if (!(row[j] in pieces)) {
-					pieces[row[j]] = {start: [i, j], cells: [[0,0]], dim: [], offset: [], geometries: []};
+				if (!(id in tempPieces)) {
+					tempPieces[id] = {cells: [[0,0]], origin: [i, j]};
 
 				} else {
-					let x_off = i - pieces[row[j]].start[0];
-					let y_off = j - pieces[row[j]].start[1];
-					pieces[row[j]].cells.push([x_off, y_off])
+					let x_off = i - tempPieces[id].origin[0];
+					let y_off = j - tempPieces[id].origin[1];
+					tempPieces[id].cells.push([x_off, y_off])
 				}
 			}
 		}
 	}
-	for (let item in pieces) {
+	for (let id in tempPieces) {
 
-		let p = pieces[item];
+		let p = tempPieces[id];
 
 		let x_min = 100;
 		let x_max = -100;
@@ -71,20 +76,26 @@ export function populatePieces() {
 			cell[1] = cell[1] - y_min + 1;
 		}
 
-		// set bounding box
-		p.dim = [x_max - x_min + 1, y_max - y_min + 1];
+		// set piece data
+		pieces[id] = {
+			cells: p.cells,
+			dim: [x_max - x_min + 1, y_max - y_min + 1],
+			offset: [
+				Math.ceil((x_max - x_min + 1) / 2),
+				Math.ceil((y_max - y_min + 1) / 2)
+			],
+			geometries: [],
+			transformMap: {}
+		};
 
-		// set correct origin
-		p.start = [
-			p.start[0] + x_min + 1,
-			p.start[1] + y_min + 1
-		];
+		// set piece position in tray
+		trayPiecePositions[id] = {
+			position: [
+				p.origin[0] + x_min + 1,
+				p.origin[1] + y_min + 1
+			]
+		};
 
-		// set placement offset
-		p.offset = [
-			Math.ceil((p.dim[0] / 2) + 0.5), 
-			Math.ceil((p.dim[1] / 2) + 0.5)
-		];
 	}
 	computePieceGeometries();
 };

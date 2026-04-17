@@ -8,6 +8,7 @@ export const gameState = {
 	boardState: [],
 
 	playerTrays: [],
+	tray: {},
 
 	playerScores: [0,0,0,0],
 

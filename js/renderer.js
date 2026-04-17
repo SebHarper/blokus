@@ -1,6 +1,6 @@
 import {CELL, BOARD_SIZE, RENDER_FRONTIER} from './constants.js';
 import {gameState} from './board.js';
-import {pieces} from './pieces.js';
+import {pieces, trayPiecePositions} from './pieces.js';
 
 let { rows, cols } = BOARD_SIZE;
 
@@ -54,12 +54,12 @@ export function createPieceElements() {
 
 	for (let pieceID in pieces) {
 		let piece = pieces[pieceID];
-		let piece_start = piece.start;
+		let piece_position = trayPiecePositions[pieceID].position;
 		let piece_cells = piece.cells;
 
 		let piece_div = createPieceElement(piece);
 
-		piece_div.css("grid-area", `${piece.start[0]} / ${piece.start[1]}`);
+		piece_div.css("grid-area", `${piece_position[0]} / ${piece_position[1]}`);
 
 		piece_div.attr("data-id", pieceID);
 
