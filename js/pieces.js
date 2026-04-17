@@ -28,6 +28,8 @@ export const pieces = {};
 
 export const trayPiecePositions = {};
 
+export const pieceMouseOffsets = {};
+
 export function populatePieces() {
 
 	// create game pieces dynamically
@@ -93,6 +95,14 @@ export function populatePieces() {
 			position: [
 				p.origin[0] + x_min + 1,
 				p.origin[1] + y_min + 1
+			]
+		};
+
+		// set piece mouse offset
+		pieceMouseOffsets[id] = {
+			offset: [
+				Math.ceil((x_max - x_min + 1) / 2),
+				Math.ceil((y_max - y_min + 1) / 2)
 			]
 		};
 
