@@ -5,8 +5,6 @@ let { rows, cols } = BOARD_SIZE;
 
 let cardinalNeighbourOffsets = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 let diagonalNeighbourOffsets = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
-let boardCorners = [];
-
 
 export function getPiecePreview(piece, row, col) {
 
@@ -118,12 +116,6 @@ export function canPlacePiece() {
 	if (gameState.ghostCells.length === 0) return false;
 
 	return true;
-}
-
-export function placePiece(cells, player) {
-	for (const [r, c] of cells) {
-		gameState.boardState[r][c] = player + 1;
-	}
 }
 
 function hasPlayerNeighbour(r, c, offsets, player) {

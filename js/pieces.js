@@ -229,21 +229,6 @@ export function computeHeldPieceGeometry() {
 	const geomIndex = pieceDef.transformMap[key];
 
 	gameState.heldPieceGeometry = pieceDef.geometries[geomIndex];
-
-
-	/* // sync rotation with cursor rotation (depends on flipped bool)
-	let rotCount = held.flipped ? (4 - held.rotation) % 4: held.rotation;
-	// let rotCount = held.rotation;
-
-	for (let i = 0; i < rotCount; i++) {
-		piece = rotatePiece(piece);
-	}
-
-	if (held.flipped) {
-		piece = flipPiece(piece);
-	}
-
-	gameState.heldPieceGeometry = piece; */
 };
 
 export function calcPlayerScores() {

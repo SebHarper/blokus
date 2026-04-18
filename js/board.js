@@ -8,7 +8,6 @@ export const gameState = {
 	boardState: [],
 
 	playerTrays: [],
-	tray: {},
 
 	playerScores: [0,0,0,0],
 
@@ -81,7 +80,7 @@ export function decodeCoord(value) {
 	return [Math.floor(value / cols), rem];
 };
 
-export function testEnccodeDecode(coord) {
+export function testEncodeDecode(coord) {
 	console.log("Test Commencing");
 	console.log("Original coord: ", coord);
 	let encoded = encodeCoord(coord[0], coord[1]);

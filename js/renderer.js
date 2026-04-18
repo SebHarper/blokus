@@ -229,11 +229,6 @@ export function showCursorPiece() {
 	gameState.cursorElement.show();
 }
 
-export function renderCursor(piece) {
-	const el = gameState.cursorElement;
-	el.empty();
-}
-
 export function transformCursorPiece(e) {
 	let cursor = gameState.cursorElement;
 
