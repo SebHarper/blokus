@@ -1,10 +1,9 @@
-import {CELL, BOARD_SIZE, RENDER_FRONTIER} from './constants.js';
-import {gameState} from './board.js';
+import {CELL, RENDER_FRONTIER} from './constants.js';
+import {gameState, getBoardSize} from './board.js';
 import {pieces, trayPiecePositions} from './pieces.js';
 
-let { rows, cols } = BOARD_SIZE;
-
 export function createCellElements() {
+	const {rows, cols} = getBoardSize();
 
 	let boardContainer = $("#gameContainer");
 	let boardElement = $("#game");
@@ -51,6 +50,8 @@ function createPieceElement(piece) {
 
 export function createPieceElements() {
 	let tray = $("#pieceContainer");
+	tray.empty().removeClass("layout-classic layout-compact");
+	tray.addClass(`layout-${gameState.settings.pieceTrayLayout}`);
 
 	for (let pieceID in pieces) {
 		let piece = pieces[pieceID];
@@ -59,7 +60,9 @@ export function createPieceElements() {
 
 		let piece_div = createPieceElement(piece);
 
-		piece_div.css("grid-area", `${piece_position[0]} / ${piece_position[1]}`);
+		if (gameState.settings.pieceTrayLayout === "classic") {
+			piece_div.css("grid-area", `${piece_position[0]} / ${piece_position[1]}`);
+		}
 
 		piece_div.attr("data-id", pieceID);
 
@@ -71,6 +74,8 @@ export function createPieceElements() {
 
 export function createScoreButtons() {
 	const container = $("#playerScoreContainer");
+	container.empty();
+	gameState.scoreElements = {};
 
 	for (let i = 0; i < gameState.playerCount; i++) {
 		let label = $(`<span class="score-label">P${i + 1}: 0</span>`);
@@ -264,6 +269,7 @@ export function renderCell(row, col) {
 };
 
 export function renderBoard() {
+	const {rows, cols} = getBoardSize();
 
 	for (let r=0; r < rows; r++) {
 		for (let c=0; c < cols; c++) {

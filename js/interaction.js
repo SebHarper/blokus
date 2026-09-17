@@ -1,5 +1,5 @@
 import {EMPTY_HELD_PIECE} from './constants.js';
-import {gameState, clearBoard, placePiece} from './board.js';
+import {gameState, clearBoard, placePiece, setGameSettings, initialiseBoard} from './board.js';
 import {getPiecePreview, canPlacePiece, getFrontierCells} from './rules.js'
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
 import * as renderer from "./renderer.js";
@@ -182,9 +182,41 @@ function resetGameState() {
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 	gameState.heldPieceGeometry = null;
 	gameState.selectedPiece = null;
-	gameState.hadFirstMove = [false, false, false, false];
+	gameState.hadFirstMove = Array(gameState.playerCount).fill(false);
 	gameState.currentPlayer = 0;
-	gameState.frontierCells = [[], [], [], []];
+	gameState.frontierCells = Array.from({length: gameState.playerCount}, () => []);
+	gameState.playerScores = Array(gameState.playerCount).fill(0);
+	gameState.hoverRow = null;
+	gameState.hoverCol = null;
+}
+
+function applySettings() {
+	const settings = {
+		playerCount: $("#player-count").val(),
+		boardSize: $("#board-size").val(),
+		pieceTrayLayout: $("#piece-tray-layout").val()
+	};
+
+	if (!setGameSettings(settings)) return;
+
+	resetGameState();
+	gameState.cellElements = [];
+	gameState.pieceElements = {};
+	gameState.playerTrays = [];
+	initialiseBoard();
+	populatePlayerTrayState();
+	renderer.createCellElements();
+	renderer.createPieceElements();
+	renderer.createScoreButtons();
+	renderer.createCursorReference();
+	renderer.updateCursorPiece(null, null);
+	renderer.renderBoard();
+	calcPlayerScores();
+	renderer.updatePlayerScores();
+	renderer.updatePlayerLabel();
+	renderer.changeTrayPlayer(gameState.currentPlayer);
+	renderer.highlightCurrentPlayer();
+	renderer.showView("#gameContainer");
 }
 
 function handleMouseMove(e) {
@@ -345,7 +377,7 @@ export function flipCursor(e) {
 export function bindEventHandlers() {
 
 	$("#pieceContainer").click(handlePieceTrayClick);
-	$("#game .cell").click(handleCellClick);
+	$(document).on("click", "#game .cell", handleCellClick);
 	$("#reset-button").click(handleGameReset);
 	$(document).mousemove(handleMouseMove);
 
@@ -357,7 +389,7 @@ export function bindEventHandlers() {
 		}
 	});
 
-	$(".blokus-button").on("mouseenter", function () {
+	$("#playerScoreContainer").on("mouseenter", ".blokus-button", function () {
 		const player = parseInt($(this).data("player"));
 
 		if (isNaN(player)) return;
@@ -377,6 +409,8 @@ export function bindEventHandlers() {
 	$("#game-view").click(() => renderer.showView("#gameContainer"));
 	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
 	$("#tileset-view").click(() => renderer.showView("#tilesetOptionsContainer"));
+	$("#apply-settings").click(applySettings);
+
 
 	renderer.updatePlayerLabel();
 };

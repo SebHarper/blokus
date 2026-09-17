@@ -1,5 +1,11 @@
 export const BOARD_SIZE = {rows: 20, cols: 20}
 
+export const DEFAULT_SETTINGS = {
+	playerCount: 4,
+	boardSize: 20,
+	pieceTrayLayout: "classic"
+};
+
 export const CELL = {
 	EMPTY: 0,
 	PLAYER_1: 1,

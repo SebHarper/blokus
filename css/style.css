@@ -91,20 +91,51 @@ temp {
 	grid-template-rows: repeat(17, 20px);
 }
 
+
 .piece {
 	display: grid;
 	grid-auto-columns: 20px;
 	grid-auto-rows: 20px;
 }
 
-#settingsContainer {
-	width: 600px;
+#tilesetOptionsContainer {
+	width: 640px;
 	height: 440px;
 }
 
-#tilesetOptionsContainer {
-	width: 600px;
+#settingsContainer {
+	width: 700px;
 	height: 440px;
+}
+
+#settingsContainer {
+	box-sizing: border-box;
+	padding: 20px;
+	background-color: var(--button-color);
+}
+
+#settings-form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px 20px;
+	max-width: 500px;
+}
+
+#settings-form label {
+	align-self: center;
+}
+
+#settings-form select,
+#settings-form button {
+	font: inherit;
+	min-height: 36px;
+}
+
+#settings-form button {
+	grid-column: 1 / -1;
+	border: 0;
+	width: auto;
+	padding: 0 16px;
 }
 
 #game {

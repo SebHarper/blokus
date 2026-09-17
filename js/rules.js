@@ -1,12 +1,11 @@
-import {CELL, BOARD_SIZE, RENDER_FRONTIER} from './constants.js';
-import {gameState, encodeCoord, decodeCoord} from './board.js';
-
-let { rows, cols } = BOARD_SIZE;
+import {CELL, RENDER_FRONTIER} from './constants.js';
+import {gameState, encodeCoord, decodeCoord, getBoardSize} from './board.js';
 
 let cardinalNeighbourOffsets = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 let diagonalNeighbourOffsets = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
 
 export function getPiecePreview(piece, row, col) {
+	const {rows, cols} = getBoardSize();
 
 	if (!piece) return [];
 
@@ -119,6 +118,8 @@ export function canPlacePiece() {
 }
 
 function hasPlayerNeighbour(r, c, offsets, player) {
+	const {rows, cols} = getBoardSize();
+	
 	let adjacent = false;
 
 	for (const offset of offsets) {
@@ -143,6 +144,7 @@ function hasPlayerNeighbour(r, c, offsets, player) {
 // Player move must contain at least 1 frontier cell
 // used for finding number of valid moves player can make
 export function getFrontierCells(player) {
+	const {rows, cols} = getBoardSize();
 
 	const validCells = [];
 

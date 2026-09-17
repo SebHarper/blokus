@@ -44,7 +44,30 @@
 
 
 			<div id="settingsContainer" style="display:none">
+				<h2>Game settings</h2>
+				<form id="settings-form">
+					<label for="player-count">Players</label>
+					<select id="player-count">
+						<option value="2">2 players</option>
+						<option value="3">3 players</option>
+						<option value="4" selected>4 players</option>
+					</select>
 
+					<label for="board-size">Board size</label>
+					<select id="board-size">
+						<option value="14">14 x 14</option>
+						<option value="16">16 x 16</option>
+						<option value="18">18 x 18</option>
+						<option value="20" selected>20 x 20</option>
+					</select>
+
+					<label for="piece-tray-layout">Piece tray layout</label>
+					<select id="piece-tray-layout">
+						<option value="classic" selected>Classic arrangement</option>
+					</select>
+
+					<button type="button" class="blokus-button hoverable" id="apply-settings">Apply and restart</button>
+				</form>
 			</div>
 
 
