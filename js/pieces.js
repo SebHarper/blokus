@@ -22,7 +22,6 @@ export const pieceTray = [
 	"P P QQ RR   ",
 	"        RR S",
 	"TTTT UU     ",
-
 ];
 
 export const pieces = {};
@@ -253,4 +252,19 @@ export function getTilesetCellCount() {
 		tilesetCellCount += pieces[id].cells.length;
 	}
 	return tilesetCellCount;
+}
+
+export function getPieceTrayDimensions() {
+	let cols = 0;
+
+	for (let i = 0; i < pieceTray.length; i++) {
+		if (pieceTray[i].length > cols) {
+			cols = pieceTray[i].length;
+		}
+	}
+
+	return {
+		rows: pieceTray.length,
+		cols: cols
+	};
 }

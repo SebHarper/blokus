@@ -83,12 +83,12 @@ temp {
 }
 
 #pieceContainer {
-	width: 240px;
-	height: 340px;
+	width: var(--tray-width, 240px);
+	height: var(--tray-height, 340px);
 
 	display: grid;
-	grid-template-columns: repeat(12, 20px);
-	grid-template-rows: repeat(17, 20px);
+	grid-template-columns: repeat(var(--tray-cols, 12), 20px);
+	grid-template-rows: repeat(var(--tray-rows, 17), 20px);
 }
 
 

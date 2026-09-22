@@ -1,6 +1,6 @@
 import {CELL, RENDER_FRONTIER} from './constants.js';
 import {gameState, getBoardSize} from './board.js';
-import {pieces, trayPiecePositions, getTilesetCellCount} from './pieces.js';
+import {pieces, trayPiecePositions, getTilesetCellCount, getPieceTrayDimensions} from './pieces.js';
 
 export function createCellElements() {
 	const {rows, cols} = getBoardSize();
@@ -50,6 +50,16 @@ function createPieceElement(piece) {
 
 export function createPieceElements() {
 	let tray = $("#pieceContainer");
+
+	const {rows, cols} = getPieceTrayDimensions();
+
+	tray.css({
+		"--tray-rows": rows,
+		"--tray-cols": cols,
+		"--tray-width": `${cols * 20}px`,
+		"--tray-height": `${rows * 20}px`
+	});
+
 	tray.empty().removeClass("layout-classic layout-compact");
 	tray.addClass(`layout-${gameState.settings.pieceTrayLayout}`);
 
