@@ -21,7 +21,8 @@ export const pieceTray = [
 	"PPP Q      O",
 	"P P QQ RR   ",
 	"        RR S",
-	"TTTT UU     "
+	"TTTT UU     ",
+
 ];
 
 export const pieces = {};
@@ -244,4 +245,12 @@ export function calcPlayerScores() {
 		}
 		gameState.playerScores[i] = playerScore;
 	}
+}
+
+export function getTilesetCellCount() {
+	let tilesetCellCount = 0;
+	for (const id in pieces) {
+		tilesetCellCount += pieces[id].cells.length;
+	}
+	return tilesetCellCount;
 }

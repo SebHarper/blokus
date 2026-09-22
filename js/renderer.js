@@ -1,6 +1,6 @@
 import {CELL, RENDER_FRONTIER} from './constants.js';
 import {gameState, getBoardSize} from './board.js';
-import {pieces, trayPiecePositions} from './pieces.js';
+import {pieces, trayPiecePositions, getTilesetCellCount} from './pieces.js';
 
 export function createCellElements() {
 	const {rows, cols} = getBoardSize();
@@ -315,9 +315,10 @@ export function clearFrontierCells() {
 };
 
 export function updatePlayerScores() {
+	const tilesetCellCount = getTilesetCellCount();
 
 	for (let i = 0; i < gameState.playerCount; i++) {
-		gameState.scoreElements[i][1].text(`P${i + 1}: ${89 - gameState.playerScores[i]}`);
+		gameState.scoreElements[i][1].text(`P${i + 1}: ${tilesetCellCount - gameState.playerScores[i]}`);
 	}
 }
 
