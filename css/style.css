@@ -99,8 +99,39 @@ temp {
 }
 
 #tilesetOptionsContainer {
-	width: 640px;
-	height: 440px;
+	width: 700px;
+	min-height: 440px;
+}
+
+#tilesetEditorBoard {
+	background-color: #ffffff;
+	box-sizing: border-box;
+	border: 20px solid var(--button-color);
+	display: grid;
+	grid-template-columns: repeat(var(--editor-cols), 20px);
+	grid-template-rows: repeat(var(--editor-rows), 20px);
+	position: relative;
+}
+
+#tilesetEditorBoard .tileset-editor-cell {
+	cursor: pointer;
+}
+
+#tilesetEditorBoard .tileset-editor-cell:hover {
+	border: 2px solid #ffffff;
+}
+
+#tilesetResizeHandle {
+	background-color: var(--hovered-button-color);
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	box-sizing: border-box;
+	cursor: nwse-resize;
+	height: 20px;
+	position: absolute;
+	right: -20px;
+	bottom: -20px;
+	width: 20px;
 }
 
 #settingsContainer {
