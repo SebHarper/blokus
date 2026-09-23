@@ -9,21 +9,37 @@ const editorState = {
 	cols: 12,
 	cells: [],
 	selectedTilesetId: null,
-	isResizing: false
+	isResizing: false,
+	isPainting: false,
+	paintValue: false
 };
 
 export function initialiseTilesetEditor() {
 	editorState.cells = createEmptyGrid(editorState.rows, editorState.cols);
 	renderEditorGrid();
 
-	$("#tilesetOptionsContainer").on("click", ".tileset-editor-cell", function () {
+	$("#tilesetOptionsContainer").on("mousedown", ".tileset-editor-cell", function (e) {
+		e.preventDefault();
+
 		const row = Number($(this).attr("data-row"));
 		const col = Number($(this).attr("data-col"));
-		toggleEditorCell(row, col);
+
+		editorState.isPainting = true;
+		editorState.paintValue = !editorState.cells[row][col];
+		setEditorCell(row, col, editorState.paintValue);
+	});
+
+	$("#tilesetOptionsContainer").on("mouseenter", ".tileset-editor-cell", function () {
+		if (!editorState.isPainting) return;
+
+		const row = Number($(this).attr("data-row"));
+		const col = Number($(this).attr("data-col"));
+		setEditorCell(row, col, editorState.paintValue);
 	});
 
 	$("#tilesetOptionsContainer").on("mousedown", "#tilesetResizeHandle", function (e) {
 		e.preventDefault();
+		editorState.isPainting = false;
 		editorState.isResizing = true;
 		resizeFromMousePosition(e);
 	});
@@ -35,6 +51,7 @@ export function initialiseTilesetEditor() {
 
 	$(document).on("mouseup.tilesetEditor", function () {
 		editorState.isResizing = false;
+		editorState.isPainting = false;
 	});
 }
 
@@ -103,8 +120,10 @@ function resizeFromMousePosition(e) {
 	resizeEditorGrid(rows, cols);
 }
 
-function toggleEditorCell(row, col) {
-	editorState.cells[row][col] = !editorState.cells[row][col];
+function setEditorCell(row, col, value) {
+	if (editorState.cells[row][col] === value) return;
+
+	editorState.cells[row][col] = value;
 	renderEditorCell(row, col);
 }
 
