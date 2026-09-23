@@ -163,4 +163,78 @@ function renderEditorCell(row, col) {
 	const cell = $(`#tilesetEditorBoard .tileset-editor-cell[data-row="${row}"][data-col="${col}"]`);
 
 	cell.toggleClass("p1", editorState.cells[row][col]);
+	buildTilesetFromEditor();
+}
+
+let n_offsets = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+
+function inBounds(w, h, x, y) {
+	return x >= 0 && x < w && y >= 0 && y < h;
+}
+
+function floodFill(grid, startRow, startCol) {
+	let outputCells = [];
+
+	let stack = [[startRow, startCol]];
+
+	const visited = new Set();
+	visited.add(`${startRow},${startCol}`);
+
+	while (stack.length > 0) {
+		const [row, col] = stack.pop();
+
+		outputCells.push([row, col]);
+
+		for (const [dr, dc] of n_offsets) {
+			let nr = row + dr;
+			let nc = col + dc;
+			if (!inBounds(grid.length, grid[0].length, nr, nc)) {
+                continue;
+            }
+
+			if (!grid[nr][nc] === true) {
+                continue;
+            }
+			
+			const key = `${nr},${nc}`;
+
+			if (visited.has(key)) {
+                continue;
+            }
+
+            visited.add(key);
+            stack.push([nr, nc]);
+		}
+	}
+	return outputCells;
+}
+
+function buildTilesetFromEditor() {
+	let tilesetCopy = structuredClone(editorState.cells);
+
+	let pieceIndex = 0;
+
+	for (let i = 0; i < tilesetCopy.length; i++) {
+		for (let j = 0; j < tilesetCopy[i].length; j++) {
+
+			if (tilesetCopy[i][j] === true) {
+				let pieceCells = floodFill(tilesetCopy, i, j); 
+
+				for (const [x, y] of pieceCells) {
+					tilesetCopy[x][y] = `piece_${pieceIndex}`;
+				}
+				pieceIndex++;
+			}
+		}
+	}
+
+	for (let i = 0; i < tilesetCopy.length; i++) {
+        for (let j = 0; j < tilesetCopy[i].length; j++) {
+            if (tilesetCopy[i][j] === false) {
+                tilesetCopy[i][j] = " ";
+            }
+        }
+    }
+
+	return tilesetCopy;
 }
