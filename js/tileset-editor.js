@@ -166,6 +166,38 @@ function renderEditorCell(row, col) {
 	buildTilesetFromEditor();
 }
 
+function printTileset(ts) {
+	const labels = {};
+	let output = "";
+
+	for (const row of ts) {
+		for (const cell of row) {
+			if (typeof cell === "string" && cell.startsWith("p_")) {
+				const index = Number(cell.slice(2));
+				labels[cell] = String.fromCharCode(65 + index);
+			}
+		}
+	}
+
+	for (let i = 0; i < ts.length; i++) {
+		for (let j = 0; j < ts[i].length; j++) {
+			const cell = ts[i][j];
+
+			if (labels[cell]) {
+				output += labels[cell];
+			} else {
+				output += cell;
+			}
+
+			output += ".";
+		}
+
+		output += "\n";
+	}
+
+	console.log(output);
+}
+
 let n_offsets = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 
 function inBounds(w, h, x, y) {
@@ -221,7 +253,7 @@ function buildTilesetFromEditor() {
 				let pieceCells = floodFill(tilesetCopy, i, j); 
 
 				for (const [x, y] of pieceCells) {
-					tilesetCopy[x][y] = `piece_${pieceIndex}`;
+					tilesetCopy[x][y] = `p_${pieceIndex}`;
 				}
 				pieceIndex++;
 			}
@@ -235,6 +267,8 @@ function buildTilesetFromEditor() {
             }
         }
     }
+	// DEBUG - visualise pieces in terminal
+	// printTileset(tilesetCopy);
 
 	return tilesetCopy;
 }

@@ -4,7 +4,7 @@ import {gameState} from './board.js';
 let { rows, cols } = BOARD_SIZE;
 
 //SIZE: 12 x 17
-export const pieceTray = [
+export let pieceTray = [
 	"AAA   BB   C",
 	"A   D  BBB C",
 	"A DDDD     C",
@@ -24,21 +24,36 @@ export const pieceTray = [
 	"TTTT UU     ",
 ];
 
+function clearObject(ob) {
+	for (const key in ob) {
+		delete ob[key];
+	}
+}
+
+export function setPieceTray(newPieceTray) {
+	clearObject(pieces);
+	clearObject(trayPiecePositions);
+	clearObject(pieceMouseOffsets);
+	
+	pieceTray = newPieceTray;
+	populatePieces(pieceTray);
+}
+
 export const pieces = {};
 
 export const trayPiecePositions = {};
 
 export const pieceMouseOffsets = {};
 
-export function populatePieces() {
-
+export function populatePieces(tray = pieceTray) {
+	
 	// create game pieces dynamically
 	// - cell positions normalised relative to upper left of piece bounding box
 
 	const tempPieces = {};
 
-	for (let i = 0; i < pieceTray.length; i++) {
-		let row = pieceTray[i];
+	for (let i = 0; i < tray.length; i++) {
+		let row = tray[i];
 
 		for (let j = 0; j < row.length; j++) {
 			const id = row[j];
