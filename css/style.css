@@ -103,6 +103,11 @@ temp {
 	min-height: 440px;
 }
 
+#tilesetSelectorContainer {
+	width: 700px;
+	min-height: 440px;
+}
+
 #tilesetEditorBoard {
 	background-color: #ffffff;
 	box-sizing: border-box;

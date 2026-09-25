@@ -4,9 +4,11 @@ import {gameState, initialiseBoard} from './board.js';
 import {bindEventHandlers} from './interaction.js';
 import {renderBoard, updatePlayerScores, highlightCurrentPlayer} from './renderer.js'
 import {initialiseTilesetEditor} from './tileset-editor.js';
+import {initialiseTilesets} from './tilesets.js';
 
 
 $(document).ready(function() {
+	initialiseTilesets();
 	initialiseTilesetEditor();
 	populatePieces();
 	createPieceElements();

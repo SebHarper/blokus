@@ -409,7 +409,7 @@ export function bindEventHandlers() {
 	// using buttons to switch screen view
 	$("#game-view").click(() => renderer.showView("#gameContainer"));
 	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
-	$("#tileset-view").click(() => renderer.showView("#tilesetOptionsContainer"));
+	$("#tileset-view").click(() => renderer.showView("#tilesetSelectorContainer"));
 	$("#apply-settings").click(applySettings);
 
 

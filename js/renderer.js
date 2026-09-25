@@ -257,7 +257,7 @@ export function transformCursorPiece(e) {
 }
 
 export function showView(view) {
-	$("#gameContainer, #settingsContainer, #tilesetOptionsContainer").hide();
+	$("#gameContainer, #settingsContainer, #tilesetSelectorContainer, #tilesetOptionsContainer").hide();
 	$(view).show();
 };
 
