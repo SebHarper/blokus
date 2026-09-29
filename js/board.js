@@ -2,6 +2,8 @@ import {CELL, DEFAULT_SETTINGS, EMPTY_HELD_PIECE} from './constants.js';
 
 export const gameState = {
 	currentPlayer: 0,
+	gameActive: false,
+	activeTilesetId: null,
 	playerCount: DEFAULT_SETTINGS.playerCount,
 	settings: {...DEFAULT_SETTINGS},
 	boardState: [],

@@ -1,15 +1,15 @@
-import {pieces, trayPiecePositions, setPieceTray, populatePlayerTrayState, rotatePiece, calcPlayerScores} from './pieces.js';
+import {pieces, trayPiecePositions, populatePlayerTrayState, rotatePiece, calcPlayerScores} from './pieces.js';
 import {createPieceElements, createCellElements, createCursorReference, createScoreButtons} from './renderer.js'
 import {gameState, initialiseBoard} from './board.js';
-import {bindEventHandlers} from './interaction.js';
+import {bindEventHandlers, initialiseSelectedTileset} from './interaction.js';
 import {renderBoard, updatePlayerScores, highlightCurrentPlayer} from './renderer.js'
 import {initialiseTilesetEditor} from './tileset-editor.js';
-import {initialiseTilesets, renderTilesetManager, getSelectedTileset} from './tilesets.js';
+import {initialiseTilesets, renderTilesetManager} from './tilesets.js';
 
 
 $(document).ready(function() {
 	initialiseTilesets();
-	setPieceTray(getSelectedTileset().tray);
+	initialiseSelectedTileset();
 	renderTilesetManager();
 	initialiseTilesetEditor();
 	createPieceElements();

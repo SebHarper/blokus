@@ -1,7 +1,8 @@
 import {EMPTY_HELD_PIECE} from './constants.js';
-import {gameState, clearBoard, placePiece, setGameSettings, initialiseBoard} from './board.js';
+import {gameState, placePiece, setGameSettings, initialiseBoard} from './board.js';
 import {getPiecePreview, canPlacePiece, getFrontierCells} from './rules.js'
-import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores} from './pieces.js';
+import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores, setPieceTray} from './pieces.js';
+import {getSelectedTileset} from './tilesets.js';
 import * as renderer from "./renderer.js";
 
 
@@ -163,19 +164,58 @@ function finalizePiecePlacement(pieceID) {
 	gameState.ghostCells = [];
 };
 
-function handleGameReset(e) {
-	clearBoard();
-	renderer.renderBoard();
+function handleGameReset() {
+	if (!gameState.gameActive) return;
+
+	startGameWithSelectedTileset();
+}
+
+function handleGameView() {
+	if (!gameState.gameActive) {
+		startGameWithSelectedTileset();
+	}
+
+	renderer.showView("#gameContainer");
+}
+
+function startGameWithSelectedTileset() {
+	if (!initialiseSelectedTileset()) return false;
+
 	resetGameState();
+	gameState.boardState = [];
+	gameState.cellElements = [];
+	gameState.pieceElements = {};
+	gameState.playerTrays = [];
+
+	initialiseBoard();
 	populatePlayerTrayState();
-	renderer.resetTrayUI();
-	renderer.updateCursorPiece(e, null);
-
+	renderer.createCellElements();
+	renderer.createPieceElements();
+	renderer.createScoreButtons();
+	renderer.createCursorReference();
+	renderer.updateCursorPiece(null, null);
+	renderer.renderBoard();
 	calcPlayerScores();
-
 	renderer.updatePlayerLabel();
 	renderer.updatePlayerScores();
+	renderer.changeTrayPlayer(gameState.currentPlayer);
 	renderer.highlightCurrentPlayer();
+
+	gameState.gameActive = true;
+	return true;
+}
+
+export function initialiseSelectedTileset() {
+	const selectedTileset = getSelectedTileset();
+
+	if (selectedTileset === null) return false;
+
+	if (gameState.activeTilesetId !== selectedTileset.id) {
+		setPieceTray(selectedTileset.tray);
+		gameState.activeTilesetId = selectedTileset.id;
+	}
+
+	return true;
 }
 
 function resetGameState() {
@@ -200,23 +240,7 @@ function applySettings() {
 
 	if (!setGameSettings(settings)) return;
 
-	resetGameState();
-	gameState.cellElements = [];
-	gameState.pieceElements = {};
-	gameState.playerTrays = [];
-	initialiseBoard();
-	populatePlayerTrayState();
-	renderer.createCellElements();
-	renderer.createPieceElements();
-	renderer.createScoreButtons();
-	renderer.createCursorReference();
-	renderer.updateCursorPiece(null, null);
-	renderer.renderBoard();
-	calcPlayerScores();
-	renderer.updatePlayerScores();
-	renderer.updatePlayerLabel();
-	renderer.changeTrayPlayer(gameState.currentPlayer);
-	renderer.highlightCurrentPlayer();
+	startGameWithSelectedTileset();
 	renderer.showView("#gameContainer");
 }
 
@@ -407,7 +431,7 @@ export function bindEventHandlers() {
 	});
 
 	// using buttons to switch screen view
-	$("#game-view").click(() => renderer.showView("#gameContainer"));
+	$("#game-view").click(handleGameView);
 	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
 	$("#tileset-view").click(() => renderer.showView("#tilesetSelectorContainer"));
 	$("#apply-settings").click(applySettings);
