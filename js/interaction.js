@@ -156,6 +156,7 @@ function finalizePiecePlacement(pieceID) {
 
 	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
 
+	gameState.gameActive = true;
 	gameState.hadFirstMove[gameState.currentPlayer] = true;
 
 	gameState.heldPiece = EMPTY_HELD_PIECE;
@@ -201,7 +202,6 @@ function startGameWithSelectedTileset() {
 	renderer.changeTrayPlayer(gameState.currentPlayer);
 	renderer.highlightCurrentPlayer();
 
-	gameState.gameActive = true;
 	return true;
 }
 
@@ -219,6 +219,7 @@ export function initialiseSelectedTileset() {
 }
 
 function resetGameState() {
+	gameState.gameActive = false;
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 	gameState.heldPieceGeometry = null;
 	gameState.selectedPiece = null;
