@@ -1,4 +1,5 @@
 import {DEFAULT_TILESETS} from "./default-tilesets.js";
+import {buildPieceTrayFromCells} from "./tileset-builder.js";
 
 const CLASSIC_TILESET_ID = "classic";
 
@@ -65,23 +66,17 @@ function addRandomTestTilesets(count) {
 }
 
 function createRandomTray(rows, cols) {
-	const tray = [];
-	let pieceNumber = 0;
+	const cells = [];
 
 	for (let row = 0; row < rows; row++) {
-		tray[row] = [];
+		cells[row] = [];
 
 		for (let col = 0; col < cols; col++) {
-			if (Math.random() < 0.4) {
-				tray[row][col] = `p_${pieceNumber}`;
-				pieceNumber++;
-			} else {
-				tray[row][col] = " ";
-			}
+			cells[row][col] = Math.random() < 0.4;
 		}
 	}
 
-	return tray;
+	return buildPieceTrayFromCells(cells);
 }
 
 export function renderTilesetManager() {
