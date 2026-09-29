@@ -223,7 +223,7 @@ temp {
 	padding: 0;
 }
 
-.tileset-card-actions button:hover {
+.tileset-card-actions button:not(:disabled):hover {
 	background-color: var(--tileset-card-hover-color);
 }
 

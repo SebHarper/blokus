@@ -239,7 +239,11 @@ function createTilesetCard(tileset) {
 		type: "button",
 		text: "Select"
 	}));
-	actions.append($("<button>", {type: "button", text: "Edit"}));
+
+	const editButton = $("<button>", {type: "button", text: "Edit"});
+	if (tileset.builtIn) editButton.prop("disabled", true);
+	actions.append(editButton);
+
 	actions.append($("<button>", {type: "button", text: "Copy"}));
 
 	const deleteButton = $("<button>", {
