@@ -11,6 +11,7 @@ const editorState = {
 	cols: 12,
 	cells: [],
 	selectedTilesetId: null,
+	saveTilesetId: null,
 	isResizing: false,
 	isPainting: false,
 	paintValue: false
@@ -57,13 +58,16 @@ export function initialiseTilesetEditor() {
 	});
 }
 
-export function openTilesetEditor(tileset = null) {
+export function openTilesetEditor(tileset = null, saveTilesetId = null) {
 	if (tileset === null) {
 		resetTilesetEditor();
 		return;
 	}
 
-	// Loading saved tilesets will be added with the save flow.
+	loadTilesetIntoEditor(tileset);
+	editorState.selectedTilesetId = tileset.id;
+	editorState.saveTilesetId = saveTilesetId;
+	renderEditorGrid();
 }
 
 export function resetTilesetEditor() {
@@ -71,7 +75,27 @@ export function resetTilesetEditor() {
 	editorState.cols = 12;
 	editorState.cells = createEmptyGrid(editorState.rows, editorState.cols);
 	editorState.selectedTilesetId = null;
+	editorState.saveTilesetId = null;
 	renderEditorGrid();
+}
+
+function loadTilesetIntoEditor(tileset) {
+	const rows = tileset.tray.length;
+	let cols = 0;
+
+	for (let row = 0; row < rows; row++) {
+		if (tileset.tray[row].length > cols) cols = tileset.tray[row].length;
+	}
+
+	editorState.rows = rows;
+	editorState.cols = cols;
+	editorState.cells = createEmptyGrid(rows, cols);
+
+	for (let row = 0; row < rows; row++) {
+		for (let col = 0; col < tileset.tray[row].length; col++) {
+			editorState.cells[row][col] = tileset.tray[row][col] !== " ";
+		}
+	}
 }
 
 function createEmptyGrid(rows, cols) {

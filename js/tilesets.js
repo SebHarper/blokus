@@ -1,5 +1,7 @@
 import {DEFAULT_TILESETS} from "./default-tilesets.js";
 import {buildPieceTrayFromCells} from "./tileset-builder.js";
+import {openTilesetEditor} from "./tileset-editor.js";
+import * as renderer from "./renderer.js";
 
 const CLASSIC_TILESET_ID = "classic";
 
@@ -52,6 +54,31 @@ export function initialiseTilesets() {
 			classicCard.addClass("selected");
 			classicCard.prependTo(".tileset-card-grid");
 		}
+	});
+
+	$("#tilesetSelectorContainer").on("click", ".tileset-new-button", function () {
+		openTilesetEditor();
+		renderer.showView("#tilesetOptionsContainer");
+	});
+
+	$("#tilesetSelectorContainer").on("click", ".tileset-edit-button", function () {
+		const id = $(this).closest(".tileset-card").attr("data-tileset-id");
+		const tileset = getTileset(id);
+
+		if (tileset === null || tileset.builtIn) return;
+
+		openTilesetEditor(tileset, tileset.id);
+		renderer.showView("#tilesetOptionsContainer");
+	});
+
+	$("#tilesetSelectorContainer").on("click", ".tileset-copy-button", function () {
+		const id = $(this).closest(".tileset-card").attr("data-tileset-id");
+		const tileset = getTileset(id);
+
+		if (tileset === null) return;
+
+		openTilesetEditor(tileset);
+		renderer.showView("#tilesetOptionsContainer");
 	});
 }
 
@@ -240,11 +267,19 @@ function createTilesetCard(tileset) {
 		text: "Select"
 	}));
 
-	const editButton = $("<button>", {type: "button", text: "Edit"});
+	const editButton = $("<button>", {
+		class: "tileset-edit-button",
+		type: "button",
+		text: "Edit"
+	});
 	if (tileset.builtIn) editButton.prop("disabled", true);
 	actions.append(editButton);
 
-	actions.append($("<button>", {type: "button", text: "Copy"}));
+	actions.append($("<button>", {
+		class: "tileset-copy-button",
+		type: "button",
+		text: "Copy"
+	}));
 
 	const deleteButton = $("<button>", {
 		class: "tileset-delete-button",
