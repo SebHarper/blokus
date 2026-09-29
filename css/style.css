@@ -250,6 +250,61 @@ temp {
 	border: 2px solid #ffffff;
 }
 
+.tileset-editor-layout {
+	align-items: flex-start;
+	display: flex;
+	justify-content: space-between;
+}
+
+.tileset-editor-controls {
+	background-color: var(--tileset-card-color);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	min-height: 220px;
+	padding: 20px;
+	width: 240px;
+}
+
+.tileset-editor-controls h2 {
+	font-size: 18px;
+	margin: 0 0 8px;
+}
+
+.tileset-editor-controls label {
+	font-size: 12px;
+}
+
+.tileset-editor-controls input,
+.tileset-editor-controls button {
+	border: 0;
+	box-sizing: border-box;
+	font: inherit;
+	height: 36px;
+	padding: 0 10px;
+}
+
+.tileset-editor-controls button {
+	background-color: var(--button-color);
+	color: #ffffff;
+	cursor: pointer;
+}
+
+.tileset-editor-controls button:hover {
+	background-color: var(--hovered-button-color);
+}
+
+.tileset-editor-actions {
+	display: flex;
+	gap: 12px;
+	margin-top: auto;
+}
+
+.tileset-editor-actions button {
+	flex: 1;
+}
+
 #tilesetResizeHandle {
 	background-color: var(--hovered-button-color);
 	border-top: 2px solid #ffffff;

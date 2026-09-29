@@ -12,6 +12,7 @@ const editorState = {
 	cells: [],
 	selectedTilesetId: null,
 	saveTilesetId: null,
+	name: "Untitled tileset",
 	isResizing: false,
 	isPainting: false,
 	paintValue: false
@@ -47,6 +48,14 @@ export function initialiseTilesetEditor() {
 		resizeFromMousePosition(e);
 	});
 
+	$("#tilesetOptionsContainer").on("input", "#tilesetEditorName", function () {
+		editorState.name = $(this).val();
+	});
+
+	$("#tilesetOptionsContainer").on("click", ".tileset-editor-clear-button", function () {
+		clearTilesetEditor();
+	});
+
 	$(document).on("mousemove.tilesetEditor", function (e) {
 		if (!editorState.isResizing) return;
 		resizeFromMousePosition(e);
@@ -58,7 +67,7 @@ export function initialiseTilesetEditor() {
 	});
 }
 
-export function openTilesetEditor(tileset = null, saveTilesetId = null) {
+export function openTilesetEditor(tileset = null, saveTilesetId = null, name = null) {
 	if (tileset === null) {
 		resetTilesetEditor();
 		return;
@@ -67,6 +76,7 @@ export function openTilesetEditor(tileset = null, saveTilesetId = null) {
 	loadTilesetIntoEditor(tileset);
 	editorState.selectedTilesetId = tileset.id;
 	editorState.saveTilesetId = saveTilesetId;
+	editorState.name = name === null ? tileset.name : name;
 	renderEditorGrid();
 }
 
@@ -76,7 +86,21 @@ export function resetTilesetEditor() {
 	editorState.cells = createEmptyGrid(editorState.rows, editorState.cols);
 	editorState.selectedTilesetId = null;
 	editorState.saveTilesetId = null;
+	editorState.name = "Untitled tileset";
 	renderEditorGrid();
+}
+
+export function clearTilesetEditor() {
+	editorState.cells = createEmptyGrid(editorState.rows, editorState.cols);
+	renderEditorGrid();
+}
+
+export function getTilesetEditorDraft() {
+	return {
+		name: editorState.name.trim(),
+		tray: buildTilesetFromEditor(),
+		saveTilesetId: editorState.saveTilesetId
+	};
 }
 
 function loadTilesetIntoEditor(tileset) {
@@ -160,7 +184,7 @@ function renderEditorGrid() {
 
 	container.empty();
 
-	// container.append("<h2>Tileset editor</h2>");
+	const layout = $("<div>", {class: "tileset-editor-layout"});
 
 	const board = $("<div>", {id: "tilesetEditorBoard"}).css({
 		"--editor-cols": editorState.cols,
@@ -182,7 +206,41 @@ function renderEditorGrid() {
 	}
 
 	board.append($("<div>", {id: "tilesetResizeHandle", title: "Drag to resize the tileset grid"}));
-	container.append(board);
+	layout.append(board);
+	layout.append(createEditorControls());
+	container.append(layout);
+}
+
+function createEditorControls() {
+	const controls = $("<div>", {class: "tileset-editor-controls"});
+	controls.append("<h2>Tileset editor</h2>");
+	controls.append($("<label>", {for: "tilesetEditorName", text: "Display name"}));
+	controls.append($("<input>", {
+		id: "tilesetEditorName",
+		type: "text",
+		value: editorState.name
+	}));
+
+	controls.append($("<button>", {
+		class: "tileset-editor-clear-button",
+		type: "button",
+		text: "Clear grid"
+	}));
+
+	const actions = $("<div>", {class: "tileset-editor-actions"});
+	actions.append($("<button>", {
+		class: "tileset-editor-discard-button",
+		type: "button",
+		text: "Discard"
+	}));
+	actions.append($("<button>", {
+		class: "tileset-editor-save-button",
+		type: "button",
+		text: "Save"
+	}));
+	controls.append(actions);
+
+	return controls;
 }
 
 function renderEditorCell(row, col) {

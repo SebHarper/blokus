@@ -1,6 +1,6 @@
 import {DEFAULT_TILESETS} from "./default-tilesets.js";
 import {buildPieceTrayFromCells} from "./tileset-builder.js";
-import {openTilesetEditor} from "./tileset-editor.js";
+import {getTilesetEditorDraft, openTilesetEditor, resetTilesetEditor} from "./tileset-editor.js";
 import * as renderer from "./renderer.js";
 
 const CLASSIC_TILESET_ID = "classic";
@@ -77,8 +77,26 @@ export function initialiseTilesets() {
 
 		if (tileset === null) return;
 
-		openTilesetEditor(tileset);
+		openTilesetEditor(tileset, null, getCopyName(tileset.name));
 		renderer.showView("#tilesetOptionsContainer");
+	});
+
+	$("#tilesetOptionsContainer").on("click", ".tileset-editor-save-button", function () {
+		const draft = getTilesetEditorDraft();
+
+		if (draft.name === "") {
+			$("#tilesetEditorName").focus();
+			return;
+		}
+
+		saveTileset(draft.name, draft.tray, draft.saveTilesetId);
+		renderTilesetManager();
+		renderer.showView("#tilesetSelectorContainer");
+	});
+
+	$("#tilesetOptionsContainer").on("click", ".tileset-editor-discard-button", function () {
+		resetTilesetEditor();
+		renderer.showView("#tilesetSelectorContainer");
 	});
 }
 
