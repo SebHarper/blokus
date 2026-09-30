@@ -22,5 +22,24 @@ export const DEFAULT_TILESETS = [
 			"TTTT UU     "
 		],
 		builtIn: true
+	},
+	{
+		id: "pentominoes",
+		name: "Pentominoes",
+		tray: [
+			"UUU YYYY F ",
+			"U U   Y  FF",
+			"    W   FF ",
+			"TTT WW     ",
+			" T   WW N  ",
+			" T Z    N L",
+			"   ZZZ NN L",
+			" X   Z N  L",
+			"XXX      LL",
+			" X  VVV    ",
+			"      V  PP",
+			"IIIII V PPP"
+		],
+		builtIn: true
 	}
 ];
