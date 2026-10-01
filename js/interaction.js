@@ -365,12 +365,25 @@ function clearGhostState() {
 
 function dropHeldPiece() {
 
-	if (!gameState.selectedPiece) return;
-
-	renderer.clearTrayHighlight(gameState.selectedPiece);
+	if (gameState.selectedPiece) {
+		renderer.clearTrayHighlight(gameState.selectedPiece);
+	}
 
 	gameState.selectedPiece = null;
 	gameState.heldPiece = EMPTY_HELD_PIECE;
+	gameState.heldPieceGeometry = null;
+	clearGhostState();
+	renderer.hideCursorPiece();
+}
+
+function handleSettingsView() {
+	dropHeldPiece();
+	renderer.showView("#settingsContainer");
+}
+
+function handleTilesetView() {
+	dropHeldPiece();
+	renderer.showView("#tilesetSelectorContainer");
 }
 
 export function rotateCursor(e) {
@@ -433,8 +446,8 @@ export function bindEventHandlers() {
 
 	// using buttons to switch screen view
 	$("#game-view").click(handleGameView);
-	$("#settings-view").click(() => renderer.showView("#settingsContainer"));
-	$("#tileset-view").click(() => renderer.showView("#tilesetSelectorContainer"));
+	$("#settings-view").click(handleSettingsView);
+	$("#tileset-view").click(handleTilesetView);
 	$("#apply-settings").click(applySettings);
 
 
