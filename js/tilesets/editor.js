@@ -376,7 +376,7 @@ function updateEditorDimensions(rows, cols, tray = null) {
 
 	const currentTray = tray === null ? buildTilesetFromEditor() : tray;
 	const volume = cols * rows;
-	const score = getPieceTrayScore(currentTray).toLocaleString("en-GB").slice(4);
+	const score = String(getPieceTrayScore(currentTray) % 1_000_000).padStart(6, "0");
 	$("#tilesetEditorDimensions").text(`${dimensions} | Volume: ${volume} | Score: ${score}`);
 }
 
