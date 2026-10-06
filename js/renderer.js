@@ -60,8 +60,7 @@ export function createPieceElements() {
 		"--tray-height": `${rows * 20}px`
 	});
 
-	tray.empty().removeClass("layout-classic layout-compact");
-	tray.addClass(`layout-${gameState.settings.pieceTrayLayout}`);
+	tray.empty();
 
 	for (let pieceID in pieces) {
 		let piece = pieces[pieceID];
@@ -70,9 +69,7 @@ export function createPieceElements() {
 
 		let piece_div = createPieceElement(piece);
 
-		if (gameState.settings.pieceTrayLayout === "classic") {
-			piece_div.css("grid-area", `${piece_position[0]} / ${piece_position[1]}`);
-		}
+		piece_div.css("grid-area", `${piece_position[0]} / ${piece_position[1]}`);
 
 		piece_div.attr("data-id", pieceID);
 

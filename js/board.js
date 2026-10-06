@@ -51,14 +51,13 @@ export function getBoardSize() {
 export function setGameSettings(settings) {
 	const playerCount = Number(settings.playerCount);
 	const boardSize = Number(settings.boardSize);
-	const pieceTrayLayout = settings.pieceTrayLayout === "compact" ? "compact" : "classic";
 	// Select controls provide strings: both "true" and "false" are truthy.
 	const useAnchorCells = settings.useAnchorCells;
 
 	if (![2, 3, 4].includes(playerCount)) return false;
 	if (![14, 16, 18, 20].includes(boardSize)) return false;
 
-	gameState.settings = {playerCount, boardSize, pieceTrayLayout, useAnchorCells};
+	gameState.settings = {playerCount, boardSize, useAnchorCells};
 	gameState.playerCount = playerCount;
 
 	return true;

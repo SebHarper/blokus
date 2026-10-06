@@ -235,7 +235,6 @@ function applySettings() {
 	const settings = {
 		playerCount: $("#player-count").val(),
 		boardSize: $("#board-size").val(),
-		pieceTrayLayout: $("#piece-tray-layout").val(),
 		useAnchorCells: $("#use-anchor-cells").val() === "true" ? true : false 
 	};
 
