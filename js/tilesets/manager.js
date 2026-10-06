@@ -1,7 +1,10 @@
 import {DEFAULT_TILESETS} from "./default-tilesets.js";
-import {buildPieceTrayFromCells} from "./tileset-builder.js";
-import {getTilesetEditorDraft, openTilesetEditor, resetTilesetEditor} from "./tileset-editor.js";
-import * as renderer from "./renderer.js";
+import {buildPieceTrayFromCells} from "./builder.js";
+import {removeDuplicatePieces} from "./layout-tidy.js";
+import {makeTrayPortrait} from "./tray-utils.js";
+import {getTilesetEditorDraft, openTilesetEditor, resetTilesetEditor} from "./editor.js";
+// import {refreshManagerLayoutAnimation} from "./manager-layout-animation.js";
+import * as renderer from "../renderer.js";
 
 const CLASSIC_TILESET_ID = "classic";
 
@@ -26,7 +29,7 @@ export function initialiseTilesets() {
 	selectedTilesetId = CLASSIC_TILESET_ID;
 	nextTilesetNumber = 1;
 
-	addRandomTestTilesets(32);
+	addRandomTestTilesets(31);
 
 	$("#tilesetSelectorContainer").on("click", ".tileset-select-button", function () {
 		const id = $(this).closest(".tileset-card").attr("data-tileset-id");
@@ -89,9 +92,7 @@ export function initialiseTilesets() {
 			return;
 		}
 
-		saveTileset(draft.name, draft.tray, draft.saveTilesetId);
-		renderTilesetManager();
-		renderer.showView("#tilesetSelectorContainer");
+		saveEditorDraft(draft);
 	});
 
 	$("#tilesetOptionsContainer").on("click", ".tileset-editor-discard-button", function () {
@@ -100,13 +101,28 @@ export function initialiseTilesets() {
 	});
 }
 
+function saveEditorDraft(draft) {
+	saveTileset(
+		draft.name,
+		draft.tray,
+		draft.saveTilesetId,
+		draft.removeDuplicates
+	);
+	showTilesetManager();
+}
+
+function showTilesetManager() {
+	renderTilesetManager();
+	renderer.showView("#tilesetSelectorContainer");
+}
+
 function addRandomTestTilesets(count) {
 	for (let i = 0; i < count; i++) {
-		const rows = 5 + Math.floor(Math.random() * 16);
-		const cols = 5 + Math.floor(Math.random() * 16);
+		const rows = 10 + Math.floor(Math.random() * 11);
+		const cols = 10 + Math.floor(Math.random() * 11);
 		const tray = createRandomTray(rows, cols);
 
-		saveTileset(`Custom ${i + 1}`, tray);
+		saveTileset(`Custom ${i + 1}`, tray, null, false)
 	}
 }
 
@@ -121,7 +137,10 @@ function createRandomTray(rows, cols) {
 		}
 	}
 
-	return buildPieceTrayFromCells(cells);
+	const tray = buildPieceTrayFromCells(cells);
+	removeDuplicatePieces(tray);
+	
+	return tray
 }
 
 export function renderTilesetManager() {
@@ -130,12 +149,14 @@ export function renderTilesetManager() {
 
 	const header = $("<div>", {class: "tileset-manager-header"});
 	header.append("<h2>Tilesets</h2>");
-	header.append($("<button>", {
+	const headerActions = $("<div>", {class: "tileset-manager-header-actions"});
+	headerActions.append($("<button>", {
 		class: "tileset-new-button",
 		type: "button",
 		title: "Create a tileset",
 		text: "+"
 	}));
+	header.append(headerActions);
 	container.append(header);
 
 	const cardGrid = $("<div>", {class: "tileset-card-grid"});
@@ -152,6 +173,8 @@ export function renderTilesetManager() {
 	}
 
 	container.append(cardGrid);
+	
+	// refreshManagerLayoutAnimation(cardGrid[0], getTileset, createTilesetPreview);
 }
 
 export function getTilesets() {
@@ -177,15 +200,25 @@ export function selectTileset(id) {
 	return true;
 }
 
-export function saveTileset(name, tray, id = null) {
+export function saveTileset(name, tray, id = null, shouldRemoveDuplicates = true) {
 	if (!Array.isArray(tray) || tray.length === 0) return null;
+
+	const cleanedTray = copyTray(tray);
+
+	if (shouldRemoveDuplicates) removeDuplicatePieces(cleanedTray);
+
+	return storeTileset(name, cleanedTray, id);
+}
+
+function storeTileset(name, tray, id) {
+	const portraitTray = makeTrayPortrait(tray);
 
 	if (id !== null) {
 		const existingTileset = getTileset(id);
 
 		if (existingTileset !== null && !existingTileset.builtIn) {
 			existingTileset.name = name;
-			existingTileset.tray = copyTray(tray);
+			existingTileset.tray = copyTray(portraitTray);
 			return existingTileset;
 		}
 	}
@@ -193,7 +226,7 @@ export function saveTileset(name, tray, id = null) {
 	const tileset = {
 		id: `custom-${nextTilesetNumber}`,
 		name: name,
-		tray: copyTray(tray),
+		tray: copyTray(portraitTray),
 		builtIn: false
 	};
 

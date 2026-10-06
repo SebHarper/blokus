@@ -3,8 +3,8 @@ import {createPieceElements, createCellElements, createCursorReference, createSc
 import {gameState, initialiseBoard} from './board.js';
 import {bindEventHandlers, initialiseSelectedTileset} from './interaction.js';
 import {renderBoard, updatePlayerScores, highlightCurrentPlayer} from './renderer.js'
-import {initialiseTilesetEditor} from './tileset-editor.js';
-import {initialiseTilesets, renderTilesetManager} from './tilesets.js';
+import {initialiseTilesetEditor} from './tilesets/editor.js';
+import {initialiseTilesets, renderTilesetManager} from './tilesets/manager.js';
 
 
 $(document).ready(function() {

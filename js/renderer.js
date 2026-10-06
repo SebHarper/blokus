@@ -186,7 +186,11 @@ export function renderGhostCells(cells) {
 
 	const playerClass = `p${gameState.currentPlayer + 1}`;
 
-	const cellSet = new Set(cells.map(([r, c]) => `${r},${c}`));
+	const cellSet = new Set();
+
+	for (const [r, c] of cells) {
+		cellSet.add(`${r},${c}`);
+	}
 
 	for (const [r,c] of cells) {
 		const el = gameState.cellElements[r][c];

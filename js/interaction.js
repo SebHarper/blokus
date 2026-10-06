@@ -2,7 +2,7 @@ import {EMPTY_HELD_PIECE} from './constants.js';
 import {gameState, placePiece, setGameSettings, initialiseBoard} from './board.js';
 import {getPiecePreview, canPlacePiece, getFrontierCells} from './rules.js'
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores, setPieceTray} from './pieces.js';
-import {getSelectedTileset} from './tilesets.js';
+import {getSelectedTileset} from './tilesets/manager.js';
 import * as renderer from "./renderer.js";
 
 
