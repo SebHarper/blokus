@@ -254,7 +254,7 @@ function startTilesetOptimisation() {
 	editorState.isPainting = false;
 	editorState.isResizing = false;
 	$(".tileset-editor-optimise-button").addClass("is-optimising").attr("aria-busy", "true").find("span").text("Searching...");
-	$(".tileset-editor-controls input, .tileset-editor-controls button:not(.tileset-editor-optimise-button), #tilesetEditorBoardActions button").prop("disabled", true);
+	$(".tileset-editor-controls input, .tileset-editor-controls button:not(.tileset-editor-optimise-button), .tileset-editor-toolbar button").prop("disabled", true);
 	$("#tilesetEditorBoard").attr("aria-busy", "true");
 	$("#tilesetResizeHandle").hide();
 	updateEditorDimensions(editorState.rows, editorState.cols);
@@ -355,10 +355,13 @@ function renderEditorGrid() {
 	container.empty();
 
 	const layout = $("<div>", {class: "tileset-editor-layout"});
+	const editorArea = $("<div>", {class: "tileset-editor-area"});
 	const boardContainer = $("<div>", {class: "tileset-editor-board-container"});
 	boardContainer.append(createEditorBoard());
 	boardContainer.append($("<div>", {id: "tilesetEditorDimensions"}));
-	layout.append(boardContainer);
+	editorArea.append(createEditorToolbar());
+	editorArea.append(boardContainer);
+	layout.append(editorArea);
 	layout.append(createEditorControls());
 	container.append(layout);
 	updateEditorDimensions(editorState.rows, editorState.cols);
@@ -405,34 +408,28 @@ function createEditorBoard(previewTray = null) {
 	}
 
 	board.append($("<div>", {id: "tilesetResizeHandle", title: "Drag to resize the tileset grid"}));
-	board.append(createEditorBoardActions());
 	return board;
 }
 
-function createEditorBoardActions() {
-	const actions = $("<div>", {id: "tilesetEditorBoardActions"});
+function createEditorToolbar() {
+	const toolbar = $("<div>", {class: "tileset-editor-toolbar"});
 
-	actions.append($("<button>", {
-		class: "tileset-editor-clear-button",
-		type: "button",
-		title: "Clear grid",
-		"aria-label": "Clear editor"
-	}).append($("<i>", {class: "fa-solid fa-xmark", "aria-hidden": "true"})));
-	actions.append($("<button>", {
-		class: "tileset-editor-randomise-button",
-		type: "button",
-		title: "Randomise grid",
-		"aria-label": "Randomise editor"
-	}).append($("<i>", {class: "fa-solid fa-shuffle", "aria-hidden": "true"})));
-	actions.append($("<button>", {
-		class: "tileset-editor-undo-button",
-		type: "button",
-		title: "Undo",
-		"aria-label": "Undo",
-		disabled: editorState.history.length === 0
-	}).append($("<i>", {class: "fa-solid fa-arrow-rotate-left", "aria-hidden": "true"})));
+	toolbar.append(createEditorToolbarButton("tileset-editor-undo-button", "fa-arrow-rotate-left", "Undo", editorState.history.length === 0));
+	toolbar.append(createEditorToolbarButton("tileset-editor-randomise-button", "fa-shuffle", "Randomise grid"));
+	toolbar.append(createEditorToolbarButton("tileset-editor-remove-duplicates-button", "fa-clone", "Remove duplicate pieces"));
+	toolbar.append(createEditorToolbarButton("tileset-editor-clear-button", "fa-xmark", "Clear grid"));
 
-	return actions;
+	return toolbar;
+}
+
+function createEditorToolbarButton(className, iconName, label, disabled = false) {
+	return $("<button>", {
+		class: className,
+		type: "button",
+		title: label,
+		"aria-label": label,
+		disabled: disabled
+	}).append($("<i>", {class: `fa-solid ${iconName}`, "aria-hidden": "true"}));
 }
 
 function createEditorControls() {
@@ -445,12 +442,6 @@ function createEditorControls() {
 		value: editorState.name,
 		placeholder: "Tileset name",
 		"aria-label": "Tileset name"
-	}));
-
-	controls.append($("<button>", {
-		class: "tileset-editor-remove-duplicates-button",
-		type: "button",
-		text: "Remove duplicate pieces"
 	}));
 
 	controls.append($("<button>", {
