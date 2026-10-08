@@ -8,10 +8,6 @@ const CELL_SIZE = 20;
 const BORDER_SIZE = 20;
 const MIN_GRID_SIZE = 5;
 const MAX_GRID_SIZE = 20;
-const DEFAULT_EDITOR_OPTIONS = {
-	removeDuplicates: false
-};
-
 const editorState = {
 	// The existing classic tray is 12 columns by 17 rows.
 	rows: 17,
@@ -20,7 +16,6 @@ const editorState = {
 	selectedTilesetId: null,
 	saveTilesetId: null,
 	name: "Untitled tileset",
-	removeDuplicates: DEFAULT_EDITOR_OPTIONS.removeDuplicates,
 	isResizing: false,
 	isOptimising: false,
 	isPainting: false,
@@ -66,8 +61,9 @@ export function initialiseTilesetEditor() {
 		editorState.name = $(this).val();
 	});
 
-	$("#tilesetOptionsContainer").on("change", "#tilesetRemoveDuplicates", function () {
-		editorState.removeDuplicates = $(this).is(":checked");
+	$("#tilesetOptionsContainer").on("click", ".tileset-editor-remove-duplicates-button", function () {
+		if (editorState.isOptimising) return;
+		removeEditorDuplicatePieces();
 	});
 
 	$("#tilesetOptionsContainer").on("click", ".tileset-editor-optimise-button", function () {
@@ -122,7 +118,6 @@ export function openTilesetEditor(tileset = null, saveTilesetId = null, name = n
 	editorState.selectedTilesetId = tileset.id;
 	editorState.saveTilesetId = saveTilesetId;
 	editorState.name = name === null ? tileset.name : name;
-	applyDefaultEditorOptions();
 	editorState.history = [];
 	renderEditorGrid();
 }
@@ -134,13 +129,8 @@ export function resetTilesetEditor() {
 	editorState.selectedTilesetId = null;
 	editorState.saveTilesetId = null;
 	editorState.name = "Untitled tileset";
-	applyDefaultEditorOptions();
 	editorState.history = [];
 	renderEditorGrid();
-}
-
-function applyDefaultEditorOptions() {
-	editorState.removeDuplicates = DEFAULT_EDITOR_OPTIONS.removeDuplicates;
 }
 
 export function clearTilesetEditor() {
@@ -155,6 +145,17 @@ function randomiseTilesetEditor() {
 		}
 	}
 
+	renderEditorGrid();
+}
+
+function removeEditorDuplicatePieces() {
+	const tray = buildTilesetFromEditor();
+	removeDuplicatePieces(tray);
+
+	if (!hasEditorLayoutChanged(tray)) return;
+
+	saveEditorHistory();
+	loadTilesetIntoEditor({tray: tray});
 	renderEditorGrid();
 }
 
@@ -189,8 +190,7 @@ export function getTilesetEditorDraft() {
 	return {
 		name: editorState.name.trim(),
 		tray: buildTilesetFromEditor(),
-		saveTilesetId: editorState.saveTilesetId,
-		removeDuplicates: editorState.removeDuplicates
+		saveTilesetId: editorState.saveTilesetId
 	};
 }
 
@@ -224,9 +224,7 @@ function waitForEditorUpdate() {
 }
 
 function getOptimisationTray() {
-	const tray = buildTilesetFromEditor();
-	if (editorState.removeDuplicates) removeDuplicatePieces(tray);
-	return tray;
+	return buildTilesetFromEditor();
 }
 
 function applyOptimisedEditorLayout(tray) {
@@ -440,37 +438,34 @@ function createEditorBoardActions() {
 function createEditorControls() {
 	const controls = $("<div>", {class: "tileset-editor-controls"});
 	controls.append("<h2>Tileset editor</h2>");
-	controls.append($("<label>", {for: "tilesetEditorName", text: "Display name"}));
 	controls.append($("<input>", {
+		class: "tileset-editor-name-input",
 		id: "tilesetEditorName",
 		type: "text",
-		value: editorState.name
+		value: editorState.name,
+		placeholder: "Tileset name",
+		"aria-label": "Tileset name"
 	}));
 
-	const removeDuplicates = $("<label>", {class: "tileset-editor-option"});
-	removeDuplicates.append($("<input>", {
-		id: "tilesetRemoveDuplicates",
-		type: "checkbox",
-		checked: editorState.removeDuplicates
+	controls.append($("<button>", {
+		class: "tileset-editor-remove-duplicates-button",
+		type: "button",
+		text: "Remove duplicate pieces"
 	}));
-	removeDuplicates.append("Remove duplicate pieces");
-	controls.append(removeDuplicates);
 
-	const optimiseLayout = $("<div>", {class: "tileset-editor-optimise-option"});
-	optimiseLayout.append($("<button>", {
+	controls.append($("<button>", {
 		class: "tileset-editor-optimise-button",
 		type: "button"
 	}).append($("<span>", {text: "Optimise layout"})));
-	controls.append(optimiseLayout);
 
 	const actions = $("<div>", {class: "tileset-editor-actions"});
 	actions.append($("<button>", {
-		class: "tileset-editor-discard-button",
+		class: "tileset-editor-discard-button tileset-editor-secondary-button",
 		type: "button",
 		text: "Discard"
 	}));
 	actions.append($("<button>", {
-		class: "tileset-editor-save-button",
+		class: "tileset-editor-save-button tileset-editor-primary-button",
 		type: "button",
 		text: "Save"
 	}));

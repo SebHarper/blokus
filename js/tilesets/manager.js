@@ -105,8 +105,7 @@ function saveEditorDraft(draft) {
 	saveTileset(
 		draft.name,
 		draft.tray,
-		draft.saveTilesetId,
-		draft.removeDuplicates
+		draft.saveTilesetId
 	);
 	showTilesetManager();
 }
@@ -122,7 +121,7 @@ function addRandomTestTilesets(count) {
 		const cols = 10 + Math.floor(Math.random() * 11);
 		const tray = createRandomTray(rows, cols);
 
-		saveTileset(`Custom ${i + 1}`, tray, null, false)
+		saveTileset(`Custom ${i + 1}`, tray)
 	}
 }
 
@@ -200,14 +199,10 @@ export function selectTileset(id) {
 	return true;
 }
 
-export function saveTileset(name, tray, id = null, shouldRemoveDuplicates = true) {
+export function saveTileset(name, tray, id = null) {
 	if (!Array.isArray(tray) || tray.length === 0) return null;
 
-	const cleanedTray = copyTray(tray);
-
-	if (shouldRemoveDuplicates) removeDuplicatePieces(cleanedTray);
-
-	return storeTileset(name, cleanedTray, id);
+	return storeTileset(name, copyTray(tray), id);
 }
 
 function storeTileset(name, tray, id) {
