@@ -208,7 +208,7 @@ async function optimiseEditorLayout() {
 	try {
 		await waitForEditorUpdate();
 		const tray = getOptimisationTray();
-		const optimisedTray = await searchPieceTray(tray, previewOptimisedTray, controller.signal);
+		const optimisedTray = await searchPieceTray(tray, previewOptimisedTray, controller.signal, MAX_GRID_SIZE);
 		applyOptimisedEditorLayout(optimisedTray);
 	} catch (error) {
 		console.error("Could not optimise tileset", error);
@@ -228,11 +228,11 @@ function getOptimisationTray() {
 }
 
 function applyOptimisedEditorLayout(tray) {
-	const portraitTray = makeTrayPortrait(tray);
-	if (!hasEditorLayoutChanged(portraitTray)) return;
+	const editorTray = padTrayToEditorMinimum(makeTrayPortrait(tray));
+	if (!hasEditorLayoutChanged(editorTray)) return;
 
 	saveEditorHistory();
-	loadTilesetIntoEditor({tray: portraitTray});
+	loadTilesetIntoEditor({tray: editorTray});
 }
 
 function hasEditorLayoutChanged(tray) {
@@ -262,7 +262,7 @@ function startTilesetOptimisation() {
 
 function previewOptimisedTray(bestTray) {
 	if (!editorState.isOptimising) return;
-	const previewTray = makeTrayPortrait(bestTray);
+	const previewTray = padTrayToEditorMinimum(makeTrayPortrait(bestTray));
 	const board = createEditorBoard(previewTray);
 	board.attr("aria-busy", "true");
 	board.find("#tilesetResizeHandle").hide();
@@ -276,11 +276,12 @@ function finishTilesetOptimisation() {
 }
 
 function loadTilesetIntoEditor(tileset) {
-	const rows = tileset.tray.length;
+	const tray = padTrayToEditorMinimum(tileset.tray);
+	const rows = tray.length;
 	let cols = 0;
 
 	for (let row = 0; row < rows; row++) {
-		if (tileset.tray[row].length > cols) cols = tileset.tray[row].length;
+		if (tray[row].length > cols) cols = tray[row].length;
 	}
 
 	editorState.rows = rows;
@@ -288,10 +289,31 @@ function loadTilesetIntoEditor(tileset) {
 	editorState.cells = createEmptyGrid(rows, cols);
 
 	for (let row = 0; row < rows; row++) {
-		for (let col = 0; col < tileset.tray[row].length; col++) {
-			editorState.cells[row][col] = tileset.tray[row][col] !== " ";
+		for (let col = 0; col < tray[row].length; col++) {
+			editorState.cells[row][col] = tray[row][col] !== " ";
 		}
 	}
+}
+
+function padTrayToEditorMinimum(tray) {
+	let cols = MIN_GRID_SIZE;
+
+	for (let row = 0; row < tray.length; row++) {
+		cols = Math.max(cols, tray[row].length);
+	}
+
+	const rows = Math.max(MIN_GRID_SIZE, tray.length);
+	const paddedTray = [];
+
+	for (let row = 0; row < rows; row++) {
+		paddedTray[row] = [];
+
+		for (let col = 0; col < cols; col++) {
+			paddedTray[row][col] = row < tray.length && col < tray[row].length ? tray[row][col] : " ";
+		}
+	}
+
+	return paddedTray;
 }
 
 function createEmptyGrid(rows, cols) {
@@ -417,14 +439,14 @@ function createEditorToolbar() {
 	toolbar.append(createEditorToolbarButton("tileset-editor-undo-button", "fa-arrow-rotate-left", "Undo", editorState.history.length === 0));
 	toolbar.append(createEditorToolbarButton("tileset-editor-randomise-button", "fa-shuffle", "Randomise grid"));
 	toolbar.append(createEditorToolbarButton("tileset-editor-remove-duplicates-button", "fa-clone", "Remove duplicate pieces"));
-	toolbar.append(createEditorToolbarButton("tileset-editor-clear-button", "fa-xmark", "Clear grid"));
+	toolbar.append(createEditorToolbarButton("blokus-button--danger tileset-editor-clear-button", "fa-xmark", "Clear grid"));
 
 	return toolbar;
 }
 
 function createEditorToolbarButton(className, iconName, label, disabled = false) {
 	return $("<button>", {
-		class: className,
+		class: `blokus-button blokus-button--icon ${className}`,
 		type: "button",
 		title: label,
 		"aria-label": label,
@@ -445,18 +467,18 @@ function createEditorControls() {
 	}));
 
 	controls.append($("<button>", {
-		class: "tileset-editor-optimise-button",
+		class: "blokus-button blokus-button--wide tileset-editor-optimise-button",
 		type: "button"
 	}).append($("<span>", {text: "Optimise layout"})));
 
 	const actions = $("<div>", {class: "tileset-editor-actions"});
 	actions.append($("<button>", {
-		class: "tileset-editor-discard-button tileset-editor-secondary-button",
+		class: "blokus-button blokus-button--wide blokus-button--secondary tileset-editor-discard-button",
 		type: "button",
 		text: "Discard"
 	}));
 	actions.append($("<button>", {
-		class: "tileset-editor-save-button tileset-editor-primary-button",
+		class: "blokus-button blokus-button--wide blokus-button--accent tileset-editor-save-button",
 		type: "button",
 		text: "Save"
 	}));

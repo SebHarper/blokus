@@ -150,7 +150,7 @@ export function renderTilesetManager() {
 	header.append("<h2>Tilesets</h2>");
 	const headerActions = $("<div>", {class: "tileset-manager-header-actions"});
 	headerActions.append($("<button>", {
-		class: "tileset-new-button",
+		class: "blokus-button blokus-button--icon tileset-new-button",
 		type: "button",
 		title: "Create a tileset",
 		text: "+"
@@ -308,13 +308,13 @@ function createTilesetCard(tileset) {
 
 	const actions = $("<div>", {class: "tileset-card-actions"});
 	actions.append($("<button>", {
-		class: "tileset-select-button",
+		class: "blokus-button blokus-button--card-action tileset-select-button",
 		type: "button",
 		text: "Select"
 	}));
 
 	const editButton = $("<button>", {
-		class: "tileset-edit-button",
+		class: "blokus-button blokus-button--card-action tileset-edit-button",
 		type: "button",
 		text: "Edit"
 	});
@@ -322,13 +322,13 @@ function createTilesetCard(tileset) {
 	actions.append(editButton);
 
 	actions.append($("<button>", {
-		class: "tileset-copy-button",
+		class: "blokus-button blokus-button--card-action tileset-copy-button",
 		type: "button",
 		text: "Copy"
 	}));
 
 	const deleteButton = $("<button>", {
-		class: "tileset-delete-button",
+		class: "blokus-button blokus-button--card-action blokus-button--danger tileset-delete-button",
 		type: "button",
 		text: "Delete"
 	});

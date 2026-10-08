@@ -427,7 +427,7 @@ export function bindEventHandlers() {
 		}
 	});
 
-	$("#playerScoreContainer").on("mouseenter", ".blokus-button", function () {
+	$("#playerScoreContainer").on("mouseenter", ".player-score-button", function () {
 		const player = parseInt($(this).data("player"));
 
 		if (isNaN(player)) return;

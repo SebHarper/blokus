@@ -88,7 +88,7 @@ export function createScoreButtons() {
 		let label = $(`<span class="score-label">P${i + 1}: 0</span>`);
 
 		let player_div = $(`
-			<div class="blokus-button" data-player="${i}">
+			<div class="player-score-button" data-player="${i}">
 				<div class="cell p${i+1}"></div>
 			</div>
 		`);

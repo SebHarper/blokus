@@ -1,11 +1,11 @@
-const MAX_TRAY_SIZE = 20;
+const DEFAULT_MAX_TRAY_SIZE = 20;
 
-export async function searchPieceTray(tray, onBestTray, signal) {
-	return runContinuousPackingSearch(tray, onBestTray, signal);
+export async function searchPieceTray(tray, onBestTray, signal, maxTraySize = DEFAULT_MAX_TRAY_SIZE) {
+	return runContinuousPackingSearch(tray, onBestTray, signal, maxTraySize);
 }
 
-async function runContinuousPackingSearch(tray, onBestTray, signal) {
-	const search = searchLayouts(tray);
+async function runContinuousPackingSearch(tray, onBestTray, signal, maxTraySize) {
+	const search = searchLayouts(tray, maxTraySize);
 	let bestTray = tray;
 	let pendingBestTray = null;
 	let lastUiYield = performance.now();
@@ -42,7 +42,7 @@ async function runContinuousPackingSearch(tray, onBestTray, signal) {
 }
 
 // Search strategy: explore layouts and expose safe interruption points.
-function* searchLayouts(tray) {
+function* searchLayouts(tray, maxTraySize) {
 	const pieces = getPieces(tray);
 	if (pieces.length === 0) return tray;
 
@@ -63,7 +63,7 @@ function* searchLayouts(tray) {
 		if (bestTray !== null && attempt++ % 5 !== 4) {
 			candidate = yield* refineLayout(currentTray, pieces);
 		} else {
-			candidate = yield* searchRandomLayout(pieces, bestTray);
+			candidate = yield* searchRandomLayout(pieces, bestTray, maxTraySize);
 		}
 
 		if (candidate !== null) {
@@ -87,9 +87,9 @@ function* searchLayouts(tray) {
 	}
 }
 
-function* searchRandomLayout(pieces, bestTray) {
-	const width = getRandomSize(pieces, "col");
-	const randomHeight = getRandomSize(pieces, "row");
+function* searchRandomLayout(pieces, bestTray, maxTraySize) {
+	const width = getRandomSize(pieces, "col", maxTraySize);
+	const randomHeight = getRandomSize(pieces, "row", maxTraySize);
 	const targetArea = bestTray === null ? null : bestTray.length * bestTray[0].length;
 	const height = width === null || randomHeight === null || targetArea === null
 		? randomHeight
@@ -307,7 +307,7 @@ function getNormalisedShapeKey(cells) {
 	return key;
 }
 
-function getRandomSize(pieces, axis) {
+function getRandomSize(pieces, axis, maxTraySize) {
 	let minimum = 5;
 
 	for (let i = 0; i < pieces.length; i++) {
@@ -315,9 +315,9 @@ function getRandomSize(pieces, axis) {
 		minimum = Math.max(minimum, size);
 	}
 
-	if (minimum > MAX_TRAY_SIZE) return null;
+	if (minimum > maxTraySize) return null;
 
-	return minimum + Math.floor(Math.random() * (MAX_TRAY_SIZE - minimum + 1));
+	return minimum + Math.floor(Math.random() * (maxTraySize - minimum + 1));
 }
 
 function getPieceSize(cells, axis) {
