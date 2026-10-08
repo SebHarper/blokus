@@ -259,6 +259,7 @@ export function transformCursorPiece(e) {
 
 export function showView(view) {
 	$("#gameContainer, #settingsContainer, #tilesetSelectorContainer, #tilesetOptionsContainer").hide();
+	$("#playerScoreContainer").toggle(view === "#gameContainer");
 	$(view).show();
 };
 
@@ -313,16 +314,16 @@ export function updatePlayerLabel() {
 export function displayFrontierCells(cells) {
 	if (!RENDER_FRONTIER) return;
 
-	$(".cell").removeClass("frontier");
+	clearFrontierCells();
 
 	for (const [r, c] of cells) {
-		$(`.cell[data-row=${r}][data-col=${c}]`)
+		$(`#game .cell[data-row=${r}][data-col=${c}]`)
 			.addClass("frontier")
 	}
 };
 
 export function clearFrontierCells() {
-	$(".cell").removeClass("frontier");
+	$("#game .cell").removeClass("frontier");
 };
 
 export function updatePlayerScores() {
