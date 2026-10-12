@@ -259,7 +259,7 @@ export function transformCursorPiece(e) {
 
 export function showView(view) {
 	$("#gameContainer, #settingsContainer, #tilesetSelectorContainer, #tilesetOptionsContainer").hide();
-	$("#playerScoreContainer").toggle(view === "#gameContainer");
+	$("#gameInfoContainer").toggle(view === "#gameContainer");
 	$(view).show();
 };
 

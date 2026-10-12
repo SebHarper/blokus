@@ -27,10 +27,6 @@ body {
 	color: #ffffff;
 }
 
-body h1 { 
-	text-align: center;
-}
-
 temp {
 	outline: 1px solid red;
 }
@@ -42,39 +38,54 @@ temp {
 }
 
 #headerContainer {
-	grid-column: 1 / span 2;
+	margin-bottom: 20px;
+}
+
+#navbar {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}
+
+#navbar h1 {
+	font-size: 28px;
+	margin: 0;
+}
+
+#navbarActions {
+	display: flex;
+	gap: 10px;
+}
+
+#navbarActions .blokus-button {
+	gap: 8px;
 }
 
 #gameInfoContainer {
-	margin-left: 20px;
-	grid-row: 2;
-	grid-column: 2;
-	width: 120px;
-	display: grid;
-	height: 440px;
+	align-items: center;
+	display: flex;
+	gap: 10px;
+	grid-column: 1 / -1;
+	justify-content: center;
+	margin-top: 20px;
 }
 
 #gameContainer {
-	display: grid;
+	align-items: start;
 	column-gap: 20px;
-	grid-row: 2;
-	grid-column: 1;
+	display: grid;
+	grid-template-columns: max-content max-content;
+	justify-self: center;
+	width: max-content;
 }
 
 #playerScoreContainer {
-	margin-bottom: auto;
+	display: flex;
 	gap: 10px;
-	grid-column: 1;
-	grid-row: 1;
-	display: grid;
 }
 
-#buttonContainer {
-	margin-top: auto;
-	gap: 10px;
-	display: grid;
-	grid-column: 1;
-	grid-row: 2;
+#gameActionContainer {
+	display: flex;
 }
 
 #boardContainer {
@@ -109,14 +120,15 @@ temp {
 }
 
 #tilesetOptionsContainer {
-	min-width: 700px;
+	grid-column: 1;
 	min-height: 440px;
-	width: max-content;
+	width: 100%;
 }
 
 #tilesetSelectorContainer {
-	width: 700px;
+	grid-column: 1;
 	min-height: 440px;
+	width: 100%;
 }
 
 .tileset-manager-header {
@@ -144,17 +156,16 @@ temp {
 .tileset-card-grid {
 	display: grid;
 	gap: 20px;
-	grid-template-columns: repeat(3, 220px);
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .tileset-card {
+	aspect-ratio: 11 / 15;
 	background-color: var(--tileset-card-color);
 	border: 2px solid transparent;
 	box-sizing: border-box;
-	height: 300px;
 	padding: 10px;
 	position: relative;
-	width: 220px;
 }
 
 .tileset-card.selected {
@@ -369,7 +380,8 @@ temp {
 }
 
 #settingsContainer {
-	width: 700px;
+	grid-column: 1;
+	width: 100%;
 	height: 440px;
 }
 

@@ -14,7 +14,15 @@
 	<body>
 		<div id="bodyContainer">
 			<div id="headerContainer">
-				<h1>Welcome to BLOKUS, a turn based board game</h1>
+
+				<div id="navbar">
+					<h1>BLOKUS</h1>
+					<div id="navbarActions">
+						<button type="button" class="blokus-button blokus-button--nav" id="game-view">Game</button>
+						<button type="button" class="blokus-button blokus-button--nav" id="tileset-view">Tilesets</button>
+						<button type="button" class="blokus-button blokus-button--nav" id="settings-view">Settings <i class="fa-solid fa-gear" aria-hidden="true"></i></button>
+					</div>
+				</div>
 			</div>
 
 			<div id="gameContainer">
@@ -27,20 +35,16 @@
 				<div id="sidePanel">
 					<div id="pieceContainer"></div>
 				</div>
-			</div>
 
-			<div id="gameInfoContainer">
-				<div id="playerScoreContainer">
+				<div id="gameInfoContainer">
+					<div id="playerScoreContainer">
 
+					</div>
+
+					<div id="gameActionContainer">
+						<button type="button" class="blokus-button blokus-button--nav" id="reset-button">Reset Board</button>
+					</div>
 				</div>
-
-				<div id="buttonContainer">
-					<button type="button" class="blokus-button blokus-button--nav" id="game-view">Game</button>
-					<button type="button" class="blokus-button blokus-button--nav" id="settings-view">Settings</button>
-					<button type="button" class="blokus-button blokus-button--nav" id="tileset-view">Tilesets</button>
-					<button type="button" class="blokus-button blokus-button--nav" id="reset-button">Reset Board</button>
-				</div>
-
 			</div>
 
 
