@@ -210,9 +210,10 @@ export function initialiseSelectedTileset() {
 
 	if (selectedTileset === null) return false;
 
-	if (gameState.activeTilesetId !== selectedTileset.id) {
+	if (gameState.activeTilesetId !== selectedTileset.id || gameState.activeTilesetTray !== selectedTileset.tray) {
 		setPieceTray(selectedTileset.tray);
 		gameState.activeTilesetId = selectedTileset.id;
+		gameState.activeTilesetTray = selectedTileset.tray;
 	}
 
 	return true;

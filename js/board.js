@@ -4,6 +4,7 @@ export const gameState = {
 	currentPlayer: 0,
 	gameActive: false,
 	activeTilesetId: null,
+	activeTilesetTray: null,
 	playerCount: DEFAULT_SETTINGS.playerCount,
 	settings: {...DEFAULT_SETTINGS},
 	boardState: [],
