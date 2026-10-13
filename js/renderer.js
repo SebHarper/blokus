@@ -1,6 +1,6 @@
 import {CELL, RENDER_FRONTIER} from './constants.js';
 import {gameState, getBoardSize} from './board.js';
-import {pieces, trayPiecePositions, getTilesetCellCount, getPieceTrayDimensions} from './pieces.js';
+import {pieces, trayPiecePositions, getPieceTrayDimensions} from './pieces.js';
 
 export function createCellElements() {
 	const {rows, cols} = getBoardSize();
@@ -85,7 +85,7 @@ export function createScoreButtons() {
 	gameState.scoreElements = {};
 
 	for (let i = 0; i < gameState.playerCount; i++) {
-		let label = $(`<span class="score-label">P${i + 1}: 0</span>`);
+		let label = $("<span>", {class: "score-label", text: "0 left"});
 
 		let player_div = $(`
 			<div class="player-score-button" data-player="${i}">
@@ -259,7 +259,6 @@ export function transformCursorPiece(e) {
 
 export function showView(view) {
 	$("#gameContainer, #settingsContainer, #tilesetSelectorContainer, #tilesetOptionsContainer").hide();
-	$("#gameInfoContainer").toggle(view === "#gameContainer");
 	$(view).show();
 };
 
@@ -331,11 +330,54 @@ export function clearFrontierCells() {
 };
 
 export function updatePlayerScores() {
-	const tilesetCellCount = getTilesetCellCount();
-
 	for (let i = 0; i < gameState.playerCount; i++) {
-		gameState.scoreElements[i][1].text(`P${i + 1}: ${tilesetCellCount - gameState.playerScores[i]}`);
+		const [scoreCard, label] = gameState.scoreElements[i];
+		label.text(`${gameState.playerScores[i]} left`);
+		scoreCard.toggleClass("is-out", gameState.playersOut[i]);
 	}
+}
+
+export function showGameEndMessage(result) {
+	const game = $("#gameContainer");
+	const remainingText = `${result.remaining} ${result.remaining === 1 ? "cell" : "cells"} left`;
+	const message = $("<div>", {id: "gameEndMessage"});
+
+	message.append($("<strong>", {class: "game-end-title", text: "GAME OVER"}));
+
+	if (result.winners.length === 1) {
+		const winner = result.winners[0];
+		message.append($("<strong>", {
+			class: `game-end-winner game-end-player p${winner + 1}`,
+			text: `${getPlayerColourName(winner)} WINS`
+		}));
+	} else {
+		const tieHeading = $("<strong>", {class: "game-end-winner", text: "TIE BETWEEN:"});
+		const winnerList = $("<ul>", {class: "game-end-winner-list"});
+
+		for (let i = 0; i < result.winners.length; i++) {
+			const winner = result.winners[i];
+			winnerList.append($("<li>", {
+				class: `game-end-player p${winner + 1}`,
+				text: getPlayerColourName(winner)
+			}));
+		}
+
+		message.append(tieHeading, winnerList);
+	}
+
+	message.append($("<span>", {class: "game-end-score", text: remainingText}));
+	game.addClass("is-finished");
+	$("#gamePlayArea").append(message);
+}
+
+export function clearGameEndMessage() {
+	$("#gameContainer").removeClass("is-finished");
+	$("#gameEndMessage").remove();
+}
+
+function getPlayerColourName(player) {
+	const colourNames = ["RED", "BLUE", "GREEN", "YELLOW"];
+	return colourNames[player];
 }
 
 export function highlightCurrentPlayer () {

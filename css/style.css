@@ -71,18 +71,86 @@ temp {
 	align-items: center;
 	display: flex;
 	gap: 10px;
-	grid-column: 1 / -1;
 	justify-content: center;
 	margin-top: 20px;
 }
 
 #gameContainer {
-	align-items: start;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-self: center;
+	width: max-content;
+}
+
+#gamePlayArea {
 	column-gap: 20px;
 	display: grid;
 	grid-template-columns: max-content max-content;
-	justify-self: center;
-	width: max-content;
+	position: relative;
+}
+
+#gameContainer.is-finished #boardContainer {
+	filter: blur(3px);
+	opacity: 0.35;
+}
+
+#gameEndMessage {
+	align-items: center;
+	border: 2px solid #ffffff;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	height: calc((var(--rows, 20) * 20px) + 40px);
+	justify-content: center;
+	left: 0;
+	pointer-events: none;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: calc((var(--cols, 20) * 20px) + 40px);
+	z-index: 1;
+}
+
+.game-end-title,
+.game-end-winner,
+.game-end-score {
+	text-shadow: 0 2px 4px var(--primary-bg-color);
+}
+
+.game-end-title {
+	font-size: 28px;
+}
+
+.game-end-winner {
+	font-size: 20px;
+	margin-top: 10px;
+}
+
+.game-end-winner-list {
+	list-style: none;
+	margin: 6px 0 0;
+	padding: 0;
+}
+
+.game-end-player.p1 {
+	color: var(--p1-color);
+}
+
+.game-end-player.p2 {
+	color: var(--p2-color);
+}
+
+.game-end-player.p3 {
+	color: var(--p3-color);
+}
+
+.game-end-player.p4 {
+	color: var(--p4-color);
+}
+
+.game-end-score {
+	margin-top: 6px;
 }
 
 #playerScoreContainer {
@@ -95,14 +163,7 @@ temp {
 }
 
 #boardContainer {
-	grid-column: 1;
-	grid-row: 1;
 	width: calc((var(--cols, 20) * 20px) + 40px);
-}
-
-#sidePanel {
-	grid-column: 2;
-	grid-row: 1;
 }
 
 #playerLabel {
@@ -601,6 +662,10 @@ temp {
 	color: #ffffff;
 	font-weight: bold;
 	background-color: var(--button-color);
+}
+
+.player-score-button.is-out {
+	opacity: 0.35;
 }
 
 .player-highlight {

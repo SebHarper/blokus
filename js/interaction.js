@@ -103,6 +103,9 @@ function advanceTurn() {
 		nextPlayerCanMove = playerHasMove(gameState.currentPlayer);
 		if (nextPlayerCanMove) break;
 
+		gameState.playersOut[gameState.currentPlayer] = true;
+		renderer.updatePlayerScores();
+
 	} while (gameState.currentPlayer !== startPlayer);
 
 	if (!nextPlayerCanMove) {
@@ -116,10 +119,33 @@ function advanceTurn() {
 }
 
 function finishGame() {
+	const result = getGameResult();
+
 	gameState.phase = "finished";
+	gameState.gameResult = result;
 	dropHeldPiece();
 	renderer.clearFrontierCells();
 	renderer.updateGamePhase();
+	renderer.showGameEndMessage(result);
+}
+
+function getGameResult() {
+	let lowestRemaining = Infinity;
+	const winners = [];
+
+	for (let player = 0; player < gameState.playerCount; player++) {
+		const remaining = gameState.playerScores[player];
+
+		if (remaining < lowestRemaining) {
+			lowestRemaining = remaining;
+			winners.length = 0;
+			winners.push(player);
+		} else if (remaining === lowestRemaining) {
+			winners.push(player);
+		}
+	}
+
+	return {winners, remaining: lowestRemaining};
 }
 
 function playerHasMove(player) {
@@ -182,17 +208,26 @@ function handleGameReset() {
 }
 
 function handleGameView() {
-	if (gameState.phase === "idle") {
+	if (!hasAnyPieceBeenPlaced()) {
 		startGameWithSelectedTileset();
 	}
 
 	renderer.showView("#gameContainer");
 }
 
+function hasAnyPieceBeenPlaced() {
+	for (let player = 0; player < gameState.hadFirstMove.length; player++) {
+		if (gameState.hadFirstMove[player]) return true;
+	}
+
+	return false;
+}
+
 export function startGameWithSelectedTileset() {
 	if (!initialiseSelectedTileset()) return false;
 
 	resetGameState();
+	renderer.clearGameEndMessage();
 	gameState.boardState = [];
 	gameState.cellElements = [];
 	gameState.pieceElements = {};
@@ -240,6 +275,8 @@ function resetGameState() {
 	gameState.currentPlayer = 0;
 	gameState.frontierCells = Array.from({length: gameState.playerCount}, () => []);
 	gameState.playerScores = Array(gameState.playerCount).fill(0);
+	gameState.playersOut = Array(gameState.playerCount).fill(false);
+	gameState.gameResult = null;
 	gameState.hoverRow = null;
 	gameState.hoverCol = null;
 }

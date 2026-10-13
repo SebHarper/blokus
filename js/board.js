@@ -12,6 +12,8 @@ export const gameState = {
 	playerTrays: [],
 
 	playerScores: [0,0,0,0],
+	playersOut: [false, false, false, false],
+	gameResult: null,
 
 	moveHistory: [],
 
