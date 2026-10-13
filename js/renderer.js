@@ -311,6 +311,10 @@ export function updatePlayerLabel() {
 	label.text(`Player ${gameState.currentPlayer + 1}`);
 }
 
+export function updateGamePhase() {
+	$("#gamePhase").text(`Phase: ${gameState.phase}`);
+}
+
 export function displayFrontierCells(cells) {
 	if (!RENDER_FRONTIER) return;
 

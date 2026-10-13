@@ -19,6 +19,7 @@ function mouseInside(el, x, y) {
 
 
 function handlePieceTrayClick(e) {
+	if (gameState.phase !== "running") return;
 
 	const pieceEl = $(e.target).closest(".piece");
 
@@ -65,6 +66,7 @@ function handlePieceTrayClick(e) {
 }
 
 function handleCellClick(e) {
+	if (gameState.phase !== "running") return;
 
 	if (!canPlacePiece()) return;
 
@@ -104,13 +106,20 @@ function advanceTurn() {
 	} while (gameState.currentPlayer !== startPlayer);
 
 	if (!nextPlayerCanMove) {
-		alert("Game over - no player can move!");
+		finishGame();
 		return;
 	}
 
 	renderer.changeTrayPlayer(gameState.currentPlayer);
 	renderer.updatePlayerLabel();
 	renderer.highlightCurrentPlayer();
+}
+
+function finishGame() {
+	gameState.phase = "finished";
+	dropHeldPiece();
+	renderer.clearFrontierCells();
+	renderer.updateGamePhase();
 }
 
 function playerHasMove(player) {
@@ -160,7 +169,6 @@ function finalizePiecePlacement(pieceID) {
 
 	gameState.playerTrays[gameState.currentPlayer][pieceID] = false;
 
-	gameState.gameActive = true;
 	gameState.hadFirstMove[gameState.currentPlayer] = true;
 
 	gameState.heldPiece = EMPTY_HELD_PIECE;
@@ -170,20 +178,18 @@ function finalizePiecePlacement(pieceID) {
 };
 
 function handleGameReset() {
-	if (!gameState.gameActive) return;
-
 	startGameWithSelectedTileset();
 }
 
 function handleGameView() {
-	if (!gameState.gameActive) {
+	if (gameState.phase === "idle") {
 		startGameWithSelectedTileset();
 	}
 
 	renderer.showView("#gameContainer");
 }
 
-function startGameWithSelectedTileset() {
+export function startGameWithSelectedTileset() {
 	if (!initialiseSelectedTileset()) return false;
 
 	resetGameState();
@@ -205,6 +211,8 @@ function startGameWithSelectedTileset() {
 	renderer.updatePlayerScores();
 	renderer.changeTrayPlayer(gameState.currentPlayer);
 	renderer.highlightCurrentPlayer();
+	gameState.phase = "running";
+	renderer.updateGamePhase();
 
 	return true;
 }
@@ -224,7 +232,7 @@ export function initialiseSelectedTileset() {
 }
 
 function resetGameState() {
-	gameState.gameActive = false;
+	gameState.phase = "idle";
 	gameState.heldPiece = EMPTY_HELD_PIECE;
 	gameState.heldPieceGeometry = null;
 	gameState.selectedPiece = null;
@@ -250,6 +258,7 @@ function applySettings() {
 }
 
 function handleMouseMove(e) {
+	if (gameState.phase !== "running") return;
 
 	gameState.mouse.x = e.clientX;
 	gameState.mouse.y = e.clientY;
@@ -391,6 +400,7 @@ function handleTilesetView() {
 }
 
 export function rotateCursor(e) {
+	if (gameState.phase !== "running") return;
 
 	if (!gameState.heldPiece.pieceID) return;
 
@@ -406,6 +416,8 @@ export function rotateCursor(e) {
 }
 
 export function flipCursor(e) {
+	if (gameState.phase !== "running") return;
+
 	if (!gameState.heldPiece.pieceID) return;
 
 	gameState.heldPiece.flipped = !gameState.heldPiece.flipped;

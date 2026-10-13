@@ -61,6 +61,12 @@ temp {
 	gap: 8px;
 }
 
+#gamePhase {
+	font-size: 12px;
+	margin-top: 6px;
+	opacity: 0.75;
+}
+
 #gameInfoContainer {
 	align-items: center;
 	display: flex;

@@ -2,7 +2,7 @@ import {CELL, DEFAULT_SETTINGS, EMPTY_HELD_PIECE} from './constants.js';
 
 export const gameState = {
 	currentPlayer: 0,
-	gameActive: false,
+	phase: "idle",
 	activeTilesetId: null,
 	activeTilesetTray: null,
 	playerCount: DEFAULT_SETTINGS.playerCount,
