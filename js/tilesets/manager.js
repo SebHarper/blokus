@@ -7,6 +7,8 @@ import {getTilesetEditorDraft, openTilesetEditor, resetTilesetEditor} from "./ed
 import * as renderer from "../renderer.js";
 
 const CLASSIC_TILESET_ID = "classic";
+const TILESET_PREVIEW_SIZE = 200;
+const TILESET_PREVIEW_CELL_SIZE = 10;
 
 const tilesets = [];
 let selectedTilesetId = null;
@@ -341,10 +343,13 @@ function createTilesetCard(tileset) {
 
 function createTilesetPreview(tray) {
 	const dimensions = getTrayDimensions(tray);
+	const largestDimension = Math.max(dimensions.rows, dimensions.cols);
+	const cellSize = Math.min(TILESET_PREVIEW_CELL_SIZE, TILESET_PREVIEW_SIZE / largestDimension);
 	const preview = $("<div>", {class: "tileset-preview"});
 	const grid = $("<div>", {class: "tileset-preview-grid"}).css({
 		"--preview-cols": dimensions.cols,
-		"--preview-rows": dimensions.rows
+		"--preview-rows": dimensions.rows,
+		"--preview-cell-size": `${cellSize}px`
 	});
 
 	for (let row = 0; row < dimensions.rows; row++) {

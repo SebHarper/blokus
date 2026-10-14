@@ -227,10 +227,13 @@ temp {
 }
 
 .tileset-card {
+	--tileset-card-actions-space: 60px;
 	aspect-ratio: 11 / 15;
 	background-color: var(--tileset-card-color);
 	border: 2px solid transparent;
 	box-sizing: border-box;
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr);
 	padding: 10px;
 	position: relative;
 }
@@ -248,19 +251,20 @@ temp {
 .tileset-preview {
 	align-items: center;
 	display: flex;
-	height: 200px;
 	justify-content: center;
+	min-height: 0;
+	transition: margin-bottom 120ms ease-in-out;
 }
 
 .tileset-preview-grid {
 	display: grid;
-	grid-template-columns: repeat(var(--preview-cols), 10px);
-	grid-template-rows: repeat(var(--preview-rows), 10px);
+	grid-template-columns: repeat(var(--preview-cols), var(--preview-cell-size));
+	grid-template-rows: repeat(var(--preview-rows), var(--preview-cell-size));
 }
 
 .tileset-preview-cell {
-	height: 10px;
-	width: 10px;
+	height: var(--preview-cell-size);
+	width: var(--preview-cell-size);
 }
 
 .tileset-preview-cell.filled {
@@ -283,6 +287,10 @@ temp {
 
 .tileset-card:hover .tileset-card-actions {
 	opacity: 1;
+}
+
+.tileset-card:hover .tileset-preview {
+	margin-bottom: var(--tileset-card-actions-space);
 }
 
 .tileset-card-actions .blokus-button {
