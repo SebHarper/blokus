@@ -1,5 +1,5 @@
 import {EMPTY_HELD_PIECE} from './constants.js';
-import {gameState, placePiece, setGameSettings, initialiseBoard} from './board.js';
+import {gameState, placePiece, setGameSettings, initialiseBoard, encodeCoord} from './board.js';
 import {getPiecePreview, canPlacePiece, getFrontierCells} from './rules.js'
 import {pieces, computeHeldPieceGeometry, populatePlayerTrayState, calcPlayerScores, setPieceTray} from './pieces.js';
 import {getSelectedTileset} from './tilesets/manager.js';
@@ -72,8 +72,8 @@ function handleCellClick(e) {
 
 	const pieceID = gameState.heldPiece.pieceID
 
-	// placePieceFromGhost();
-	placePiece(gameState.ghostCells, gameState.currentPlayer);
+	const placedCells = gameState.ghostCells.slice();
+	placePiece(placedCells, gameState.currentPlayer);
 
 	renderer.updateCursorPiece(e, null);
 	renderer.markTrayPieceUsed(pieceID);
@@ -85,26 +85,22 @@ function handleCellClick(e) {
 	calcPlayerScores();
 	renderer.updatePlayerScores();
 
-	advanceTurn();
+	advanceTurn(placedCells);
 };
 
-function advanceTurn() {
+function advanceTurn(placedCells) {
 
 	const startPlayer = gameState.currentPlayer;
+
+	updateFrontierCells(startPlayer, placedCells);
+	const playerCanMove = updatePlayerMoveAvailability();
 	let nextPlayerCanMove = false;
 
 	do {
 		gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.playerCount;
 
-		for (let p = 0; p < gameState.playerCount; p++) {
-			getFrontierCells(p);
-		}
-
-		nextPlayerCanMove = playerHasMove(gameState.currentPlayer);
+		nextPlayerCanMove = playerCanMove[gameState.currentPlayer];
 		if (nextPlayerCanMove) break;
-
-		gameState.playersOut[gameState.currentPlayer] = true;
-		renderer.updatePlayerScores();
 
 	} while (gameState.currentPlayer !== startPlayer);
 
@@ -116,6 +112,54 @@ function advanceTurn() {
 	renderer.changeTrayPlayer(gameState.currentPlayer);
 	renderer.updatePlayerLabel();
 	renderer.highlightCurrentPlayer();
+}
+
+
+function updateFrontierCells(placingPlayer, placedCells) {
+	getFrontierCells(placingPlayer);
+
+	const occupiedCells = new Set();
+	for (let i = 0; i < placedCells.length; i++) {
+		occupiedCells.add(encodeCoord(placedCells[i][0], placedCells[i][1]));
+	}
+
+	for (let player = 0; player < gameState.playerCount; player++) {
+		if (player === placingPlayer) continue;
+
+		const frontier = gameState.frontierCells[player];
+		const updatedFrontier = [];
+
+		for (let i = 0; i < frontier.length; i++) {
+			const [row, col] = frontier[i];
+			if (occupiedCells.has(encodeCoord(row, col))) continue;
+
+			updatedFrontier.push(frontier[i]);
+		}
+
+		gameState.frontierCells[player] = updatedFrontier;
+	}
+}
+
+function updatePlayerMoveAvailability() {
+	const playerCanMove = [];
+	let playerOutChanged = false;
+
+	for (let player = 0; player < gameState.playerCount; player++) {
+		if (gameState.playersOut[player]) {
+			playerCanMove[player] = false;
+			continue;
+		}
+
+		playerCanMove[player] = playerHasMove(player);
+		if (playerCanMove[player]) continue;
+
+		gameState.playersOut[player] = true;
+		playerOutChanged = true;
+	}
+
+	if (playerOutChanged) renderer.updatePlayerScores();
+
+	return playerCanMove;
 }
 
 function finishGame() {
@@ -153,9 +197,6 @@ function playerHasMove(player) {
 
 	const frontier = gameState.frontierCells[player];
 
-	let numValidMoves = 0;
-	let bestMoves = [];
-
 	for (const pieceID in gameState.playerTrays[player]) {
 		if (!gameState.playerTrays[player][pieceID]) continue;
 
@@ -165,30 +206,46 @@ function playerHasMove(player) {
 					const ar = fr - cr + geometry.offset[0];
 					const ac = fc - cc + geometry.offset[1];
 
-					let validMove = getPiecePreview(geometry, ar, ac);
+					let validMove = getPiecePreview(geometry, ar, ac, player);
 					if (validMove.length > 0) {
-						numValidMoves++;
-
-						let score = validMove.length;
-						
-						bestMoves.push({
-							pieceID,
-							geometry,
-							ar,
-							ac,
-							score
-						});
+						return true;
 					}
 				}
 			}
 		}
 	}
 
-	if (numValidMoves === 0) return false;
+	return false;
+}
 
-	bestMoves.sort((a, b) => b.score - a.score);
+export function findBestMove(player) {
+	if (!gameState.hadFirstMove[player]) return null;
 
-	return true;
+	const frontier = gameState.frontierCells[player];
+	let bestMove = null;
+
+	for (const pieceID in gameState.playerTrays[player]) {
+		if (!gameState.playerTrays[player][pieceID]) continue;
+
+		for (const geometry of pieces[pieceID].geometries) {
+			for (const [fr, fc] of frontier) {
+				for (const [cr, cc] of geometry.cells) {
+					const ar = fr - cr + geometry.offset[0];
+					const ac = fc - cc + geometry.offset[1];
+					const cells = getPiecePreview(geometry, ar, ac, player);
+
+					if (cells.length === 0) continue;
+
+					const score = cells.length;
+					if (bestMove !== null && score <= bestMove.score) continue;
+
+					bestMove = {pieceID, geometry, ar, ac, cells, score};
+				}
+			}
+		}
+	}
+
+	return bestMove;
 }
 
 function finalizePiecePlacement(pieceID) {

@@ -4,7 +4,7 @@ import {gameState, encodeCoord, decodeCoord, getBoardSize} from './board.js';
 let cardinalNeighbourOffsets = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 let diagonalNeighbourOffsets = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
 
-export function getPiecePreview(piece, row, col) {
+export function getPiecePreview(piece, row, col, player = gameState.currentPlayer) {
 	const {rows, cols} = getBoardSize();
 
 	if (!piece) return [];
@@ -21,8 +21,8 @@ export function getPiecePreview(piece, row, col) {
 	let diagonalCheck = false;
 	let touchingCorner = false;
 
-	const currentPlayerCell = CELL.PLAYER_1 + gameState.currentPlayer;
-	const isFirstMove = !gameState.hadFirstMove[gameState.currentPlayer];
+	const currentPlayerCell = CELL.PLAYER_1 + player;
+	const isFirstMove = !gameState.hadFirstMove[player];
 
 	for (const cellOffset of piece.cells) {
 		const r = row + cellOffset[0] - piece.offset[0];
